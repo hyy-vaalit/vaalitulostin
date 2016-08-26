@@ -16,17 +16,11 @@ class VotingArea < ActiveRecord::Base
 
   has_many :votes
 
-  has_one :voting_area_user
-
   validates_uniqueness_of :code
 
   scope :countable, -> { where('ready = ?', true) }
   scope :markable_as_ready, -> { where('submitted = ?', true) }
   scope :by_code, -> { order(:code) }
-
-  def self.for_showdown
-    order('ready desc, submitted desc, id asc')
-  end
 
   def vote_count
     votes.sum(:amount)

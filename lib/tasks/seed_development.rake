@@ -11,20 +11,10 @@ namespace :seed do
 
       area =  VotingArea.create! :code => code,
                                  :name => name
-
-      VotingAreaUser.create! :email => "#{code}@hyy.fi",
-                             :voting_area => area,
-                             :password => password
-
-    end
-
-    def random_advocate_user(number)
-      (number % 2 == 0) ? AdvocateUser.first : AdvocateUser.last
     end
 
     def create_alliance!(coalition, opts)
       alliance = coalition.electoral_alliances.build(opts)
-      alliance.advocate_user = random_advocate_user(coalition.id)
 
       alliance.save!
     end
@@ -44,15 +34,11 @@ namespace :seed do
         :votes_accepted               => 10367,
         :potential_voters_count       => 29563
       )
-      conf.checking_minutes_username    = 'tlkpj'
-      conf.checking_minutes_password    = 'pass123'
       conf.candidate_nomination_ends_at = Time.new(2014, "sep", 29, 12, 00)  # 29.9.2014 klo 12.00 UTC+3
       conf.candidate_data_is_freezed_at = Time.new(2014, "oct", 8, 12, 00)   # KVL 8.10.2014 klo 12.00 UTC+3
-      conf.advocate_login_enabled       = true
       conf.save!
 
-      AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123', :role => 'admin')
-      AdminUser.create!(:email => 'sihteeri@example.com', :password => 'pass123', :password_confirmation => 'pass123', :role => 'secretary')
+      AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
     end
 
     desc 'Create faculties'
@@ -157,12 +143,6 @@ namespace :seed do
       create_alliance! ite1, :name => 'Itsenäinen ehdokas 1',         :shorten => 'ITE1',  :expected_candidate_count => '1'
     end
 
-    desc 'Create advocate users'
-    task :create_advocates => :environment do
-      AdvocateUser.create! :firstname => "Rami", :lastname => "Raavas", :ssn => '123456-123K', :email => 'asiamies1@example.com', :password => 'pass123', :password_confirmation => 'pass123'
-      AdvocateUser.create! :firstname => "Laura", :lastname => "Lanttunen", :ssn => '123456-9876', :email => 'asiamies2@example.com', :password => 'pass123', :password_confirmation => 'pass123'
-    end
-
     desc 'Create candidate data from seed.csv'
     task :candidates => :environment do
       Candidate.transaction do
@@ -247,7 +227,6 @@ namespace :seed do
   desc 'Seed a complete development data set.'
   task :development do
     Rake::Task['seed:development:configuration'].invoke
-    Rake::Task['seed:development:create_advocates'].invoke
     Rake::Task['seed:development:faculties'].invoke
     Rake::Task['seed:development:electoral'].invoke
     Rake::Task['seed:development:candidates'].invoke

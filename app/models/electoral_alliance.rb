@@ -20,15 +20,11 @@ class ElectoralAlliance < ActiveRecord::Base
   has_many :alliance_results
   has_many :results, :through => :alliance_results
 
-  belongs_to :advocate_user, :foreign_key => :primary_advocate_id
-
   belongs_to :electoral_coalition
   ranks :numbering_order, :with_same => :electoral_coalition_id
 
-  scope :without_advocate_user, -> { where(:primary_advocate_id => nil) }
   scope :without_coalition, -> { where(:electoral_coalition_id => nil) }
   scope :ready, -> { where(:secretarial_freeze => true) }
-  scope :for_dashboard, -> { order("primary_advocate_id ASC") }
   scope :by_numbering_order, -> { order("#{table_name}.numbering_order") }
 
   validates_presence_of :name, :shorten

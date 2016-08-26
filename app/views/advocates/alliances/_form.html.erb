@@ -1,9 +1,0 @@
-<h2>Vaaliliiton ensisijainen asiamies</h2>
-  <%= current_advocate_user.friendly_name %> (<%= current_advocate_user.email %>)
-
-<h2>Vaaliliitto</h2>
-
-<%= f.input :name,    :label => "Vaaliliiton nimi" %>
-<%= f.input :shorten, :label => "Vaaliliiton lyhenne (2-6 merkkiä)", :hint => "Lyhennettä käytetään vaalituloksen esittämisessä: esimerkiksi TaVi, ParasS, WTF. HYY varaa itselleen oikeuden muuttaa lyhennettä tarvittaessa." %>
-
-<%= f.input :expected_candidate_count, :label => "Kuinka monta ehdokasta liittoon tulee" %>

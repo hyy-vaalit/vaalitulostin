@@ -6,6 +6,4 @@
  *= require formtastic
  *= require html5boilerplate
  *
- * Do not "require_tree ." or active_admin.css will override styles
- * also for scope OUTSIDE of ActiveAdmin
  */
