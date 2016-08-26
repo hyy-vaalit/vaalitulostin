@@ -35,24 +35,8 @@ class GlobalConfiguration < ActiveRecord::Base
     first.potential_voters_count
   end
 
-  def self.log_candidate_attribute_changes?
-    not candidate_nomination_period_effective?
-  end
-
-  def self.advocate_login_enabled?
-    return first.advocate_login_enabled?
-  end
-
   def self.candidate_data_frozen?
     Time.now > candidate_data_is_freezed_at
-  end
-
-  def self.checking_minutes_username
-    return first.checking_minutes_username
-  end
-
-  def self.checking_minutes_password
-    return first.checking_minutes_password
   end
 
   def candidate_nomination_period_effective?
@@ -61,14 +45,6 @@ class GlobalConfiguration < ActiveRecord::Base
 
   def elected_candidate_count
     Vaalit::Voting::ELECTED_CANDIDATE_COUNT
-  end
-
-  def enable_advocate_login!
-    self.update_attribute(:advocate_login_enabled, true)
-  end
-
-  def disable_advocate_login!
-    self.update_attribute(:advocate_login_enabled, false)
   end
 
 end

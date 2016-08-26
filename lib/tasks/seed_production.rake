@@ -12,10 +12,6 @@ namespace :seed do
       area =  VotingArea.create! :code => code,
                                  :name => name
 
-      VotingAreaUser.create! :email => "#{code}@hyy.fi",
-                             :voting_area => area,
-                             :password => password
-
     end
 
     desc 'Seed data for faculties'
@@ -68,13 +64,10 @@ namespace :seed do
       conf = GlobalConfiguration.new
       conf.candidate_nomination_ends_at = Time.new(2014, "sep", 29, 12, 00)  # 29.9.2014 klo 12.00 UTC+3
       conf.candidate_data_is_freezed_at = Time.new(2014, "oct", 8, 12, 00)   # KVL 8.10.2014 klo 12.00 UTC+3
-      conf.advocate_login_enabled       = false
-      conf.checking_minutes_username    = 'tlkpj'
-      conf.checking_minutes_password    = 'pass123'
       conf.save!
 
       # Sends password by mail
-      AdminUser.create!(:email => 'petrus.repo+vaalit@enemy.fi', :password => 'salainensana', :password_confirmation => 'salainensana', :role => 'admin')
+      AdminUser.create!(:email => 'petrus.repo+vaalit@enemy.fi', :password => 'salainensana', :password_confirmation => 'salainensana')
     end
   end
 

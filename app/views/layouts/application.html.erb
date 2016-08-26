@@ -27,32 +27,13 @@
 <body>
 
   <header class="title">
-
     <nav>
       <div id="logo-main">
         <a href="/"><img src="/images/hyy/logo.png" height="72" width="390"></a>
       </div>
 
       <ul class="main">
-        <% if current_advocate_user %>
-          <li>
-            <%= current_advocate_user.email %>
-            <% if current_admin_user %>
-              <br>
-              <u>ADMIN</u>: <%= current_admin_user.email %>
-            <% end %>
-          </li>
-          <li>&raquo; <%= link_to "Kirjaudu ulos", destroy_advocate_user_session_path %></li>
-        <% end %>
-
-        <% if current_voting_area_user %>
-          <li>
-            <%= current_voting_area_user.voting_area.name %>
-          </li>
-          <li>
-            &raquo; <%= link_to "Kirjaudu ulos", destroy_voting_area_user_session_path %>
-          </li>
-        <% end %>
+          <li>#TODO: Logout &raquo; <%#= link_to "Kirjaudu ulos", destroy_WHICH_user_session_path %></li>
       </ul>
     </nav>
 
@@ -97,20 +78,6 @@
       Helsingin yliopiston ylioppilaskunta &diamond; vaalit@hyy.fi
     </address>
   </footer>
-
-  <% if Rails.env.production? %>
-    <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-35625600-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-  <% end %>
 
 </body>
 </html>

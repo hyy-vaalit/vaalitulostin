@@ -16,16 +16,6 @@ class Manage::ConfigurationsController < ManageController
   def edit
   end
 
-  def enable_advocate_login
-    GlobalConfiguration.first.enable_advocate_login!
-    redirect_to manage_danger_zone_path
-  end
-
-  def disable_advocate_login
-    GlobalConfiguration.first.disable_advocate_login!
-    redirect_to manage_danger_zone_path
-  end
-
   protected
 
   def permitted_params

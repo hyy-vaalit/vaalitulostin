@@ -11,20 +11,9 @@
 // about supported directives.
 //
 
-//
-// ********* NOTE **********
-// This file is not loaded in ActiveAdmin
-//
-
 //= require jquery2
 //= require jquery-ui
 //= require jquery_ujs
-// require jquery/jquery.cookie
 
 //= require google-jsapi.js
 //= require bootstrap.min.js
-//= require candidate_sorting.js
-//= require general_legacy.js
-
-// ******* TURBOLINKS NOT ENABLED *******
-// require turbolinks
