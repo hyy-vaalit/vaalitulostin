@@ -11,6 +11,17 @@ class GlobalConfiguration < ActiveRecord::Base
     Vaalit::Public::EMAIL_FROM_NAME
   end
 
+  def self.update_summary!(data)
+    c = first
+
+    c.votes_given            = data["votes_given"]
+    c.votes_accepted         = data["votes_accepted"]
+    c.potential_voters_count = data["voter_count"]
+    c.voting_percentage      = data["voting_percentage"]
+
+    c.save!
+  end
+
   def self.votes_given
     first.votes_given
   end
@@ -23,8 +34,8 @@ class GlobalConfiguration < ActiveRecord::Base
     first.potential_voters_count
   end
 
-  def elected_candidate_count
-    Vaalit::Voting::ELECTED_CANDIDATE_COUNT
+  def self.voting_percentage
+    first.voting_percentage
   end
 
 end

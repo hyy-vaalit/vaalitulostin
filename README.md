@@ -19,13 +19,12 @@ git mergetool
 
 ```bash
 rake db:runts
-rake db:seed:development
+rake db:seed:dev
 rake jobs:work
 tail -f log/development.log
 ```bash
 
 ```ruby
 Delayed::Job::enqueue(ImportVotesJob.new(VotingArea.first))
-Delayed::Job.enqueue(CreateResultJob.new)
 puts ResultDecorator.decorate(Result.last).to_html
 ```

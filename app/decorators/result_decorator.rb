@@ -25,21 +25,12 @@ class ResultDecorator < ApplicationDecorator
     100.0 * votes_counted / votes_accepted
   end
 
-  # If result is freezed (not going to be recalculated any more), then
-  # the amount of all counted votes is the same amount of all accepted votes.
-  # Otherwise all accepted votes is submitted manually during the Vaalivalvojaiset show.
   def votes_accepted
-    if self.freezed?
-      votes_counted
-    else
-      GlobalConfiguration.votes_accepted
-    end
+    GlobalConfiguration.votes_accepted
   end
 
   def voting_percentage
-    return 0 if votes_given.to_i == 0
-
-    100.0 * votes_given / potential_voters
+    GlobalConfiguration.voting_percentage
   end
 
   def formatted_timestamp(timestamp_method, opts = {})

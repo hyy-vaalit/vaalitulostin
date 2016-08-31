@@ -1,4 +1,4 @@
-require './lib/fetch_votes_from_voting_api'
+require './lib/voting_api_request'
 
 class ImportVotesJob
 
@@ -7,13 +7,21 @@ class ImportVotesJob
   end
 
   def perform
-    Rails.logger.info "Import votes to voting area #{@voting_area.name} (id: #{@voting_area_id})"
+    Rails.logger.info "Get election summary from voting-api"
+    summary_response = VotingApiRequest
+                       .new(Vaalit::VotingApi::SUMMARY_URI)
+                       .get
 
-    response = FetchVotesFromVotingApi.new.get
+    GlobalConfiguration.update_summary!(JSON.parse(summary_response.body))
+
+    Rails.logger.info "Import votes to voting area #{@voting_area.name} (id: #{@voting_area_id})"
+    vote_response = VotingApiRequest
+                    .new(Vaalit::VotingApi::VOTES_URI)
+                    .get
 
     VoteImporter
       .new(@voting_area)
-      .create_votes!(response.body)
+      .create_votes!(vote_response.body)
 
     Delayed::Job.enqueue(CreateResultJob.new)
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160831061408) do
+ActiveRecord::Schema.define(version: 20160831125219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -198,6 +198,7 @@ ActiveRecord::Schema.define(version: 20160831061408) do
     t.integer  "potential_voters_count", default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "voting_percentage"
   end
 
   create_table "results", force: :cascade do |t|
