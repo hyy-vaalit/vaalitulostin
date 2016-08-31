@@ -7,7 +7,6 @@ namespace :seed do
     def create_voting_area(opts)
       code = opts[:code]
       name = opts[:name]
-      password = opts[:password]
 
       area =  VotingArea.create! :code => code,
                                  :name => name
@@ -39,26 +38,8 @@ namespace :seed do
       AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
     end
 
-    desc 'Create faculties'
-    task :faculties => :environment do
-      Faculty.create! :code => 'B', :numeric_code => 57, :name => 'Biotieteellinen'
-      Faculty.create! :code => 'E', :numeric_code => 90, :name => 'Eläinlääketieteellinen'
-      Faculty.create! :code => 'F', :numeric_code => 55, :name => 'Farmasia'
-      Faculty.create! :code => 'H', :numeric_code => 40, :name => 'Humanistinen'
-      Faculty.create! :code => 'K', :numeric_code => 60, :name => 'Käyttäytymistieteellinen'
-      Faculty.create! :code => 'L', :numeric_code => 30, :name => 'Lääketieteellinen'
-      Faculty.create! :code => 'ML',:numeric_code => 50, :name => 'Matemaattis-luonnontieteellinen'
-      Faculty.create! :code => 'MM',:numeric_code => 80, :name => 'Maa- ja metsätieteellinen'
-      Faculty.create! :code => 'O', :numeric_code => 20, :name => 'Oikeustieteellinen'
-      Faculty.create! :code => 'T', :numeric_code => 10, :name => 'Teologinen'
-      Faculty.create! :code => 'V', :numeric_code => 70, :name => 'Valtiotieteellinen'
-      Faculty.create! :code => 'S', :numeric_code => 74, :name => 'Svenska social- och kommunalhögskolan'
-    end
-
-    desc 'Create Voting Areas'
-    task :voting_areas => :environment do
+    def create_voting_areas_2009
       create_voting_area :code => 'I',   :name => 'Unicafe Ylioppilasaukio',    :password => 'pass123'
-
       create_voting_area :code => 'II',   :name => 'Yliopiston päärakennus',     :password => 'pass123'
       create_voting_area :code => 'III',   :name => 'Yliopiston päärakennus',     :password => 'pass123'
       create_voting_area :code => 'IV',   :name => 'Porthania',                  :password => 'pass123'
@@ -83,6 +64,32 @@ namespace :seed do
       create_voting_area :code => 'EIII',  :name => 'Physicum',                   :password => 'pass123'
       create_voting_area :code => 'EIV',  :name => 'Terveystieteiden keskus',    :password => 'pass123'
       create_voting_area :code => 'EV',  :name => 'Unicafe',                    :password => 'pass123'
+    end
+
+    desc 'Create faculties'
+    task :faculties => :environment do
+      Faculty.create! :code => 'B', :numeric_code => 57, :name => 'Biotieteellinen'
+      Faculty.create! :code => 'E', :numeric_code => 90, :name => 'Eläinlääketieteellinen'
+      Faculty.create! :code => 'F', :numeric_code => 55, :name => 'Farmasia'
+      Faculty.create! :code => 'H', :numeric_code => 40, :name => 'Humanistinen'
+      Faculty.create! :code => 'K', :numeric_code => 60, :name => 'Käyttäytymistieteellinen'
+      Faculty.create! :code => 'L', :numeric_code => 30, :name => 'Lääketieteellinen'
+      Faculty.create! :code => 'ML',:numeric_code => 50, :name => 'Matemaattis-luonnontieteellinen'
+      Faculty.create! :code => 'MM',:numeric_code => 80, :name => 'Maa- ja metsätieteellinen'
+      Faculty.create! :code => 'O', :numeric_code => 20, :name => 'Oikeustieteellinen'
+      Faculty.create! :code => 'T', :numeric_code => 10, :name => 'Teologinen'
+      Faculty.create! :code => 'V', :numeric_code => 70, :name => 'Valtiotieteellinen'
+      Faculty.create! :code => 'S', :numeric_code => 74, :name => 'Svenska social- och kommunalhögskolan'
+    end
+
+    desc 'Create Internet Voting Area'
+    task :internet_voting_area => :environment do
+      create_voting_area code: 'internet', name: 'Internet-äänestys'
+    end
+
+    desc 'Create 2009 Voting Areas'
+    task :voting_areas_2009 => :environment do
+      create_voting_areas_2009()
     end
 
     desc 'Create electoral coalitions and alliances'
@@ -191,8 +198,8 @@ namespace :seed do
       end
     end
 
-    desc 'Create early voting data'
-    task :early_voting => :environment do
+    desc 'Create early votes'
+    task :early_votes_2009 => :environment do
       puts '... Creating early voting areas ...'
       [:EI, :EII, :EIII, :EIV, :EV].each do |area_code|
         voting_area = VotingArea.find_by_code! "#{area_code}"
@@ -205,8 +212,8 @@ namespace :seed do
       end
     end
 
-    desc 'Create main voting data'
-    task :main_voting => :environment do
+    desc 'Create non-early votes'
+    task :votes_2009 => :environment do
       puts '... Creating voting areas ...'
       [:I, :II, :III, :IV, :V, :VI, :VII, :VIII, :IX, :X,
        :XI, :XII, :XIII, :XIV, :XV, :XVI, :XVII, :XVIII, :XIX, :XX].each do |area_code|
@@ -220,17 +227,44 @@ namespace :seed do
       end
     end
 
+    desc "Create year 2009's votes to a single voting area"
+    task :internet_votes_2009 => :environment do
+      voting_area = VotingArea.find_by_code! "internet"
+      puts "Create year 2009's votes in area '#{voting_area.name}'"
+      CSV.foreach("doc/votes/HYY09", headers: true, encoding: "ISO8859-1") do |row|
+        candidate_number = row[0].strip.to_i
+        vote_count = row[3].strip.to_i
+
+        Candidate
+          .find_by_candidate_number!(candidate_number)
+          .votes
+          .create!(voting_area: voting_area, amount: vote_count)
+      end
+    end
+
   end
 
-  desc 'Seed a complete development data set.'
+  desc "Seed an internet voting with year 2009's votes"
   task :development do
     Rake::Task['seed:development:configuration'].invoke
     Rake::Task['seed:development:faculties'].invoke
     Rake::Task['seed:development:electoral'].invoke
     Rake::Task['seed:development:candidates'].invoke
-    Rake::Task['seed:development:voting_areas'].invoke
-    Rake::Task['seed:development:early_voting'].invoke
-    Rake::Task['seed:development:main_voting'].invoke
+    Rake::Task['seed:development:internet_voting_area'].invoke
+    Rake::Task['seed:development:internet_votes_2009'].invoke
+  end
+
+  namespace :development do
+    desc "Seed a ballot voting voting data set with year 2009's votes"
+    task :traditional do
+      Rake::Task['seed:development:configuration'].invoke
+      Rake::Task['seed:development:faculties'].invoke
+      Rake::Task['seed:development:electoral'].invoke
+      Rake::Task['seed:development:candidates'].invoke
+      Rake::Task['seed:development:voting_areas_2009'].invoke
+      Rake::Task['seed:development:early_votes_2009'].invoke
+      Rake::Task['seed:development:votes_2009'].invoke
+    end
   end
 
 end

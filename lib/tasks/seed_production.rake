@@ -1,19 +1,15 @@
-# coding: UTF-8
-
 namespace :seed do
 
   namespace :production do
 
-    def create_voting_area(opts)
+    def create_voting_area!(opts)
       code = opts[:code]
       name = opts[:name]
-      password = opts[:password]
 
-      area =  VotingArea.create! :code => code,
-                                 :name => name
-
+      VotingArea.create! :code => code, :name => name
     end
 
+    #TODO: move these into csv
     desc 'Seed data for faculties'
     task :faculties => :environment do
       puts 'Seeding faculties ...'
@@ -31,48 +27,22 @@ namespace :seed do
       Faculty.create! :code => 'S', :numeric_code => 74, :name => 'Svenska social- och kommunalhögskolan'
     end
 
-    desc 'Seed data for voting areas'
-    task :voting_areas => :environment do
-      puts 'Seeding voting areas ...'
-
-      # 2014 Voting Areas
-      #raise 'Add passwords and remove this line (production_seed.rake). PS. Plz commit them to github too, ok!'
-      create_voting_area :code => 'I', :name => 'Unicafe Ylioppilasaukio', :password => 'salainensana'
-      create_voting_area :code => 'II', :name => 'Yliopiston päärakennus', :password => 'salainensana'
-      create_voting_area :code => 'III', :name => 'Porthania', :password => 'salainensana'
-      create_voting_area :code => 'IV', :name => 'Metsätalo', :password => 'salainensana'
-      create_voting_area :code => 'V', :name => 'Kaisa-talo', :password => 'salainensana'
-      create_voting_area :code => 'VI', :name => 'Oppimiskeskus Minerva', :password => 'salainensana'
-      create_voting_area :code => 'VII', :name => 'Terveystieteiden keskuskirjasto', :password => 'salainensana'
-      create_voting_area :code => 'VIII', :name => 'Hammaslääketieteen laitos', :password => 'salainensana'
-      create_voting_area :code => 'IX', :name => 'Physicum', :password => 'salainensana'
-      create_voting_area :code => 'X', :name => 'Exactum', :password => 'salainensana'
-      create_voting_area :code => 'XI', :name => 'Infokeskus', :password => 'salainensana'
-      create_voting_area :code => 'XII', :name => 'EE-talo', :password => 'salainensana'
-      create_voting_area :code => 'XIII', :name => 'Ympäristöekologian laitos', :password => 'salainensana'
-      create_voting_area :code => 'XIV', :name => 'Vaasan yliopisto', :password => 'salainensana'
-
-      create_voting_area :code => 'EI', :name => 'Keskustakampus, Porthania', :password => 'salainensana'
-      create_voting_area :code => 'EII', :name => 'Viikin kampus, Infokeskus', :password => 'salainensana'
-      create_voting_area :code => 'EIII', :name => 'Kumpulan kampus, Physicum', :password => 'salainensana'
-      create_voting_area :code => 'EIV', :name => 'Meilahden kampus, Terveystieteiden keskuskirjasto', :password => 'salainensana'
-      create_voting_area :code => 'EV', :name => 'Kaisa-talo', :password => 'salainensana'
+    desc 'Create internet voting area'
+    task :internet_voting_area => :environment do
+      create_voting_area! code: 'internet', name: 'Internet-äänestys'
     end
 
+    # TODO: Remove GlobalConfiguration and read from ENV
     desc 'Setup production configuration defaults'
     task :configuration => :environment do
-      conf = GlobalConfiguration.new
-      conf.save!
-
-      # Sends password by mail
-      AdminUser.create!(:email => 'petrus.repo+vaalit@enemy.fi', :password => 'salainensana', :password_confirmation => 'salainensana')
+      GlobalConfiguration.create!
     end
   end
 
   desc 'Seed initial production data (required for deployment!)'
   task :production do
     Rake::Task['seed:production:faculties'].invoke
-    Rake::Task['seed:production:voting_areas'].invoke
+    Rake::Task['seed:production:internet_voting_area'].invoke
     Rake::Task['seed:production:configuration'].invoke
   end
 
