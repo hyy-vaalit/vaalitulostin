@@ -29,6 +29,11 @@ module Vaalit
 
   end
 
+  module VotingApi
+    JWT_APIKEY         = ENV.fetch 'VOTING_API_JWT_APIKEY'
+    VOTES_ENDPOINT_URI = URI ENV.fetch('VOTING_API_VOTES_ENDPOINT')
+  end
+
   module AWS
     def self.connect?
       Rails.env.production?

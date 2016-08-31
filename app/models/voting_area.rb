@@ -26,26 +26,6 @@ class VotingArea < ActiveRecord::Base
     votes.sum(:amount)
   end
 
-  def create_votes_from(vote_submissions, opts = {})
-    use_fixed_amount = opts[:use_fixed_amount]
-
-    VotingArea.transaction do
-      vote_submissions.each do |index, vote|
-        candidate_number = vote["candidate_number"]
-        vote_amount       = vote["vote_amount"]
-        next if candidate_number.blank? or vote_amount.blank?
-
-        candidate = Candidate.find_by_candidate_number(candidate_number)
-
-        if candidate and Vote.create_or_update_from(self.id, candidate.id, vote_amount, use_fixed_amount)
-          next # success
-        else
-          errors.add :invalid_candidate_numbers, candidate_number
-        end
-      end
-    end
-  end
-
   def ready!
     update_attribute :ready, true
   end
