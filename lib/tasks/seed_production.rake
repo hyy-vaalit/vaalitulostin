@@ -62,8 +62,6 @@ namespace :seed do
     desc 'Setup production configuration defaults'
     task :configuration => :environment do
       conf = GlobalConfiguration.new
-      conf.candidate_nomination_ends_at = Time.new(2014, "sep", 29, 12, 00)  # 29.9.2014 klo 12.00 UTC+3
-      conf.candidate_data_is_freezed_at = Time.new(2014, "oct", 8, 12, 00)   # KVL 8.10.2014 klo 12.00 UTC+3
       conf.save!
 
       # Sends password by mail

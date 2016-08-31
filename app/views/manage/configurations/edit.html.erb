@@ -12,22 +12,6 @@
       Korjausten määräaika on tunti ennen keskusvaalilautakunnan kokousta, jossa vahvistetaan ehdokaslistat.
     </p>
 
-    <table style="margin-top: 1em;">
-      <thead>
-        <tr>
-          <th>Ehdokasasettelu päättyy</th>
-          <th>Ehdokastietojen korjausten määräaika</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr>
-          <td><%= @configuration.candidate_nomination_ends_at.localtime.to_s(:long) %></td>
-          <td><%= @configuration.candidate_data_is_freezed_at.localtime.to_s(:long) %></td>
-        </tr>
-      </tbody>
-    </table>
-
   <h2>Vaalitulos</h2>
     <p style="margin-bottom: 1em;">
       Aseta äänien ja äänioikeutettujen lukumäärä vaali-iltana, kun äänestys on päättynyt.

@@ -34,8 +34,6 @@ namespace :seed do
         :votes_accepted               => 10367,
         :potential_voters_count       => 29563
       )
-      conf.candidate_nomination_ends_at = Time.new(2014, "sep", 29, 12, 00)  # 29.9.2014 klo 12.00 UTC+3
-      conf.candidate_data_is_freezed_at = Time.new(2014, "oct", 8, 12, 00)   # KVL 8.10.2014 klo 12.00 UTC+3
       conf.save!
 
       AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
