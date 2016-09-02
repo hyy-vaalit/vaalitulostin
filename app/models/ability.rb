@@ -1,35 +1,25 @@
 class Ability
   include CanCan::Ability
 
+  # Does not allow guest users
   def initialize(user)
-    user ||= AdminUser.new # guest user (not logged in)
-    initialize_roles(user)
+    authorize_guest(user)
+    return if user.nil?
 
-    # Controllers which are not provided by ActiveAdmin do not get authorized.
-    # ActiveAdmin controller always authorizes, therefore access to login must
-    # explicitly be granted.
-    can :login, :admin
-  end
-
-  def admin(user)
-    can :access, :admin
-    can :manage, :all
+    authorize_admin(user)
   end
 
   private
 
-  #TODO: Remove old breadcrumbs and simplify this
-  def initialize_roles(user)
-    case user.class.to_s
-      when "AdminUser"
-        initialize_admin(user)
-      else
-        raise "Current user class could not be determined. This is a bug."
-    end
+  def authorize_admin(user)
+    raise "Expected AdminUser" unless user.class == AdminUser
+
+    can :access, :dashboard
+    can :manage, :elections
   end
 
-  def initialize_admin(user)
-    send user.role, user
+  def authorize_guest(user)
+    can :access, :public
   end
 
 end

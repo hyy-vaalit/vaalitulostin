@@ -1,8 +1,5 @@
 class DrawsController < ApplicationController
 
-  before_filter :authenticate_admin_user!
-  before_filter :authorize
-
   def index
     @result = Result.freezed.first
   end
@@ -34,13 +31,13 @@ class DrawsController < ApplicationController
 
   protected
 
+  def authorize_this!
+    authorize! :manage, :elections
+  end
+
   def enqueue(job)
     Result.freezed.first.in_process!
     Delayed::Job::enqueue(job)
-  end
-
-  def authorize
-    authorize! :manage, :draws
   end
 
   def automatically?

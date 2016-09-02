@@ -3,23 +3,29 @@ class ApplicationController < ActionController::Base
 
   check_authorization :unless => :devise_controller?
 
+  before_filter :authorize_this!, :unless => :devise_controller?
+
   protected
+
+  def authorize_this!
+    raise "Not implemented"
+  end
+
+  def after_sign_in_path_for(resource)
+    dashboard_path
+  end
 
   def current_ability
     @current_ability ||= ::Ability.new(current_user)
   end
 
-  def current_user_login_path
-    raise "#TODO: Where to redirect user?"
-  end
-
   def current_user
-    raise "#TODO: Who is the current user?"
+    current_admin_user
   end
 
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "[ApplicationController] Rescued CanCan::AccessDenied and redirecting to safety"
-    redirect_to current_user_login_path, :alert => exception.message
+    redirect_to root_path, :alert => exception.message
   end
 
 end

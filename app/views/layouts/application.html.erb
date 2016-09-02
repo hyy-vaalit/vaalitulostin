@@ -29,11 +29,16 @@
   <header class="title">
     <nav>
       <div id="logo-main">
-        <a href="/"><img src="/images/hyy/logo.png" height="72" width="390"></a>
+        <%= link_to image_tag("/images/hyy/logo.png"), dashboard_path %>
       </div>
 
+
       <ul class="main">
-          <li>#TODO: Logout &raquo; <%#= link_to "Kirjaudu ulos", destroy_WHICH_user_session_path %></li>
+        <% if current_admin_user %>
+          <li>&raquo; <%= link_to "Kirjaudu ulos", destroy_admin_user_session_path %></li>
+        <% else %>
+          <li>&raquo; <%= link_to "Kirjaudu", new_admin_user_session_path %></li>
+        <% end %>
       </ul>
     </nav>
 

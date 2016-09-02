@@ -4,5 +4,8 @@ class PublicController < ApplicationController
   def index
   end
 
+  def authorize_this!
+    authorize! :access, :public
+  end
 
 end

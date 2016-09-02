@@ -1,9 +1,11 @@
 Vaalitulostin::Application.routes.draw do
 
   # Devise routes must be on top to get highest priority
-  #TODO: devise_for :who_is_the_user
+  devise_for :admin_users
 
   root :to => "public#index"
+
+  resource :dashboard, controller: 'dashboard'
 
   namespace :manage do
     resources :results, :only => [:index, :show] do

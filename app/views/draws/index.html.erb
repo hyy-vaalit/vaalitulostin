@@ -1,11 +1,11 @@
 <p>
-  &larr; <%= link_to "Takaisin hallintapaneeliin", admin_dashboard_path %>
+  &larr; <%= link_to "Takaisin hallintapaneeliin", dashboard_path %>
 </p>
 
 <h1>Arvonnat</h1>
 
 <% if not @result %>
-   <p>#TODO: Jostain syystä vaalitulosta ei löytynyt?</p>
+   <p>Yhtään vaalitulosta ei ole vielä laskettu.</p>
 <% end %>
 
 <ul>

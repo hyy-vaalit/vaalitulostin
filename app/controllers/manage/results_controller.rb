@@ -1,4 +1,3 @@
-# coding: UTF-8
 class Manage::ResultsController < ManageController
   respond_to :json
 
@@ -37,12 +36,6 @@ class Manage::ResultsController < ManageController
     end
 
     redirect_to manage_results_path
-  end
-
-  protected
-
-  def authorize_this!
-    authorize! :manage, :results
   end
 
 end
