@@ -6,9 +6,6 @@ Vaalitulostin::Application.routes.draw do
   root :to => "public#index"
 
   namespace :manage do
-    get "configuration", :to => "configurations#index"
-    resource :configuration, :only => [:index, :update, :edit]
-
     resources :results, :only => [:index, :show] do
       put :publish
     end
