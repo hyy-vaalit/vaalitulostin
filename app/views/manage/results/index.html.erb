@@ -89,5 +89,16 @@ Julkinen vaalitulos: <%= link_to Vaalit::Results::PUBLIC_RESULT_URL, Vaalit::Res
   </tr>
 
 <% end %>
-
 </table>
+<% end %>
+
+<% if @results.blank? %>
+  Jos äänestys on jo päättynyt ja grace period (5 minuuttia) kulunut,
+  voit käynnistää äänten hakutoiminnon.
+
+  <%= button_to "Hae äänet äänestysjärjestelmästä",
+                fetch_votes_manage_results_path,
+                method: :put,
+                class:   "btn btn-primary",
+                :data => {:confirm  => "Haetaanko äänet? Haku onnistuu vain jos äänestys on jo päättynyt."} %>
+<% end %>

@@ -11,6 +11,7 @@ Vaalitulostin::Application.routes.draw do
     resources :results, :only => [:index, :show] do
       put :publish
       put :freeze, on: :collection
+      put :fetch_votes, on: :collection
     end
   end
 
