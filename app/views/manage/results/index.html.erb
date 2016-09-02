@@ -30,6 +30,24 @@ Julkinen vaalitulos: <%= link_to Vaalit::Results::PUBLIC_RESULT_URL, Vaalit::Res
       </li>
     </ul>
 
+<h3>Tulos arvontoja varten:</h3>
+<p>
+  Alustavasta tuloksesta saadaan lopullinen, kun se ensin jäädytetään ja sen
+  jälkeen sen tasatuloksille suoritetaan arvonnat.
+<br>
+  Jäädytä vaalitulos sen jälkeen, kun kaikki äänestysalueet ovat mukana
+  laskennassa (ja uurnavaalissa tarkastuslaskenta suoritettu).
+<br>
+  Jäädyttämisen jälkeen odota muutama minuutti ja siirry arvontoihin.
+
+  <%= button_to "Jäädytä viimeisin vaalitulos", freeze_manage_results_path,
+              method:  :put,
+              :data => {:confirm  => "Jäädytetäänkö viimeisin vaalitulos?"},
+              class:   "btn btn-primary" %>
+</p>
+
+
+<% if @results.any? %>
 <table class="long-listing">
   <thead>
     <tr>

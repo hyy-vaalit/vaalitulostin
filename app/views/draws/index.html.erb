@@ -12,13 +12,8 @@
 
    <p>
      Tuloksen jäädyttämisen jälkeen odota muutama minuutti ja lataa tämä
-     sivu sen jälkeen uudelleen. Älä paina uudelleen alla olevaa nappia.
+     sivu sen jälkeen uudelleen.
    </p>
-
-   <%= button_to "Jäädytä viimeisin vaalitulos", freeze_manage_results_path,
-                  method:  :put,
-                  :data => {:confirm  => "Jäädytetäänkö viimeisin vaalitulos?"},
-                  class:   "btn btn-danger" %>
 
 <% else %>
   <ul>
