@@ -1,3 +1,19 @@
+# Calculates the Result of the Election
+#
+# Result calculation can have the following states:
+# - unset
+#   Result is preliminary and there might be voting areas uncalculated.
+#
+# - freezed (sic)
+#   All voting areas have been included in the result.
+#   Result is ready for draws (1. candidate, 2. alliance, 3. coalition)
+#
+# - final
+#   Draws have completed and result is ready to be deemed immutable.
+#
+# N.B. Ruby defines a "frozen" method for Object, so be aware of the
+#      mixup with "freezed".
+#
 class Result < ActiveRecord::Base
   has_many :coalition_proportionals, :dependent => :destroy
   has_many :alliance_proportionals, :dependent => :destroy
@@ -39,9 +55,14 @@ class Result < ActiveRecord::Base
     where(:freezed => true)
   end
 
-  # A freezed result is created after vote re-counting (tarkastuslaskenta) has been finished.
-  # Only one freezed result may be created (it will be used for drawings).
-  def self.create_freezed!
+  # A frozen result is used for draws.
+  #
+  # A freezed result is created after
+  # a) internet votes have been imported from Voting API
+  # b) ballot vote re-counting (tarkastuslaskenta) has been finished.
+  #
+  # Only one freezed result may be created at a time.
+  def self.freeze_for_draws!
     raise "Unexpectedly a freezed or final result already exists!" if self.freezed.any? or self.final.any?
 
     self.create! :freezed => true

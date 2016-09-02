@@ -54,3 +54,8 @@ Tulosta konsoliin:
 ```ruby
 puts ResultDecorator.decorate(Result.last).to_html
 ```
+
+Merkitse tulos valmiiksi arvontoja varten:
+```
+Result.freeze_for_draws!
+```

@@ -10,6 +10,7 @@ Vaalitulostin::Application.routes.draw do
   namespace :manage do
     resources :results, :only => [:index, :show] do
       put :publish
+      put :freeze, on: :collection
     end
   end
 

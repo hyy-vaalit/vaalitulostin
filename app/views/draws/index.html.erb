@@ -5,13 +5,27 @@
 <h1>Arvonnat</h1>
 
 <% if not @result %>
-   <p>Yhtään vaalitulosta ei ole vielä laskettu.</p>
-<% end %>
+   <p>
+     Arvonnat suoritetaan jäädytettyä vaalitulosta vasten, mutta
+     jäädytettyä vaalitulosta ei ole vielä laskettu.
+   </p>
 
-<ul>
-  <li>Mikäli sivulla ei vielä näy suoritettavaa arvontaa, odota hetki ja lataa sivu uudelleen.</li>
-  <li>Uuden arvontakierroksen valmistelu kestää 1-5 minuuttia.</li>
-</ul>
+   <p>
+     Tuloksen jäädyttämisen jälkeen odota muutama minuutti ja lataa tämä
+     sivu sen jälkeen uudelleen. Älä paina uudelleen alla olevaa nappia.
+   </p>
+
+   <%= button_to "Jäädytä viimeisin vaalitulos", freeze_manage_results_path,
+                  method:  :put,
+                  :data => {:confirm  => "Jäädytetäänkö viimeisin vaalitulos?"},
+                  class:   "btn btn-danger" %>
+
+<% else %>
+  <ul>
+    <li>Mikäli sivulla ei vielä näy suoritettavaa arvontaa, odota hetki ja lataa sivu uudelleen.</li>
+    <li>Uuden arvontakierroksen valmistelu kestää 1-5 minuuttia.</li>
+  </ul>
+<% end %>
 
 <% if @result and @result.in_process? %>
   <p>
@@ -32,6 +46,7 @@
     <h2>Liiton sisällä saman äänimäärän saaneet ehdokkaat (<%= @result.candidate_draws.count %> kpl)</h2>
     <%= button_to "Merkitse äänimäärien arvonta valmiiksi!", candidate_draws_ready_path,
                                                              :method => :post,
+                                                             :class  => "btn btn-primary",
                                                              :data => {:confirm => "Seuraavaksi siirrytään arpomaan liittovertailulukuja. Ok?"} %>
     <br />
     <% if @result.candidate_draws.any? %>
@@ -47,6 +62,7 @@
     <h2>Renkaan sisällä saman liittovertailuluvun saaneet ehdokkaat (<%= @result.alliance_draws.count %> kpl)</h2>
     <%= button_to "Merkitse liittovertailukuarvonta valmiiksi!", alliance_draws_ready_path,
                                                              :method => :post,
+                                                             :class  => "btn btn-primary",
                                                              :data => {:confirm => "Seuraavaksi siirrytään arpomaan rengasvertailulukuja. Ok?"} %>
 
     <br />
@@ -63,6 +79,7 @@
     <h2>Saman rengasvertailuluvun saaneet ehdokkaat (<%= @result.coalition_draws.count %> kpl)</h2>
     <%= button_to "Merkitse rengasvertailukuarvonta valmiiksi!", coalition_draws_ready_path,
                                                              :method => :post,
+                                                             :class  => "btn btn-primary",
                                                              :data => {:confirm => "Seuraavaksi lasketaan lopullinen vaalitulos. Ok?"} %>
 
     <br />

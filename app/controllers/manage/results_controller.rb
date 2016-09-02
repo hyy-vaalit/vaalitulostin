@@ -38,4 +38,11 @@ class Manage::ResultsController < ManageController
     redirect_to manage_results_path
   end
 
+  def freeze
+    Delayed::Job.enqueue(CreateFrozenResultJob.new)
+
+    flash[:notice] = "Vaalitulos jonossa arvontoja varten. Odota muutama minuutti ja lataa sivu uudelleen."
+    redirect_to draws_path
+  end
+
 end
