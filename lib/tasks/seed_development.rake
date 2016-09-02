@@ -119,6 +119,7 @@ namespace :db do
 
       desc 'Create 2009 Voting Areas'
       task :voting_areas_2009 => :environment do
+        puts "Seed year 2009's voting areas"
         create_voting_areas_2009()
       end
 
@@ -230,7 +231,7 @@ namespace :db do
 
       desc 'Create early votes'
       task :early_votes_2009 => :environment do
-        puts '... Creating early voting areas ...'
+        puts '... Creating early votes of year 2009 ...'
         [:EI, :EII, :EIII, :EIV, :EV].each do |area_code|
           voting_area = VotingArea.find_by_code! "#{area_code}"
           puts "... #{voting_area.name}"
@@ -244,7 +245,7 @@ namespace :db do
 
       desc 'Create non-early votes'
       task :votes_2009 => :environment do
-        puts '... Creating voting areas ...'
+        puts '... Seeding votes of year 2009 ...'
         [:I, :II, :III, :IV, :V, :VI, :VII, :VIII, :IX, :X,
          :XI, :XII, :XIII, :XIV, :XV, :XVI, :XVII, :XVIII, :XIX, :XX].each do |area_code|
           voting_area = VotingArea.find_by_code! "#{area_code}"

@@ -20,17 +20,17 @@ class ResultDecorator < ApplicationDecorator
   end
 
   def votes_counted_percentage
-    return 0 if votes_accepted.to_i == 0
+    return 0 if votes_accepted.zero? || votes_counted.zero?
 
     100.0 * votes_counted / votes_accepted
   end
 
   def votes_accepted
-    GlobalConfiguration.votes_accepted
+    GlobalConfiguration.votes_accepted || 0
   end
 
   def voting_percentage
-    GlobalConfiguration.voting_percentage
+    GlobalConfiguration.voting_percentage || 0
   end
 
   def formatted_timestamp(timestamp_method, opts = {})
