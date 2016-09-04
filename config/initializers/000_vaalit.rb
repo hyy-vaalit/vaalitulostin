@@ -32,6 +32,7 @@ module Vaalit
   module VotingApi
     JWT_APIKEY         = ENV.fetch 'VOTING_API_JWT_APIKEY'
     VOTES_URI          = URI ENV.fetch('VOTING_API_VOTES_ENDPOINT')
+    VOTERS_URI         = URI ENV.fetch('VOTING_API_VOTERS_ENDPOINT')
     SUMMARY_URI        = URI ENV.fetch('VOTING_API_SUMMARY_ENDPOINT')
   end
 

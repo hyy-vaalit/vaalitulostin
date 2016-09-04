@@ -1,5 +1,3 @@
-require './lib/voting_api_request'
-
 class ImportVotesJob
 
   def initialize(voting_area)

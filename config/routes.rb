@@ -8,6 +8,8 @@ Vaalitulostin::Application.routes.draw do
   resource :dashboard, controller: 'dashboard'
 
   namespace :manage do
+    resources :voters, :only => [:index, :create]
+
     resources :results, :only => [:index, :show] do
       put :publish
       put :freeze, on: :collection

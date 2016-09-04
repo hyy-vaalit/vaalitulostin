@@ -12,6 +12,7 @@ module ExtendedPoroBehaviour
   extend ActiveModel::Naming
   extend ActiveModel::Translation
   include ActiveModel::Validations
+  include ActiveModel::AttributeMethods
 
   included do
     def initialize(attributes = {})
@@ -20,6 +21,22 @@ module ExtendedPoroBehaviour
       attributes.each do |key, value|
         self.send "#{key}=", value
       end
+    end
+
+    def to_key
+      [object_id]
+    end
+
+    def to_model
+      self
+    end
+
+    def persisted?
+      false
+    end
+
+    def new_record?
+      true
     end
   end
 
