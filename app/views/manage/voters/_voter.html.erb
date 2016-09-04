@@ -22,17 +22,11 @@
   <br>
 
   <%= f.label :faculty_code %><br>
-  <%= f.text_field :faculty_code %>
+  <%= collection_select(:faculty, :faculty_code, Faculty.all, :code, :name) %>
   <br>
 
-  <%= f.label :department_code %><br>
-  <%= f.text_field :department_code %>
-  <br>
+  <%#= f.label :department_code %><br>
+  <%#= collection_select(:department, :department_code, Department.all, :code, :name) %>
 
-  <p>
-    Äänestäjän luominen lähettää hänelle sähköpostitse sisäänkirjautumisnlinkin.
-    <br>
-    Linkki on voimassa 60 minuuttia.
-  </p>
   <%= f.submit "Luo äänestäjä", class: "btn btn-primary" %>
 <% end %>

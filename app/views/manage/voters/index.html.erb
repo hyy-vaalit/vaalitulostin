@@ -3,3 +3,37 @@
 <%= render partial: "voter", locals: { api_voter: @api_voter } %>
 
 <h2>Vaalien alkamisen jälkeen luodut äänestäjät</h2>
+
+<p>
+  Voit lähettää äänestäjälle sähköpostitse sisäänkirjautumisnlinkin, jos
+  henkilöllä ei ole voimassa olevaa Helsingin yliopiston käyttäjätunnusta.
+  <br>
+  Linkki on voimassa 60 minuuttia.
+</p>
+
+<table>
+  <thead>
+    <th>Luotu</th>
+    <th>Nimi</th>
+    <th>Opisk.nro</th>
+    <th>Email</th>
+    <th>Sisäänkirjautumislinkki</th>
+  </thead>
+  <tbody>
+    <% @voters.each do |voter| %>
+      <tr>
+        <td><%= friendly_datetime Time.parse(voter["created_at"]) %></td>
+        <td><%= voter["name"] %></td>
+        <td><%= voter["student_number"] %></td>
+        <td><%= voter["email"] %></td>
+        <td>
+          <%= button_to "Lähetä",
+                        send_link_manage_voters_path(email: voter["email"]),
+                        method: :post,
+                        class: "btn btn-danger",
+                        data: { confirm: "Lähetetäänkö sisäänkirjautumislinkki?" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -8,7 +8,9 @@ Vaalitulostin::Application.routes.draw do
   resource :dashboard, controller: 'dashboard'
 
   namespace :manage do
-    resources :voters, :only => [:index, :create]
+    resources :voters, :only => [:index, :create] do
+      post :send_link, on: :collection
+    end
 
     resources :results, :only => [:index, :show] do
       put :publish

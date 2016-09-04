@@ -7,4 +7,8 @@ module ApplicationHelper
     "#{base_url}/#{chart_type}.html?json=#{result.filename('.json', name)}"
   end
 
+  def friendly_datetime(date)
+    return nil if date.nil?
+    date.localtime.strftime('%d.%m.%Y %H:%M')
+  end
 end

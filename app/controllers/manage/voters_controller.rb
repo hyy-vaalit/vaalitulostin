@@ -1,11 +1,11 @@
 class Manage::VotersController < ManageController
 
   def index
-    @voters = VotingApiRequest
+    list_req = VotingApiRequest
                        .new(Vaalit::VotingApi::VOTERS_URI)
                        .get
-
-    @api_voter = ApiVoter.new()
+    @voters = JSON.parse list_req.body
+    @api_voter = ApiVoter.new
   end
 
   def create
@@ -26,6 +26,20 @@ class Manage::VotersController < ManageController
   end
 
   def edit
+  end
+
+  def send_link
+    response = VotingApiRequest
+      .new(Vaalit::VotingApi::SESSION_LINK_URI)
+      .post(email: params["email"])
+
+    if response.is_a?(Net::HTTPSuccess)
+      flash[:notice] = "Sent sign in link to #{params['email']}"
+    else
+      flash[:alert] = "Failed to send sign in link to #{params['email']}"
+    end
+
+    redirect_to manage_voters_path
   end
 
 end
