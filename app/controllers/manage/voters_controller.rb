@@ -1,10 +1,19 @@
 class Manage::VotersController < ManageController
 
   def index
-    list_req = VotingApiRequest
-                       .new(Vaalit::VotingApi::VOTERS_URI)
-                       .get
-    @voters = JSON.parse list_req.body
+    response = VotingApiRequest
+               .new(Vaalit::VotingApi::VOTERS_URI)
+               .get
+
+    body = JSON.parse response.body
+
+    if response.is_a?(Net::HTTPSuccess)
+      @voters = body
+    else
+      flash[:alert] = "Error: #{body}"
+      @voters = []
+    end
+
     @api_voter = ApiVoter.new
   end
 
@@ -30,8 +39,8 @@ class Manage::VotersController < ManageController
 
   def send_link
     response = VotingApiRequest
-      .new(Vaalit::VotingApi::SESSION_LINK_URI)
-      .post(email: params["email"])
+               .new(Vaalit::VotingApi::SESSION_LINK_URI)
+               .post(email: params["email"])
 
     if response.is_a?(Net::HTTPSuccess)
       flash[:notice] = "Sent sign in link to #{params['email']}"
