@@ -4,7 +4,7 @@ require 'csv'
 namespace :db do
   namespace :seed do
 
-    desc "Seed an internet voting with year 2009's votes"
+    desc "Seed an internet voting with year 2009's candidates (no votes)"
     task :dev do
       Rake::Task['db:seed:development:legacy_configuration'].invoke
       Rake::Task['db:seed:development:admin_users'].invoke
@@ -15,7 +15,6 @@ namespace :db do
 
       puts "Votes have not been seeded, to get years 2009's votes, run:"
       puts "   rake db:seed:development:internet_votes_2009"
-      # Rake::Task['db:seed:development:internet_votes_2009'].invoke
     end
 
     desc "Seed a ballot voting voting data set with year 2009's votes"
