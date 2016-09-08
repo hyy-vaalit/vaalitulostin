@@ -3,17 +3,16 @@
 Palvelu on irroitettu [ehdokastietojärjestelmästä](https://github.com/hyy-vaalit/ehdokastiedot)
 itsenäiseksi osaksi palvelemaan sähköistä äänestämistä.
 
-## Päivitä koodimuutokset ehdokastietojärjestelmästä
 
-```bash
-git remote add ehdokastiedot git@github.com:hyy-vaalit/ehdokastiedot.git
-git fetch ehdokastiedot
-git diff ehdokastiedot/master..master
-git merge --no-ff ehdokastiedot/master
+# Käyttäjätyypit
 
-# Resolve conflicts usually in favor of local changes
-git mergetool
-```
+Järjestelmässä on ainoastaan yksi käyttäjätyyppi: AdminUser.
+Pääsyoikeustasot on määritetty tiedostossa `app/models/ability.rb`.
+
+* Pääkäyttäjä AdminUser
+  - `app/models/admin_user.rb`
+  - Täysi oikeus kaikkeen.
+
 
 # Testiajo
 
@@ -22,7 +21,7 @@ rake db:runts
 rake db:seed:dev
 rake jobs:work
 tail -f log/development.log
-```bash
+```
 
 Hae äänet Voting API:lta ja laske vaalitulos:
 ```ruby
@@ -56,6 +55,6 @@ puts ResultDecorator.decorate(Result.last).to_html
 ```
 
 Merkitse tulos valmiiksi arvontoja varten:
-```
+```ruby
 Result.freeze_for_draws!
 ```
