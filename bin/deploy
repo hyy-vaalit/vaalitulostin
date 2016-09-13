@@ -20,8 +20,10 @@ echo "Past release history in ${HEROKU_ENV}:"
 heroku releases -r "${HEROKU_ENV}"
 
 echo ""
-echo "Will deploy '${DEPLOY_SOURCE}' from this commit:"
-git --no-pager log --oneline -1 --decorate=full "${DEPLOY_SOURCE}"
+echo "Differences since last deploy (the top-most commit will be tagged):"
+CURRENT_HEROKU_VERSION=`heroku releases -n 1 --json -r "${HEROKU_ENV}" | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0]["version"]'`
+CURRENT_DEPLOY_TAG="${HEROKU_ENV}-${CURRENT_HEROKU_VERSION}"
+git --no-pager log --oneline --decorate=full "${CURRENT_DEPLOY_TAG}".."${DEPLOY_SOURCE}"
 
 echo ""
 echo "Ready to deploy? Press ^C to interrupt."
@@ -34,7 +36,7 @@ NEW_HEROKU_VERSION=`heroku releases -n 1 --json -r "${HEROKU_ENV}" | python -c '
 DEPLOY_TAG="${HEROKU_ENV}-${NEW_HEROKU_VERSION}"
 
 echo "Deployed version ${DEPLOY_TAG}."
-echo "Will push "${DEPLOY_SOURCE}" and tags to ${GITHUB_REMOTE}"
+echo "Will push ${DEPLOY_SOURCE} and tags to ${GITHUB_REMOTE}"
 git tag "${DEPLOY_TAG}" "${DEPLOY_SOURCE}"
 git push "${GITHUB_REMOTE}" "${DEPLOY_SOURCE}" --tags
 
