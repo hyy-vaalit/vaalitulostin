@@ -39,8 +39,8 @@ module Vaalit
 
     if connect?
       ::AWS::S3::Base.establish_connection!(
-        :access_key_id     => ENV['S3_ACCESS_KEY_ID'],
-        :secret_access_key => ENV['S3_ACCESS_KEY_SECRET']
+        access_key_id:     ENV.fetch('S3_ACCESS_KEY_ID'),
+        secret_access_key: ENV.fetch('S3_ACCESS_KEY_SECRET')
       )
     end
   end
