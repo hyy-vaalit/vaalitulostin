@@ -4,7 +4,7 @@ class VoteImporter
     @voting_area = voting_area
 
     if @voting_area.votes.countable_sum.nonzero?
-      raise "Expected voting area not to have any votes (has @voting_area.votes.countable_sum votes)"
+      raise "Expected voting area not to have any votes (has #{@voting_area.votes.countable_sum} votes)"
     end
   end
 

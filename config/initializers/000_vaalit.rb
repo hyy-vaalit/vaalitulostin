@@ -1,10 +1,10 @@
 module Vaalit
 
   module Public
-    SITE_ADDRESS        = "https://vaalit.hyy.fi"
+    SITE_ADDRESS        = ENV.fetch 'SITE_ADDRESS'
     SECRETARY_LOGIN_URL = "#{SITE_ADDRESS}/admin"
-    EMAIL_FROM_ADDRESS  = "vaalit@hyy.fi"
-    EMAIL_FROM_NAME     = "Silva Loikkanen"
+    EMAIL_FROM_ADDRESS  = ENV.fetch 'EMAIL_FROM_ADDRESS'
+    EMAIL_FROM_NAME     = ENV.fetch 'EMAIL_FROM_NAME'
   end
 
   module Voting
@@ -13,10 +13,10 @@ module Vaalit
   end
 
   module Results
-    S3_BUCKET_NAME  = ENV['S3_BUCKET_NAME'] || "hyy-koe"
-    S3_BASE_URL     = ENV['S3_BASE_URL'] || "s3.amazonaws.com"
+    S3_BUCKET_NAME  = ENV.fetch 'S3_BUCKET_NAME'
+    S3_BASE_URL     = ENV.fetch 'S3_BASE_URL'
 
-    RESULT_ADDRESS  = ENV['RESULT_ADDRESS'] || "http://hyy-koe.s3-website-us-east-1.amazonaws.com"
+    RESULT_ADDRESS  = ENV.fetch 'RESULT_ADDRESS'
     DIRECTORY       = Time.now.year
     PUBLIC_RESULT_URL = "#{RESULT_ADDRESS}/#{DIRECTORY}"
 
