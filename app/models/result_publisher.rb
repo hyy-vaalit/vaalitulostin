@@ -10,6 +10,7 @@ class ResultPublisher
 
   def initialize(result)
     @result = result
+    @s3_publisher = S3Publisher.new
   end
 
   def self.create_and_store!
@@ -48,9 +49,9 @@ class ResultPublisher
     Rails.logger.info "Rendering result output"
     decorated_result = ResultDecorator.decorate(@result)
 
-    store_s3_object("#{directory}/#{better_filename('.html')}", decorated_result.to_html)
-    store_s3_object("#{directory}/#{better_filename('.json')}", decorated_result.to_json)
-    store_s3_object("#{directory}/#{better_filename('.json', 'candidates')}", decorated_result.to_json_candidates)
+    @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
+    @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
+    @s3_publisher.store_s3_object(better_filename('.json', 'candidates'), decorated_result.to_json_candidates)
   end
 
   private
@@ -74,15 +75,4 @@ class ResultPublisher
   def unique_filename(suffix, name)
     @result.filename(suffix, name)
   end
-
-  # AWS connection is established only in production mode
-  def store_s3_object(filepath, contents)
-    if Vaalit::AWS.connect?
-      Rails.logger.info "Storing result contents to S3, bucket: '#{bucket_name}', filepath: '#{filepath}'"
-      AWS::S3::S3Object.store(filepath, contents, bucket_name, :content_type => 'text/html; charset=utf-8')
-    else
-      Rails.logger.info "Not storing result ('#{filepath}') to S3 because were are in development environment."
-    end
-  end
-
 end
