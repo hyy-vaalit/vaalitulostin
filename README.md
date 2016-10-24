@@ -58,3 +58,9 @@ Merkitse tulos valmiiksi arvontoja varten:
 ```ruby
 Result.freeze_for_draws!
 ```
+
+## Seed-data Ehdokasjärjestelmän tiedoilla
+
+See README of voting-api.
+
+Run `rake db:seed:edari`
