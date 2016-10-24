@@ -39,7 +39,10 @@ echo ""
 echo "Running migrations"
 heroku run rake db:migrate -r "${HEROKU_ENV}"
 
+echo ""
 echo "Deployed version ${DEPLOY_TAG}."
+echo ""
+
 echo "Will push ${DEPLOY_SOURCE} and tags to ${GITHUB_REMOTE}"
 git tag "${DEPLOY_TAG}" "${DEPLOY_SOURCE}"
 git push "${GITHUB_REMOTE}" "${DEPLOY_SOURCE}" --tags
