@@ -7,16 +7,8 @@ namespace :db do
         name = opts[:name]
 
         area = VotingArea.create! :code => code, :name => name
-
-        # init_with_zero_votes(area)
       end
 
-      # def init_with_zero_votes(area)
-      #   Candidate.all.each do |candidate|
-      #
-      #   end
-      # end
-      #
       #TODO: move these into csv
       desc 'Seed data for faculties'
       task :faculties => :environment do

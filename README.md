@@ -65,3 +65,9 @@ See also README of voting-api.
 
 - `rake db:seed:production`
 - `rake db:seed:edari`
+
+* Testaa S3-kirjoitusoikeus:
+`S3Publisher.new.test_connection`
+
+* Luo admin-käyttäjä vaalityöntekijälle:
+AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
