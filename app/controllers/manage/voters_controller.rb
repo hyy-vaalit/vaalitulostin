@@ -10,7 +10,7 @@ class Manage::VotersController < ManageController
     if response.is_a?(Net::HTTPSuccess)
       @voters = body
     else
-      flash[:alert] = "Error: #{body}"
+      flash[:alert] = "Error #{response.code}: #{body}"
       @voters = []
     end
 
@@ -29,7 +29,7 @@ class Manage::VotersController < ManageController
       redirect_to manage_voters_path
     else
       body = JSON.parse(response.body)
-      flash.now[:alert] = "Error #{body["status"]}: #{body["error"]} #{body["exception"]}"
+      flash.now[:alert] = "Error #{response.code}: #{body["error"]} #{body["exception"]}"
       render :edit
     end
   end
