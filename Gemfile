@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1' # For Heroku, see also file .ruby-version
+ruby '2.5.1' # For Heroku, see also file .ruby-version
 
-gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
+gem 'rails', '~> 5.0.7'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
 gem 'sass-rails', '~> 5.0'
@@ -32,7 +32,6 @@ gem 'cancancan'
 gem 'devise'
 gem 'draper', '3.0.0.pre1'
 
-# gems that were updated when project was updated to Rails 3.2
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'formtastic'

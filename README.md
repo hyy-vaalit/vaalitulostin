@@ -19,7 +19,10 @@ Pääsyoikeustasot on määritetty tiedostossa `app/models/ability.rb`.
 ```bash
 rake db:runts
 rake db:seed:dev
-rake jobs:work
+
+foreman run worker
+rails s
+
 tail -f log/development.log
 ```
 
