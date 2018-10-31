@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   check_authorization :unless => :devise_controller?
 
-  before_filter :authorize_this!, :unless => :devise_controller?
+  before_action :authorize_this!, :unless => :devise_controller?
 
   protected
 
