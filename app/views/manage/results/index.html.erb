@@ -30,93 +30,93 @@ Julkinen vaalitulos: <%= link_to Vaalit::Results::PUBLIC_RESULT_URL, Vaalit::Res
       </li>
     </ul>
 
-<h3>Tulos arvontoja varten:</h3>
-<p>
-  Alustavasta tuloksesta saadaan lopullinen, kun se ensin jäädytetään ja sen
-  jälkeen sen tasatuloksille suoritetaan arvonnat.
-<br>
-  Jäädytä vaalitulos sen jälkeen, kun kaikki äänestysalueet ovat mukana
-  laskennassa (ja uurnavaalissa tarkastuslaskenta suoritettu).
-<br>
-  Jäädyttämisen jälkeen odota muutama minuutti ja siirry arvontoihin.
-
-  <%= button_to "Jäädytä viimeisin vaalitulos", freeze_manage_results_path,
-              method:  :put,
-              :data => {:confirm  => "Jäädytetäänkö viimeisin vaalitulos?"},
-              class:   "btn btn-primary" %>
-</p>
-
-
-<% if @results.any? %>
-<table class="long-listing">
-  <thead>
-    <tr>
-      <th>Luotu</th>
-      <th>Julkaistu?</th>
-      <th>Väliaikatulos</th>
-      <th colspan="4">Kuvaajat</th>
-    </tr>
-  </thead>
-
-<% @results.each do |result| %>
-  <% result_decorator = ResultDecorator.new(result)%>
-
-  <tr>
-    <td><%= result_decorator.formatted_timestamp(:created_at) %></td>
-    <td>
-      <% if result_decorator.published? %>
-        Julkaistu.
-      <% elsif result_decorator.published_pending? %>
-        Jonossa julkaistavaksi
-      <% else %>
-        <%= button_to "Julkaise", manage_result_publish_path(result),
-                      :method   => :put,
-                      :class    => "btn btn-danger",
-                      :data => {:confirm  => "Julkaistaanko vaalitulos? Tämä korvaa aiemman julkaisun välituloksen."} %>
-      <% end %>
-    </td>
-
-    <td>
-      <%= link_to result_decorator.filename, result_decorator.result_file_url,  :target => "_blank" %>
-      <% if Rails.env.development? %>
-        <h4>DEVAUSLINKIT:</h4>
-        <ul>
-          <li>Tulos:
-              <%= link_to "(html)", manage_result_path(result), :target => "_blank" %>
-              |
-              <%= link_to "(json)", manage_result_path(result, :format=>:json), :target => "_blank" %>
-          </li>
-        </ul>
-      <% end %>
-    </td>
-
-    <td>
-      <%= link_to "Paikkojen jakautuminen",
-                  chart_address(result, :treemap),
-                  :target => "_blank" %>
-    </td>
-    <td><%= link_to "Paikat ryhmittäin",
-                    chart_address(result, :coalitions),
-                    :target => "_blank" %></td>
-    <td><%= link_to "Paikat liitoittain",
-                    chart_address(result, :alliances),
-                    :target => "_blank" %></td>
-    <td><%= link_to "Äänestetyimmät ehdokkaat",
-                    chart_address(result, :candidates),
-                    :target => "_blank" %></td>
-  </tr>
-
-<% end %>
-</table>
-<% end %>
-
 <% if @results.blank? %>
-  Jos äänestys on jo päättynyt ja grace period (5 minuuttia) kulunut,
-  voit käynnistää äänten hakutoiminnon.
+  <h3>Aloita vaalituloksen muodostaminen</h3>
+  <p>
+    Jos äänestys on jo päättynyt ja grace period (5 minuuttia) kulunut,
+    voit käynnistää äänten hakutoiminnon.
+  </p>
 
   <%= button_to "Hae äänet äänestysjärjestelmästä",
                 fetch_votes_manage_results_path,
                 method: :put,
                 class:   "btn btn-primary",
                 :data => {:confirm  => "Haetaanko äänet? Haku onnistuu vain jos äänestys on jo päättynyt."} %>
+<% else %>
+  <h3>Tulos arvontoja varten:</h3>
+  <p>
+    Alustavasta tuloksesta saadaan lopullinen, kun se ensin jäädytetään ja sen
+    jälkeen sen tasatuloksille suoritetaan arvonnat.
+  <br>
+    Jäädytä vaalitulos sen jälkeen, kun kaikki äänestysalueet ovat mukana
+    laskennassa (ja uurnavaalissa tarkastuslaskenta suoritettu).
+  <br>
+    Jäädyttämisen jälkeen odota muutama minuutti ja siirry arvontoihin.
+
+    <%= button_to "Jäädytä viimeisin vaalitulos", freeze_manage_results_path,
+                method:  :put,
+                :data => {:confirm  => "Jäädytetäänkö viimeisin vaalitulos?"},
+                class:   "btn btn-primary" %>
+  </p>
+
+  <table class="long-listing">
+    <thead>
+      <tr>
+        <th>Luotu</th>
+        <th>Julkaistu?</th>
+        <th>Väliaikatulos</th>
+        <th colspan="4">Kuvaajat</th>
+      </tr>
+    </thead>
+
+  <% @results.each do |result| %>
+    <% result_decorator = ResultDecorator.new(result)%>
+
+    <tr>
+      <td><%= result_decorator.formatted_timestamp(:created_at) %></td>
+      <td>
+        <% if result_decorator.published? %>
+          Julkaistu.
+        <% elsif result_decorator.published_pending? %>
+          Jonossa julkaistavaksi
+        <% else %>
+          <%= button_to "Julkaise", manage_result_publish_path(result),
+                        :method   => :put,
+                        :class    => "btn btn-danger",
+                        :data => {:confirm  => "Julkaistaanko vaalitulos? Tämä korvaa aiemman julkaisun välituloksen."} %>
+        <% end %>
+      </td>
+
+      <td>
+        <%= link_to result_decorator.filename, result_decorator.result_file_url,  :target => "_blank" %>
+        <% if Rails.env.development? %>
+          <h4>DEVAUSLINKIT:</h4>
+          <ul>
+            <li>Tulos:
+                <%= link_to "(html)", manage_result_path(result), :target => "_blank" %>
+                |
+                <%= link_to "(json)", manage_result_path(result, :format=>:json), :target => "_blank" %>
+            </li>
+          </ul>
+        <% end %>
+      </td>
+
+      <td>
+        <%= link_to "Paikkojen jakautuminen",
+                    chart_address(result, :treemap),
+                    :target => "_blank" %>
+      </td>
+      <td><%= link_to "Paikat ryhmittäin",
+                      chart_address(result, :coalitions),
+                      :target => "_blank" %></td>
+      <td><%= link_to "Paikat liitoittain",
+                      chart_address(result, :alliances),
+                      :target => "_blank" %></td>
+      <td><%= link_to "Äänestetyimmät ehdokkaat",
+                      chart_address(result, :candidates),
+                      :target => "_blank" %></td>
+    </tr>
+
+  <% end %>
+  </table>
 <% end %>
