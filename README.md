@@ -82,6 +82,8 @@ See also README of voting-api.
 
 * Testaa S3-kirjoitusoikeus:
 `S3Publisher.new.test_connection`
+  * Jos S3-kirjoitus onnistuu, aikaleima päivittyy tiedostoon (esim qa-bucketissa)
+  https://s3.amazonaws.com/vaalitulostin-qa/VUOSILUKU/lulz.txt
 
 * Luo admin-käyttäjä vaalityöntekijälle:
 AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
