@@ -10,6 +10,11 @@ class ImportVotesJob
                        .new(Vaalit::VotingApi::SUMMARY_URI)
                        .get
 
+    if !summary_response.is_a?(Net::HTTPSuccess) && summary_response.code.to_i == 401
+     Rails.logger.error 'Vote fetching failed due to HTTP 401 unauthorized. Ignoring retry.'
+     return
+    end
+
     GlobalConfiguration.update_summary!(JSON.parse(summary_response.body))
 
     Rails.logger.info "Import votes to voting area #{@voting_area.name} (id: #{@voting_area.id})"
