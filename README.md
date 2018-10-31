@@ -19,12 +19,16 @@ Pääsyoikeustasot on määritetty tiedostossa `app/models/ability.rb`.
 ```bash
 rake db:runts
 rake db:seed:dev
+```
 
+Käynnistä vaalitulostin:
+```bash
 foreman run worker
 rails s
-
 tail -f log/development.log
 ```
+
+Käynnistä voting-apin web ja worker (ks. ohjeet voting-api/README).
 
 Hae äänet Voting API:lta ja laske vaalitulos:
 ```ruby
@@ -33,6 +37,13 @@ Delayed::Job::enqueue(ImportVotesJob.new(VotingArea.first))
 
 `ImportVotesJob` käynnistää myös tuloksen laskennan.
 
+
+Kun lähetät sisäänkirjautumislinkin, voting-apin workerin pitää olla käynnissä
+saadaksesi siitä sähköpostin. Voit tarkistaa sisäänkirjautumislinkin tiedot
+ajamalla seuraavan komennon voting-api:n hakemistossa:
+```bash
+ rake jwt:voter:verify jwt=EMAIL_LINKISSÄ_OLEVA_TOKEN
+```
 
 ## Vuoden 2009 äänillä
 Syötä äänet seed-datasta käyttäen vain yhtä äänestysaluetta:
