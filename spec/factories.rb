@@ -27,7 +27,7 @@ FactoryGirl.define do
     sequence(:email) {|n| "matti.meikalainen.#{n}@example.com"}
     sequence(:lastname) {|n| "Meikalainen #{n}"}
     sequence(:firstname) {|n| "Matti #{n} Sakari"}
-    sequence(:candidate_name) {|n| "Meikalainen, Matti Sakari"}
+    sequence(:candidate_name) {|n| "Meikalainen, Matti Sakari #{n}"}
     social_security_number 'sec id'
     faculty
     electoral_alliance
@@ -66,18 +66,27 @@ FactoryGirl.define do
     result
     candidate
     sequence(:vote_sum_cache) { |n| n+10 }
+
+    trait :with_alliance_proportional do
+      after(:create) do |candidate_result, evaluator|
+        create :ordered_alliance_proportional,
+               :result => candidate_result.result,
+               :candidate => candidate_result.candidate
+      end
+    end
+
+    trait :with_coalition_proportional do
+      after(:create) do |candidate_result, evaluator|
+        create :ordered_coalition_proportional,
+               :result => candidate_result.result,
+               :candidate => candidate_result.candidate
+      end
+    end
   end
 
   factory :draw_candidate_result, :class => CandidateResult do
     electoral_alliance_id '1'
     vote_sum_cache '10'
-  end
-
-  factory :candidate_result_with_proportionals, :parent => :candidate_result do |candidate_result|
-    candidate_result.after(:create) do |cr|
-      create(:ordered_coalition_proportional, :result => cr.result, :candidate => cr.candidate)
-      create(:ordered_alliance_proportional, :result => cr.result, :candidate => cr.candidate)
-    end
   end
 
   factory :coalition_proportional do
@@ -121,11 +130,22 @@ FactoryGirl.define do
   end
 
   factory :result_with_alliance_proportionals_and_candidates, :parent => :result do |result|
-    result.after(:create) { |r| 10.times { create(:ordered_alliance_proportional, :result => r) } }
+    result.after(:create) do |r|
+      10.times do
+        create(:candidate_result, :with_alliance_proportional, :result => r)
+      end
+    end
   end
 
   factory :result_with_coalition_proportionals_and_candidates, :parent => :result do |result|
-    result.after(:create) { |r| 10.times { create(:candidate_result_with_proportionals, :result => r) } }
+    result.after(:create) do |r|
+      10.times do
+        create :candidate_result,
+               :with_alliance_proportional,
+               :with_coalition_proportional,
+               :result => r
+      end
+    end
   end
 
   factory :electoral_alliance_with_candidates, :parent => :electoral_alliance do |alliance|

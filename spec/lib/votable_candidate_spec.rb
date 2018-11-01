@@ -40,10 +40,15 @@ describe 'votable behaviour' do
 
       ordered_candidates.each_with_index do |candidate, index|
         next_candidate = ordered_candidates[index+1]
-        candidate.coalition_proportional.to_f.should > next_candidate.coalition_proportional.to_f if next_candidate
+
+        next unless next_candidate
+
+        if candidate.coalition_proportional.zero?
+          next_candidate.coalition_proportional.should be_zero
+        else
+          candidate.coalition_proportional.to_f.should > next_candidate.coalition_proportional.to_f
+        end
       end
-
-
     end
 
     it 'allows chaining with_votes_sum with other scopes' do
