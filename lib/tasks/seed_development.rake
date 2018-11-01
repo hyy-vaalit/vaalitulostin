@@ -5,7 +5,7 @@ namespace :db do
   namespace :seed do
 
     desc "Seed an internet voting with year 2009's candidates (no votes)"
-    task :dev do
+    task :demo do
       Rake::Task['db:seed:development:legacy_configuration'].invoke
       Rake::Task['db:seed:development:admin_users'].invoke
       Rake::Task['db:seed:development:faculties'].invoke

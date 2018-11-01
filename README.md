@@ -18,7 +18,7 @@ Pääsyoikeustasot on määritetty tiedostossa `app/models/ability.rb`.
 
 ```bash
 rake db:runts
-rake db:seed:dev
+rake db:seed:demo
 ```
 
 Käynnistä vaalitulostin:
