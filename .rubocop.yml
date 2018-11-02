@@ -1,1 +1,145 @@
 inherit_from: .rubocop_todo.yml
+
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'lib/support/**/*'
+    - 'lib/tasks/**/*'
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Rails:
+  Enabled: true
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+  IgnoredPatterns:
+    - '^\s*Rails\.logger\.'
+    - '^\s+desc:? .\w+' # Grape documentation blocks
+    - '^\s+def \w+' # Method declarations
+    - '^\s+\w+\.description = "\w+' # Ie. Sidekiq batch Description
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Max: 40
+
+Metrics/CyclomaticComplexity:
+  Max: 12
+
+Metrics/PerceivedComplexity:
+  Max: 12
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/BlockLength:
+  CountComments: false
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+# Stubbing Active Record scopes need receive_method_chain
+RSpec/MessageChain:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+#########################################################
+# For legacy support:
+RSpec/InstanceVariable:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Lint/Void:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/WordArray:
+  Enabled: false
+
+Layout/IndentHash:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Layout/FirstParameterIndentation:
+  Enabled: false
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Style/AndOr:
+  Enabled: false
+
+Style/Not:
+  Enabled: false
+
+Layout/AlignHash:
+  Enabled: false
+
+Style/FormatString:
+  Exclude:
+    - 'app/decorators/result_decorator.rb'
+
+Style/NumericPredicate:
+  Enabled: false
+
+Layout/LeadingCommentSpace:
+  Enabled: false
+
+Layout/SpaceInsideBlockBraces:
+  Exclude:
+    - 'spec/factories.rb'
