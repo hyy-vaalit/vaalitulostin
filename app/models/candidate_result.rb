@@ -13,7 +13,7 @@ class CandidateResult < ActiveRecord::Base
 
   scope :by_candidate_draw_order, -> { order("candidate_draw_order asc") }
   scope :by_coalition_draw_order, -> { order("coalition_draw_order asc") }
-  scope :by_vote_sum, -> {order("vote_sum_cache desc") }
+  scope :by_vote_sum, -> { order("vote_sum_cache desc") }
 
   def self.most_voted(number = 10)
     by_vote_sum.limit(number)
