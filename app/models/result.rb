@@ -68,6 +68,10 @@ class Result < ActiveRecord::Base
     self.create! :freezed => true
   end
 
+  def self.finalize!
+    Result.freezed.first.finalize!
+  end
+
   def processed!
     update_attributes!(:in_process => false)
   end
@@ -137,6 +141,8 @@ class Result < ActiveRecord::Base
       recalculate!
       processed!
     end
+
+    self
   end
 
   def filename(suffix = ".html", prefix = "result")

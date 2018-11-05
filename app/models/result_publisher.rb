@@ -13,22 +13,8 @@ class ResultPublisher
     @s3_publisher = S3Publisher.new
   end
 
-  def self.create_and_store!
-    Result.transaction do
-      instance = self.new(Result.create!)
-
-      instance.store_to_s3!
-    end
-  end
-
-  def self.finalize_and_store!
-    Result.transaction do
-      result = Result.freezed.first
-      result.finalize!
-
-      instance = self.new(result)
-      instance.store_to_s3!
-    end
+  def self.store_to_s3!(result)
+    self.new(result).store_to_s3!
   end
 
   def publish!
