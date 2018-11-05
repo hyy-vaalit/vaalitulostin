@@ -1,4 +1,4 @@
-class CandidateResult < ActiveRecord::Base
+class CandidateResult < ApplicationRecord
   belongs_to :result
   belongs_to :candidate
   belongs_to :candidate_draw, :dependent => :destroy
@@ -22,7 +22,6 @@ class CandidateResult < ActiveRecord::Base
   def self.for_candidates(candidate_ids)
     where(["candidate_id IN (?)", candidate_ids])
   end
-
 
   def self.elect!(candidate_ids, result_id)
     #  UPDATE "candidate_results" SET elected = 'f' WHERE (result_id = 1)
@@ -48,17 +47,24 @@ class CandidateResult < ActiveRecord::Base
   end
 
   def self.elected_in_alliance(alliance_id, result_id)
-    elected.joins(
-    'INNER JOIN candidates            ON candidate_results.candidate_id     = candidates.id').joins(
-    'INNER JOIN electoral_alliances   ON electoral_alliances.id             = candidates.electoral_alliance_id').where(
-    'electoral_alliances.id = ? AND candidate_results.result_id = ?', alliance_id, result_id)
+    elected
+      .joins('INNER JOIN candidates ON candidate_results.candidate_id = candidates.id')
+      .joins('INNER JOIN electoral_alliances ON electoral_alliances.id = candidates.electoral_alliance_id')
+      .where(
+        'electoral_alliances.id = ? AND candidate_results.result_id = ?',
+        alliance_id,
+        result_id
+      )
   end
 
   def self.elected_in_coalition(coalition_id, result_id)
-    elected.joins(
-    'INNER JOIN candidates            ON candidate_results.candidate_id     = candidates.id').joins(
-    'INNER JOIN electoral_alliances   ON electoral_alliances.id             = candidates.electoral_alliance_id').where(
-    'electoral_alliances.electoral_coalition_id = ? AND candidate_results.result_id = ?', coalition_id, result_id)
+    elected
+      .joins('INNER JOIN candidates ON candidate_results.candidate_id = candidates.id')
+      .joins('INNER JOIN electoral_alliances ON electoral_alliances.id = candidates.electoral_alliance_id')
+      .where(
+        'electoral_alliances.electoral_coalition_id = ? AND candidate_results.result_id = ?',
+        coalition_id,
+        result_id
+      )
   end
-
 end

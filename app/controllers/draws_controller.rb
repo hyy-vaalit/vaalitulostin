@@ -1,5 +1,4 @@
 class DrawsController < ApplicationController
-
   def index
     @result = Result.freezed.first
   end
@@ -28,7 +27,6 @@ class DrawsController < ApplicationController
                             Odota hetki ja lataa arvontasivu uudelleen, lopullinen vaalitulos lasketaan taustalla."
   end
 
-
   protected
 
   def authorize_this!
@@ -37,7 +35,7 @@ class DrawsController < ApplicationController
 
   def enqueue(job)
     Result.freezed.first.in_process!
-    Delayed::Job::enqueue(job)
+    Delayed::Job.enqueue(job)
   end
 
   def automatically?

@@ -2,7 +2,6 @@ class ImportedCsvVote
   attr_accessor :candidate_number,
                 :vote_count
 
-
   def self.create_from!(source, voting_area_id:)
     imported = build_from source
 

@@ -1,13 +1,20 @@
-require 'spec_helper'
-
 module VotableSupport
-
   def self.create_candidate_draws(alliance, result, draw_votes)
     alliance.candidates.each_with_index do |candidate, index|
-      if index % 2 == 0
-        FactoryGirl.create(:candidate_result, :vote_sum_cache => draw_votes, :result => result, :candidate => candidate)
+      if index.even?
+        FactoryGirl.create(
+          :candidate_result,
+          :vote_sum_cache => draw_votes,
+          :result => result,
+          :candidate => candidate
+        )
       else
-        FactoryGirl.create(:candidate_result, :vote_sum_cache => index, :result => result, :candidate => candidate)
+        FactoryGirl.create(
+          :candidate_result,
+          :vote_sum_cache => index,
+          :result => result,
+          :candidate => candidate
+        )
       end
     end
   end
@@ -34,5 +41,4 @@ module VotableSupport
       end
     end
   end
-
 end

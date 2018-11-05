@@ -22,10 +22,10 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-##TODO: gem 'jbuilder', '~> 2.5'
-gem 'json_builder' #TODO:Voiko käyttää jbuilder
+# gem 'jbuilder'
+gem 'json_builder' # TODO: json_builder is no longer maintained, use jbuilder
 
-#TODO: Migrate to Amazon official gem which now includes S3
+# TODO: Migrate to Amazon official gem which now includes S3
 gem "aws-s3", require: "aws/s3", github: 'pre/aws-s3'
 
 gem 'rollbar'

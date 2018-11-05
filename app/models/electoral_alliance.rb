@@ -1,4 +1,4 @@
-class ElectoralAlliance < ActiveRecord::Base
+class ElectoralAlliance < ApplicationRecord
   include RankedModel
 
   has_many :votes, :through => :candidates do
@@ -33,10 +33,12 @@ class ElectoralAlliance < ActiveRecord::Base
   validates_length_of :shorten, :in => 2..6
   validates_presence_of :expected_candidate_count, :allow_nil => true
 
-
   def vote_sum_caches
-    candidate_results.select(
-      'candidate_results.result_id, sum(candidate_results.vote_sum_cache) as alliance_vote_sum_cache').group('candidate_results.result_id')
+    candidate_results
+      .select(
+        'candidate_results.result_id, sum(candidate_results.vote_sum_cache) as alliance_vote_sum_cache'
+      )
+      .group('candidate_results.result_id')
   end
 
   def freeze!
@@ -55,5 +57,4 @@ class ElectoralAlliance < ActiveRecord::Base
   def self.are_all_ready?
     self.count == self.ready.count
   end
-
 end

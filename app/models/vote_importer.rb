@@ -1,5 +1,4 @@
 class VoteImporter
-
   def initialize(voting_area)
     @voting_area = voting_area
 
@@ -26,5 +25,4 @@ class VoteImporter
       end
     end
   end
-
 end

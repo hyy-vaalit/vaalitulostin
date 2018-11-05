@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/DescribeClass
 describe 'votable behaviour' do
   before do
     stub_result_class!
@@ -53,8 +54,8 @@ describe 'votable behaviour' do
     it 'allows chaining with_votes_sum with other scopes' do
       alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
       other_alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
-      VotableSupport::create_votes_for(alliance.candidates, @ready_voting_areas, :ascending => true)
-      VotableSupport::create_votes_for(other_alliance.candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(alliance.candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(other_alliance.candidates, @ready_voting_areas, :ascending => true)
 
       expect(Candidate.count).to be > alliance.candidates.count
 
@@ -75,7 +76,7 @@ describe 'votable behaviour' do
     it 'gives a list of all candidates ordered by their vote sum' do
       candidates = []
       10.times { candidates << FactoryGirl.create(:candidate) }
-      VotableSupport::create_votes_for(candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(candidates, @ready_voting_areas, :ascending => true)
 
       expect(Candidate.with_vote_sums.map(&:id))
         .to eq candidates.reverse.map(&:id)
@@ -84,8 +85,8 @@ describe 'votable behaviour' do
     it 'gives a list of all candidates ordered by their vote sum and excludes unready voting areas' do
       candidates = []
       10.times { candidates << FactoryGirl.create(:candidate) }
-      VotableSupport::create_votes_for(candidates, @ready_voting_areas, :ascending => true)
-      VotableSupport::create_votes_for(
+      VotableSupport.create_votes_for(candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(
         candidates, @unready_voting_areas, :ascending => false, :base_vote_count => 10000
       )
 
@@ -125,14 +126,14 @@ describe 'votable behaviour' do
 
   describe 'votable alliance behaviour' do
     describe 'preliminary votes' do
-      before(:each) do
+      before do
         @alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
       end
 
       it 'has preliminary votes from voting areas which have been fully counted' do
         amount = 10
         @alliance.candidates.each do |c|
-          VotableSupport::create_votes_for_candidate(c, amount, @ready_voting_areas)
+          VotableSupport.create_votes_for_candidate(c, amount, @ready_voting_areas)
         end
 
         expect(@alliance.votes.preliminary_sum)
@@ -142,8 +143,8 @@ describe 'votable behaviour' do
       it 'does not count votes from unfinished voting areas to preliminary votes' do
         amount = 10
         @alliance.candidates.each do |candidate|
-          VotableSupport::create_votes_for_candidate(candidate, amount, @ready_voting_areas)
-          VotableSupport::create_votes_for_candidate(candidate, amount, @unready_voting_areas)
+          VotableSupport.create_votes_for_candidate(candidate, amount, @ready_voting_areas)
+          VotableSupport.create_votes_for_candidate(candidate, amount, @unready_voting_areas)
         end
 
         expect(@alliance.votes.preliminary_sum)
@@ -161,7 +162,7 @@ describe 'votable behaviour' do
       it 'has preliminary votes as a sum of alliance votes' do
         amount = 10
         @coalition.electoral_alliances.each do |alliance|
-          VotableSupport::create_votes_for_alliance(alliance, amount, @ready_voting_areas)
+          VotableSupport.create_votes_for_alliance(alliance, amount, @ready_voting_areas)
         end
 
         expect(@coalition.preliminary_vote_sum)
@@ -171,8 +172,8 @@ describe 'votable behaviour' do
       it 'does not count votes from unfinished voting areas to preliminary votes' do
         amount = 10
         @coalition.electoral_alliances.each do |alliance|
-          VotableSupport::create_votes_for_alliance(alliance, amount, @ready_voting_areas)
-          VotableSupport::create_votes_for_alliance(alliance, amount, @unready_voting_areas)
+          VotableSupport.create_votes_for_alliance(alliance, amount, @ready_voting_areas)
+          VotableSupport.create_votes_for_alliance(alliance, amount, @unready_voting_areas)
         end
 
         expect(@coalition.preliminary_vote_sum)
@@ -181,3 +182,4 @@ describe 'votable behaviour' do
     end
   end
 end
+# rubocop:enable RSpec/DescribeClass

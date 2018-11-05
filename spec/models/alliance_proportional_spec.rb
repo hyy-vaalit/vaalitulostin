@@ -1,7 +1,4 @@
-require 'spec_helper'
-
 describe AllianceProportional do
-
   it 'gives /n of the votes of an alliance to the candidate with nth most votes as an alliance proportional' do
     allow(CoalitionProportional).to receive(:calculate!)
     coalition = FactoryGirl.create(:electoral_coalition_with_alliances_and_candidates)
@@ -17,9 +14,11 @@ describe AllianceProportional do
 
     # Reversed array order: Last candidate has the biggest proportional number
     alliance.candidates.reverse.each_with_index do |candidate, index|
-      candidate.alliance_proportionals.last.number.should == (total_vote_sum.to_f / (alliance.candidates.count - index)).round(Vaalit::Voting::PROPORTIONAL_PRECISION)
+      expect(candidate.alliance_proportionals.last.number)
+        .to eq(
+          (total_vote_sum.to_f / (alliance.candidates.count - index))
+            .round(Vaalit::Voting::PROPORTIONAL_PRECISION)
+        )
     end
-
   end
-
 end

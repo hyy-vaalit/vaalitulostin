@@ -5,9 +5,9 @@
 # job calls actual publish method:
 #   - uploads Result#to_html to s3
 #   - uploads Result#to_json to s3
-#   - sets published=true if result is made "public" (ie. index.html or index.json), otherwise uses unique filename
+#   - sets published=true if result is made "public" (ie. index.html or index.json),
+#     otherwise uses unique filename
 class ResultPublisher
-
   def initialize(result)
     @result = result
     @s3_publisher = S3Publisher.new
@@ -21,7 +21,7 @@ class ResultPublisher
   def publish!
     Result.transaction do
       @result.published_pending!
-      Delayed::Job::enqueue(PublishResultJob.new(@result.id))
+      Delayed::Job.enqueue(PublishResultJob.new(@result.id))
     end
   end
 
@@ -40,7 +40,10 @@ class ResultPublisher
 
     @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
     @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
-    @s3_publisher.store_s3_object(better_filename('.json', 'candidates'), decorated_result.to_json_candidates)
+    @s3_publisher.store_s3_object(
+      better_filename('.json', 'candidates'),
+      decorated_result.to_json_candidates
+    )
   end
 
   private

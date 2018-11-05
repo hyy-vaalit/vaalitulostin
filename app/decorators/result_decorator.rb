@@ -47,57 +47,87 @@ class ResultDecorator < ApplicationDecorator
   end
 
   def to_html
-    av = ApplicationController.view_context_class.new(Rails.configuration.paths['app/views'])
-    output = av.render :partial => "manage/results/result.html.erb", :locals => {:result_decorator => self}
+    ApplicationController
+      .view_context_class
+      .new(Rails.configuration.paths['app/views'])
+      .render(
+        partial: "manage/results/result.html.erb",
+        locals: { :result_decorator => self }
+      )
   end
 
   def to_json
-    av = ApplicationController.view_context_class.new(Rails.configuration.paths['app/views'])
-    output = av.render :template => "manage/results/show.json", :locals => {:result => self}
+    ApplicationController
+      .view_context_class
+      .new(Rails.configuration.paths['app/views'])
+      .render(
+        template: "manage/results/show.json",
+        locals: { :result => self }
+      )
   end
 
-  # TODO: Refactor common parts to eg. #to_json(:candidates)
   def to_json_candidates
-    av = ApplicationController.view_context_class.new(Rails.configuration.paths['app/views'])
-    output = av.render :template => "manage/results/candidates.json", :locals => {:result => self}
+    ApplicationController
+      .view_context_class
+      .new(Rails.configuration.paths['app/views'])
+      .render(
+        template: "manage/results/candidates.json",
+        locals: { :result => self }
+      )
   end
 
   # EHDOKKAAT___________________________NUM_LIITTO__ÄÄNET___LVERT________RVERT_____
   # 1* Sukunimi, Etunimi 'Lempinimi.... 788 Humani   55    696.00000   2901.00000
   def candidate_result_line(candidate, index)
-    (formatted_order_number(index+1) +
-    formatted_status_char(candidate.elected?,
-                          candidate.candidate_draw_affects_elected?,
-                          candidate.alliance_draw_affects_elected?,
-                          candidate.coalition_draw_affects_elected?) + " " +
-    formatted_candidate_name_with_dots(candidate.candidate_name) +
-    formatted_candidate_number(candidate.candidate_number) + " " +
-    formatted_alliance_shorten(candidate.electoral_alliance_shorten) +
-    formatted_vote_sum(candidate.vote_sum) +
-    formatted_draw_char(candidate.candidate_draw_identifier) +
-    formatted_proportional_number(candidate.alliance_proportional) +
-    formatted_draw_char(candidate.alliance_draw_identifier) +
-    formatted_proportional_number(candidate.coalition_proportional) +
-    formatted_draw_char(candidate.coalition_draw_identifier)).html_safe  # FIXME: Otherwise double quotes will mess output
+    (
+      formatted_order_number(index+1) +
+      formatted_status_char(
+        candidate.elected?,
+        candidate.candidate_draw_affects_elected?,
+        candidate.alliance_draw_affects_elected?,
+        candidate.coalition_draw_affects_elected?
+      ) + " " +
+      formatted_candidate_name_with_dots(candidate.candidate_name) +
+      formatted_candidate_number(candidate.candidate_number) + " " +
+      formatted_alliance_shorten(candidate.electoral_alliance_shorten) +
+      formatted_vote_sum(candidate.vote_sum) +
+      formatted_draw_char(candidate.candidate_draw_identifier) +
+      formatted_proportional_number(candidate.alliance_proportional) +
+      formatted_draw_char(candidate.alliance_draw_identifier) +
+      formatted_proportional_number(candidate.coalition_proportional) +
+      formatted_draw_char(candidate.coalition_draw_identifier)
+    ).html_safe  # Otherwise double quotes will mess output
   end
 
   #RENKAAT________________________________________________________________ÄÄNET_PA
   #  6. Svenska Nationer och Ämnesföreningar (SNÄf)...................SNÄf  555  3
   def coalition_result_line(coalition_result, index)
     formatted_order_number(index+1) + ". " +
-    formatted_coalition_name_with_dots_and_shorten(coalition_result.electoral_coalition.name, coalition_result.electoral_coalition.shorten) +
+    formatted_coalition_name_with_dots_and_shorten(
+      coalition_result.electoral_coalition.name,
+      coalition_result.electoral_coalition.shorten
+    ) +
     formatted_vote_sum(coalition_result.vote_sum_cache) + " " +
-    formatted_elected_candidates_count(elected_candidates_in_coalition(coalition_result).count)
+    formatted_elected_candidates_count(
+      elected_candidates_in_coalition(coalition_result).count
+    )
   end
 
   # LIITOT__________________________________________________________RENGAS_ÄÄNET_PA
   #  24. SatO-ESO2............................................SatESO Osak    181  1
   def alliance_result_line(alliance_result, index)
     formatted_order_number(index+1) + ". " +
-    formatted_alliance_name_with_dots_and_shorten(alliance_result.electoral_alliance.name, alliance_result.electoral_alliance.shorten) + " " +
-    formatted_coalition_shorten(alliance_result.electoral_alliance.electoral_coalition.shorten) +
+    formatted_alliance_name_with_dots_and_shorten(
+      alliance_result.electoral_alliance.name,
+      alliance_result.electoral_alliance.shorten
+    ) + " " +
+    formatted_coalition_shorten(
+      alliance_result.electoral_alliance.electoral_coalition.shorten
+    ) +
     formatted_vote_sum(alliance_result.vote_sum_cache) + " " +
-    formatted_elected_candidates_count(elected_candidates_in_alliance(alliance_result).count)
+    formatted_elected_candidates_count(
+      elected_candidates_in_alliance(alliance_result).count
+    )
   end
 
   def formatted_order_number(number)
@@ -114,8 +144,10 @@ class ResultDecorator < ApplicationDecorator
       return "~" if effective_alliance_draw
       return "?" if effective_candidate_draw
     end
+
     return "*" if elected
-    return "."
+
+    "."
   end
 
   def formatted_elected_candidates_count(number)
@@ -142,20 +174,37 @@ class ResultDecorator < ApplicationDecorator
     line_width = 58
     truncated_name = name.slice(0,52)
     truncated_shorten = shorten.slice(0,6)
-    sprintf "%.52s%s.%.6s", truncated_name, fill_dots(line_width, truncated_name, truncated_shorten), truncated_shorten
+
+    sprintf(
+      "%.52s%s.%.6s",
+      truncated_name,
+      fill_dots(line_width, truncated_name, truncated_shorten),
+      truncated_shorten
+    )
   end
 
   def formatted_coalition_name_with_dots_and_shorten(name, shorten)
     line_width = 66
     truncated_shorten = shorten.slice(0,6)
     truncated_name = name.slice(0,52)
-    sprintf "%.52s%s%.6s", truncated_name, fill_dots(line_width, truncated_name, truncated_shorten), truncated_shorten
+
+    sprintf(
+      "%.52s%s%.6s",
+      truncated_name,
+      fill_dots(line_width, truncated_name, truncated_shorten),
+      truncated_shorten
+    )
   end
 
   def formatted_candidate_name_with_dots(candidate_name)
     line_width = 30
     truncated_name = candidate_name.slice(0,line_width)
-    sprintf "%.#{line_width}s%s", truncated_name, fill_dots(line_width, truncated_name)
+
+    sprintf(
+      "%.#{line_width}s%s",
+      truncated_name,
+      fill_dots(line_width, truncated_name)
+    )
   end
 
   def formatted_alliance_shorten(shorten)
@@ -170,5 +219,4 @@ class ResultDecorator < ApplicationDecorator
     precision = Vaalit::Voting::PROPORTIONAL_PRECISION
     sprintf "%11.#{precision}f", number.to_f
   end
-
 end

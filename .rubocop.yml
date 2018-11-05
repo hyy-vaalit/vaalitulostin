@@ -48,12 +48,21 @@ Style/RegexpLiteral:
   Enabled: false
 
 Metrics/LineLength:
-  Max: 100
+  Max: 115
+  Exclude:
+    - 'app/models/vote.rb'
+    - 'app/concerns/draw_behaviour.rb'
+    - 'app/models/alliance_proportional.rb'
+    - 'app/models/alliance_result.rb'
+    - 'app/models/coalition_proportional.rb'
+    - 'app/models/coalition_result.rb'
+    - 'app/models/candidate_result.rb'
+    - 'app/models/electoral_coalition.rb'
+    - 'app/models/result.rb'
+    - 'app/models/candidate.rb'
+    - 'spec/models/imported_csv_candidate_spec.rb'
   IgnoredPatterns:
     - '^\s*Rails\.logger\.'
-    - '^\s+desc:? .\w+' # Grape documentation blocks
-    - '^\s+def \w+' # Method declarations
-    - '^\s+\w+\.description = "\w+' # Ie. Sidekiq batch Description
 
 Metrics/MethodLength:
   Max: 25

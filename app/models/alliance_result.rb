@@ -1,6 +1,6 @@
 # AllianceResult caches the current calculated amount of votes for each Alliance.
 # See CoalitionResult for further details.
-class AllianceResult < ActiveRecord::Base
+class AllianceResult < ApplicationRecord
   belongs_to :result
   belongs_to :electoral_alliance
 

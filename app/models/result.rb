@@ -14,17 +14,20 @@
 # N.B. Ruby defines a "frozen" method for Object, so be aware of the
 #      mixup with "freezed".
 #
-class Result < ActiveRecord::Base
+# rubocop:disable Metrics/ClassLength
+class Result < ApplicationRecord
   has_many :coalition_proportionals, :dependent => :destroy
   has_many :alliance_proportionals, :dependent => :destroy
 
   has_many :candidate_results, :dependent => :destroy
   has_many :candidates,
-            -> { select "candidates.id,
-                        candidates.candidate_name,
-                        candidates.candidate_number,
-                        candidates.electoral_alliance_id" },
-           through: :candidate_results
+    lambda {
+      select "candidates.id,
+        candidates.candidate_name,
+        candidates.candidate_number,
+        candidates.electoral_alliance_id"
+    },
+    through: :candidate_results
 
   has_many :alliance_results, :dependent => :destroy
   has_many :electoral_alliances,
@@ -32,10 +35,12 @@ class Result < ActiveRecord::Base
 
   has_many :coalition_results, :dependent => :destroy
   has_many :electoral_coalitions,
-            -> { select "electoral_coalitions.id,
-                         electoral_coalitions.name,
-                         electoral_coalitions.shorten" },
-            through: :coalition_results
+    lambda {
+      select "electoral_coalitions.id,
+        electoral_coalitions.name,
+        electoral_coalitions.shorten"
+    },
+    through: :coalition_results
 
   has_many :candidate_draws, :dependent => :destroy
   has_many :alliance_draws, :dependent => :destroy
@@ -205,9 +210,9 @@ class Result < ActiveRecord::Base
   end
 
   def candidate_results_of(alliance_result)
-    candidate_results_in_election_order.where(
-      'electoral_alliance_id = ? ', alliance_result.electoral_alliance_id).reorder(
-      'alliance_proportionals.number desc')
+    candidate_results_in_election_order
+      .where('electoral_alliance_id = ? ', alliance_result.electoral_alliance_id)
+      .reorder('alliance_proportionals.number desc')
   end
 
   def elected_candidates_in_alliance(alliance_result)
@@ -217,7 +222,6 @@ class Result < ActiveRecord::Base
   def elected_candidates_in_coalition(coalition_result)
     CandidateResult.elected_in_coalition(coalition_result.electoral_coalition_id, coalition_result.result_id)
   end
-
 
   protected
 
@@ -251,7 +255,11 @@ class Result < ActiveRecord::Base
 
   def calculate_votes!
     Candidate.with_vote_sums.each do |candidate|
-      CandidateResult.create! :result => self, :vote_sum_cache => candidate.vote_sum, :candidate_id => candidate.id
+      CandidateResult.create!(
+        result: self,
+        vote_sum_cache: candidate.vote_sum,
+        candidate_id: candidate.id
+      )
     end
 
     self.update_attributes!(:vote_sum_cache => Vote.countable_sum)
@@ -266,11 +274,19 @@ class Result < ActiveRecord::Base
     CandidateDraw.where(:result_id => self.id).destroy_all
     CandidateResult.find_duplicate_vote_sums(self.id).each_with_index do |draw, index|
       candidate_ids = ElectoralAlliance.find(draw.electoral_alliance_id).candidate_ids
-      draw_candidate_results = self.candidate_results.where(["candidate_id IN (?) AND vote_sum_cache = ?", candidate_ids, draw.vote_sum_cache])
+      draw_candidate_results =
+        candidate_results
+        .where(
+          "candidate_id IN (?) AND vote_sum_cache = ?",
+          candidate_ids,
+          draw.vote_sum_cache
+        )
 
-      candidate_draw = CandidateDraw.create! :result_id => self.id,
-                                           :identifier_number => index,
-                                           :affects_elected_candidates => CandidateDraw.affects_elected?(draw_candidate_results)
+      candidate_draw = CandidateDraw.create!(
+        result_id: self.id,
+        identifier_number: index,
+        affects_elected_candidates: CandidateDraw.affects_elected?(draw_candidate_results)
+      )
       candidate_draw.candidate_results << draw_candidate_results
     end
   end
@@ -283,7 +299,6 @@ class Result < ActiveRecord::Base
     create_proportional_draws!(CoalitionDraw, CoalitionProportional)
   end
 
-
   private
 
   def create_proportional_draws!(draw_class, proportional_class)
@@ -293,9 +308,11 @@ class Result < ActiveRecord::Base
       draw_candidate_ids = proportional_class.find_draw_candidate_ids_of(draw_proportional, self.id)
       draw_candidate_results = find_candidate_results_for(draw_candidate_ids)
 
-      draw = draw_class.create! :result_id => self.id,
-                                :identifier_number => index,
-                                :affects_elected_candidates => draw_class.affects_elected?(draw_candidate_results)
+      draw = draw_class.create!(
+        result_id: self.id,
+        identifier_number: index,
+        affects_elected_candidates: draw_class.affects_elected?(draw_candidate_results)
+      )
       draw.candidate_results << draw_candidate_results
     end
   end
@@ -304,3 +321,4 @@ class Result < ActiveRecord::Base
     candidate_results.where(["candidate_id IN (?)", candidate_ids])
   end
 end
+# rubocop:enable Metrics/ClassLength

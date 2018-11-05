@@ -1,7 +1,7 @@
 # CoalitionResult caches the current calculated amount of votes for each Coalition.
 # This is needed when there are multiple VotingAreas and not all votes are
 # calculated at once.
-class CoalitionResult < ActiveRecord::Base
+class CoalitionResult < ApplicationRecord
   belongs_to :result
   belongs_to :electoral_coalition
 

@@ -1,8 +1,5 @@
-require 'rails_helper'
-
 RSpec.describe ImportedCsvVote, type: :model do
   describe "Creation" do
-
     before(:all) do
       sep = ","
       data  = <<-EOCSV
@@ -54,7 +51,6 @@ EOCSV
       expect(second.amount).to eq 32
       expect(Vote.countable_sum).to eq 59 + 32
       expect(candidate4.votes.preliminary_sum).to eq 32
-
     end
   end
 end

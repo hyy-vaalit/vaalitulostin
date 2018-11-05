@@ -1,5 +1,4 @@
 class S3Publisher
-
   def directory
     Vaalit::Results::DIRECTORY
   end
@@ -12,7 +11,12 @@ class S3Publisher
   def store_s3_object(filename, contents, content_type = 'text/html')
     if Vaalit::AWS.connect?
       Rails.logger.info "Store to S3, bucket: '#{bucket_name}', dir: '#{directory}', filename: '#{filename}'"
-      AWS::S3::S3Object.store("#{directory}/#{filename}", contents, bucket_name, :content_type => "#{content_type}; charset=utf-8")
+      AWS::S3::S3Object.store(
+        "#{directory}/#{filename}",
+        contents,
+        bucket_name,
+        content_type: "#{content_type}; charset=utf-8"
+      )
     else
       Rails.logger.debug "Development mode. Not storing to S3: #{filename}"
     end
@@ -26,5 +30,4 @@ class S3Publisher
       :content_type => 'text/html; charset=utf-8'
     )
   end
-
 end

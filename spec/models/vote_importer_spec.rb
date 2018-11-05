@@ -1,9 +1,5 @@
-require 'rails_helper'
-
 RSpec.describe VoteImporter, type: :model do
-
   describe "Creation" do
-
     before do
       @data = <<-EOCSV
 ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
@@ -22,6 +18,5 @@ EOCSV
 
       @vote_impoter.create_votes! @data
     end
-
   end
 end

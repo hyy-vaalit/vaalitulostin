@@ -1,3 +1,3 @@
-class CandidateDraw < ActiveRecord::Base
+class CandidateDraw < ApplicationRecord
   include DrawBehaviour
 end

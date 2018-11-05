@@ -1,4 +1,4 @@
-class Candidate < ActiveRecord::Base
+class Candidate < ApplicationRecord
   include RankedModel
 
   has_many :votes do

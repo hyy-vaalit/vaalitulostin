@@ -98,7 +98,6 @@ describe ResultDecorator do
     expect(@decorator.formatted_order_number(1000)).to eq "1000"
   end
 
-
   it 'formats candidate_number' do
     expect(@decorator.formatted_candidate_number(1)).to eq    "   1"
     expect(@decorator.formatted_candidate_number(10)).to eq   "  10"

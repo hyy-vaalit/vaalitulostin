@@ -18,8 +18,7 @@ class Ability
     can :manage, :elections
   end
 
-  def authorize_guest(user)
+  def authorize_guest(_user)
     can :access, :public
   end
-
 end

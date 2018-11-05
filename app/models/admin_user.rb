@@ -1,4 +1,4 @@
-class AdminUser < ActiveRecord::Base
+class AdminUser < ApplicationRecord
   include DeviseUserBehaviour
 
   # Include default devise modules. Others available are:

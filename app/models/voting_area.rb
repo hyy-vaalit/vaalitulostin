@@ -12,8 +12,7 @@
 #  - vasta äänestysalueen merkitseminen valmiiksi (submitted) estää
 #    uusien äänien syöttämisen kyseiselle alueelle.
 #
-class VotingArea < ActiveRecord::Base
-
+class VotingArea < ApplicationRecord
   has_many :votes
 
   validates_uniqueness_of :code
@@ -33,5 +32,4 @@ class VotingArea < ActiveRecord::Base
   def submitted!
     update_attribute :submitted, true
   end
-
 end

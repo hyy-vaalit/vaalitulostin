@@ -4,7 +4,6 @@
 #
 # Kudos to: http://dev.mensfeld.pl/2012/01/converting-nested-hash-into-http-url-params-hash-version-in-ruby/
 module HashConverter
-
   def self.encode(value, key = nil, out_hash = {})
     case value
     when Hash, ActionController::Parameters  then
@@ -20,10 +19,7 @@ module HashConverter
     end
   end
 
-  private
-
   def self.append_key(root_key, key)
     root_key.nil? ? :"#{key}" : :"#{root_key}[#{key.to_s}]"
   end
-
 end

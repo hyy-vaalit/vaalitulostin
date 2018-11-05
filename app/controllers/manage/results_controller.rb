@@ -48,10 +48,9 @@ class Manage::ResultsController < ManageController
   def fetch_votes
     raise "Expected exactly one voting area to be present" unless VotingArea.count == 1
 
-    Delayed::Job::enqueue(ImportVotesJob.new(VotingArea.first))
+    Delayed::Job.enqueue(ImportVotesJob.new(VotingArea.first))
     flash[:notice] = "Äänet haetaan taustalla. Odota muutama minuutti ja lataa sivu uudelleen."
 
     redirect_to action: :index
   end
-
 end

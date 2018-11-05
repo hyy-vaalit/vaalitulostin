@@ -1,9 +1,7 @@
-require 'rails_helper'
 require './lib/support/imported_csv_alliance'
 
 RSpec.describe ImportedCsvAlliance, type: :model do
   describe "Creation" do
-
     before(:all) do
       sep = ","
       data  = 'Iso Vaaliliitto,1,isohko,50,Akateemiset nallekarhut'
@@ -12,7 +10,6 @@ RSpec.describe ImportedCsvAlliance, type: :model do
       CSV.parse(data, col_sep: sep) do |row|
         @rows << row
       end
-
     end
 
     it "builds from csv" do

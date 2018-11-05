@@ -1,4 +1,4 @@
-class CoalitionProportional < ActiveRecord::Base
+class CoalitionProportional < ApplicationRecord
   include ProportionCalculations
 
   belongs_to :result
@@ -18,7 +18,12 @@ class CoalitionProportional < ActiveRecord::Base
   def self.calculate!(result)
     ElectoralCoalition.all.each do |coalition|
       coalition_votes = coalition.countable_vote_sum
-      CoalitionResult.create_or_update! :result => result, :electoral_coalition => coalition, :vote_sum_cache => coalition_votes
+
+      CoalitionResult.create_or_update!(
+        result: result,
+        electoral_coalition: coalition,
+        vote_sum_cache: coalition_votes
+      )
 
       coalition.candidates.with_alliance_proportionals_for(result).each_with_index do |candidate, array_index|
         self.create_or_update! :result_id => result.id, :candidate_id => candidate.id,
@@ -28,15 +33,16 @@ class CoalitionProportional < ActiveRecord::Base
   end
 
   def self.find_duplicate_numbers(result_id)
-    select("coalition_proportionals.number").from(table_name).where(
-    "coalition_proportionals.result_id = ?", result_id).group(
-    "coalition_proportionals.number having count(*) > 1").order("coalition_proportionals.number desc")
+    select("coalition_proportionals.number")
+      .from(table_name)
+      .where("coalition_proportionals.result_id = ?", result_id)
+      .group("coalition_proportionals.number having count(*) > 1")
+      .order("coalition_proportionals.number desc")
   end
 
   def self.find_draw_candidate_ids_of(draw_proportional, result_id)
-    select('candidate_id').where(
-        ["number = ? AND result_id = ?", draw_proportional.number, result_id]
-    ).map(&:candidate_id)
+    select('candidate_id')
+      .where(["number = ? AND result_id = ?", draw_proportional.number, result_id])
+      .map(&:candidate_id)
   end
-
 end

@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :admin_user do
     email 'user@example.com'
   end
@@ -149,10 +148,18 @@ FactoryGirl.define do
   end
 
   factory :electoral_alliance_with_candidates, :parent => :electoral_alliance do |alliance|
-    alliance.after(:create) { |a| 10.times { a.candidates << create(:candidate, :electoral_alliance => a) } }
+    alliance.after(:create) do |a|
+      10.times do
+        a.candidates << create(:candidate, :electoral_alliance => a)
+      end
+    end
   end
 
   factory :electoral_coalition_with_alliances_and_candidates, :parent => :electoral_coalition do |coalition|
-    coalition.after(:create) { |c| 10.times { c.electoral_alliances << create(:electoral_alliance_with_candidates, :electoral_coalition => c) } }
+    coalition.after(:create) do |c|
+      10.times do
+        c.electoral_alliances << create(:electoral_alliance_with_candidates, :electoral_coalition => c)
+      end
+    end
   end
 end

@@ -1,5 +1,4 @@
 class Manage::VotersController < ManageController
-
   def index
     response = VotingApiRequest
                .new(Vaalit::VotingApi::VOTERS_URI)
@@ -29,13 +28,12 @@ class Manage::VotersController < ManageController
       redirect_to manage_voters_path
     else
       body = JSON.parse(response.body)
-      flash.now[:alert] = "Error #{response.code}: #{body["error"]} #{body["exception"]}"
+      flash.now[:alert] = "Error #{response.code}: #{body['error']} #{body['exception']}"
       render :edit
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def send_link
     response = VotingApiRequest
@@ -50,5 +48,4 @@ class Manage::VotersController < ManageController
 
     redirect_to manage_voters_path
   end
-
 end
