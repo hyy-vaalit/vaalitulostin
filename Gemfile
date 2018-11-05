@@ -10,6 +10,10 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 
 gem 'pry-rails' # friendlier rails console
+gem 'pry-highlight'
+gem 'pry-doc'
+gem 'pry-rescue'
+gem 'pry-stack_explorer'
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -38,14 +42,12 @@ gem 'formtastic'
 
 group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
+  gem 'pry-byebug'
   gem 'dotenv-rails'
   gem 'foreman'
 end
 
 group :development do
-  gem 'web-console' # Access console on exception pages or by using <%= console %>
-  gem 'listen', '~> 3.0.5'
-
   # keep application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -53,6 +55,7 @@ group :development do
 
   gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
+  gem 'terminal-notifier-guard', require: false
 end
 
 group :test do
