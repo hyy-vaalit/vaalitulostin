@@ -1,5 +1,4 @@
 class ImportVotesJob
-
   def initialize(voting_area)
     @voting_area = voting_area
   end
@@ -32,5 +31,4 @@ class ImportVotesJob
 
     Delayed::Job.enqueue(CreateResultJob.new)
   end
-
 end

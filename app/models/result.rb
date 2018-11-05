@@ -63,13 +63,27 @@ class Result < ActiveRecord::Base
   #
   # Only one freezed result may be created at a time.
   def self.freeze_for_draws!
-    raise "Unexpectedly a freezed or final result already exists!" if self.freezed.any? or self.final.any?
+    if self.freezed.any? || self.final.any?
+      raise "Unexpectedly a frozen or final result already exists!"
+    end
 
+    Rails.logger.info "Creating a Frozen Result"
     self.create! :freezed => true
   end
 
   def self.finalize!
+    Rails.logger.info "Creating the Final Result"
     Result.freezed.first.finalize!
+  end
+
+  def self.candidate_draws_ready!
+    Rails.logger.info "Marking candidate draws ready and calculating new alliance draws!"
+    Result.freezed.first.candidate_draws_ready!
+  end
+
+  def self.alliance_draws_ready!
+    Rails.logger.info "Marking alliance draws ready and calculating new coalition draws!"
+    Result.freezed.first.alliance_draws_ready!
   end
 
   def processed!
@@ -117,6 +131,8 @@ class Result < ActiveRecord::Base
       create_coalition_draws!
       processed!
     end
+
+    self
   end
 
   # Candidate draws must be marked ready before alliance draws can be finalized.
@@ -129,6 +145,8 @@ class Result < ActiveRecord::Base
       create_coalition_draws!
       processed!
     end
+
+    self
   end
 
   # Result is finalized after all drawings have been made.

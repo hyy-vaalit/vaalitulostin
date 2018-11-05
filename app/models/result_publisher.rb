@@ -14,6 +14,7 @@ class ResultPublisher
   end
 
   def self.store_to_s3!(result)
+    Rails.logger.info "Publishing Result (id: #{result.id}) to Amazon S3"
     self.new(result).store_to_s3!
   end
 
@@ -25,6 +26,8 @@ class ResultPublisher
   end
 
   def store_and_make_public!
+    Rails.logger.info "Publishing a previously created result (id: #{@result.id})."
+
     Result.transaction do
       @result.published!
       store_to_s3!
