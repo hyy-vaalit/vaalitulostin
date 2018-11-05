@@ -71,11 +71,6 @@ class Result < ActiveRecord::Base
     self.create! :freezed => true
   end
 
-  def self.finalize!
-    Rails.logger.info "Creating the Final Result"
-    Result.freezed.first.finalize!
-  end
-
   def self.candidate_draws_ready!
     Rails.logger.info "Marking candidate draws ready and calculating new alliance draws!"
     Result.freezed.first.candidate_draws_ready!
@@ -84,6 +79,11 @@ class Result < ActiveRecord::Base
   def self.alliance_draws_ready!
     Rails.logger.info "Marking alliance draws ready and calculating new coalition draws!"
     Result.freezed.first.alliance_draws_ready!
+  end
+
+  def self.finalize!
+    Rails.logger.info "Creating the Final Result"
+    Result.freezed.first.finalize!
   end
 
   def processed!
