@@ -1,10 +1,8 @@
-require 'spec_helper'
-
-describe 'votable behaviour' do
-
+# rubocop:disable Metrics/LineLength
+describe ResultDecorator do
   before(:all) do
     @result = FactoryGirl.create(:result_with_coalition_proportionals_and_candidates)
-    @decorator = ResultDecorator.decorate(@result)
+    @decorator = described_class.decorate(@result)
   end
 
   it 'formats the whole candidate line' do
@@ -78,7 +76,6 @@ describe 'votable behaviour' do
     allow(alliance.electoral_coalition).to receive(:shorten).and_return(coalition)
     places   = 0
     idx      = 1
-    dot_count = 1
 
     # 2. Sitoutumaton vasemmisto - Obunden vänster - Independe.SitVas MP       96  5
     expected = "  #{idx+1}. #{truncated_alliance_name}.#{alliance_shorten} #{coalition}     #{vote_sum}  #{places}"
@@ -95,61 +92,61 @@ describe 'votable behaviour' do
   end
 
   it 'formats candidate order number' do
-    @decorator.formatted_order_number(1).should    == "  1"
-    @decorator.formatted_order_number(10).should   == " 10"
-    @decorator.formatted_order_number(100).should  == "100"
-    @decorator.formatted_order_number(1000).should == "1000"
+    expect(@decorator.formatted_order_number(1)).to eq    "  1"
+    expect(@decorator.formatted_order_number(10)).to eq   " 10"
+    expect(@decorator.formatted_order_number(100)).to eq  "100"
+    expect(@decorator.formatted_order_number(1000)).to eq "1000"
   end
 
 
   it 'formats candidate_number' do
-    @decorator.formatted_candidate_number(1).should      == "   1"
-    @decorator.formatted_candidate_number(10).should     == "  10"
-    @decorator.formatted_candidate_number(100).should    == " 100"
-    @decorator.formatted_candidate_number(1000).should   == "1000"
+    expect(@decorator.formatted_candidate_number(1)).to eq    "   1"
+    expect(@decorator.formatted_candidate_number(10)).to eq   "  10"
+    expect(@decorator.formatted_candidate_number(100)).to eq  " 100"
+    expect(@decorator.formatted_candidate_number(1000)).to eq "1000"
   end
 
   it 'formats alliance name' do
-    @decorator.formatted_alliance_shorten("Short").should     == " Short"
-    @decorator.formatted_alliance_shorten("Enough").should    == "Enough"
-    @decorator.formatted_alliance_shorten("TooMuch").should   == "TooMuc"
-    @decorator.formatted_alliance_shorten("").should          == "      "
+    expect(@decorator.formatted_alliance_shorten("Short")).to eq   " Short"
+    expect(@decorator.formatted_alliance_shorten("Enough")).to eq  "Enough"
+    expect(@decorator.formatted_alliance_shorten("TooMuch")).to eq "TooMuc"
+    expect(@decorator.formatted_alliance_shorten("")).to eq        "      "
   end
 
   it 'formats candidate number' do
-    @decorator.formatted_candidate_number(nil).should     == "   0"
-    @decorator.formatted_candidate_number("1").should     == "   1"
-    @decorator.formatted_candidate_number("10").should    == "  10"
-    @decorator.formatted_candidate_number("100").should   == " 100"
-    @decorator.formatted_candidate_number("1000").should  == "1000"
+    expect(@decorator.formatted_candidate_number(nil)).to eq    "   0"
+    expect(@decorator.formatted_candidate_number("1")).to eq    "   1"
+    expect(@decorator.formatted_candidate_number("10")).to eq   "  10"
+    expect(@decorator.formatted_candidate_number("100")).to eq  " 100"
+    expect(@decorator.formatted_candidate_number("1000")).to eq "1000"
   end
 
   it 'formats proportional number' do
     precision = Vaalit::Voting::PROPORTIONAL_PRECISION
-    @decorator.formatted_proportional_number(nil).should   ==  "    0." + "0" * precision
-    @decorator.formatted_proportional_number(0.0).should   ==  "    0." + "0" * precision
-    @decorator.formatted_proportional_number(1.123).should ==  "    1.123" + "0" * (precision-3)
-    @decorator.formatted_proportional_number(1).should     ==  "    1." + "0" * precision
-    @decorator.formatted_proportional_number(10).should    ==  "   10." + "0" * precision
-    @decorator.formatted_proportional_number(100).should   ==  "  100." + "0" * precision
-    @decorator.formatted_proportional_number(1000).should  ==  " 1000." + "0" * precision
-    @decorator.formatted_proportional_number(10000).should ==  "10000." + "0" * precision
+    expect(@decorator.formatted_proportional_number(nil)).to eq   "    0." + "0" * precision
+    expect(@decorator.formatted_proportional_number(0.0)).to eq   "    0." + "0" * precision
+    expect(@decorator.formatted_proportional_number(1.123)).to eq "    1.123" + "0" * (precision-3)
+    expect(@decorator.formatted_proportional_number(1)).to eq     "    1." + "0" * precision
+    expect(@decorator.formatted_proportional_number(10)).to eq    "   10." + "0" * precision
+    expect(@decorator.formatted_proportional_number(100)).to eq   "  100." + "0" * precision
+    expect(@decorator.formatted_proportional_number(1000)).to eq  " 1000." + "0" * precision
+    expect(@decorator.formatted_proportional_number(10000)).to eq "10000." + "0" * precision
   end
 
   it 'formats vote sum' do
-    @decorator.formatted_vote_sum(nil).should   == "     "
-    @decorator.formatted_vote_sum(0).should     == "    0"
-    @decorator.formatted_vote_sum(1).should     == "    1"
-    @decorator.formatted_vote_sum(10).should    == "   10"
-    @decorator.formatted_vote_sum(100).should   == "  100"
-    @decorator.formatted_vote_sum(1000).should  == " 1000"
-    @decorator.formatted_vote_sum(10000).should == "10000"
+    expect(@decorator.formatted_vote_sum(nil)).to eq   "     "
+    expect(@decorator.formatted_vote_sum(0)).to eq     "    0"
+    expect(@decorator.formatted_vote_sum(1)).to eq     "    1"
+    expect(@decorator.formatted_vote_sum(10)).to eq    "   10"
+    expect(@decorator.formatted_vote_sum(100)).to eq   "  100"
+    expect(@decorator.formatted_vote_sum(1000)).to eq  " 1000"
+    expect(@decorator.formatted_vote_sum(10000)).to eq "10000"
   end
 
   it 'formats the elected candidates count' do
-    @decorator.formatted_elected_candidates_count(nil).should == " 0"
-    @decorator.formatted_elected_candidates_count(0).should   == " 0"
-    @decorator.formatted_elected_candidates_count(10).should  == "10"
+    expect(@decorator.formatted_elected_candidates_count(nil)).to eq " 0"
+    expect(@decorator.formatted_elected_candidates_count(0)).to eq   " 0"
+    expect(@decorator.formatted_elected_candidates_count(10)).to eq  "10"
   end
 
   it 'formats dots between coalition name and coalition shorten' do
@@ -163,38 +160,38 @@ describe 'votable behaviour' do
 
   it 'formats dots after the candidate name' do
     max_count = 30
-    @decorator.formatted_candidate_name_with_dots("").should           == "." * max_count
+    expect(@decorator.formatted_candidate_name_with_dots("")).to eq "." * max_count
+
     ["Short Name", "Li Ly", "Normalissimo Namimo 'Nickname'"].each do |name|
-      @decorator.formatted_candidate_name_with_dots(name).should == name + "." * how_many_dots(name, max_count)
+      expect(@decorator.formatted_candidate_name_with_dots(name))
+        .to eq name + "." * how_many_dots(name, max_count)
     end
   end
 
   it 'formats candidate name' do
     normal_name = "Mahtuu Rajoitteisiin 'Lemppri'"
     long_name   = "Ei Mahdu vaan on liian pitkä about nyt"
-    @decorator.formatted_candidate_name_with_dots(normal_name).should == normal_name
-    @decorator.formatted_candidate_name_with_dots(long_name).should == "Ei Mahdu vaan on liian pitkä a"
+
+    expect(@decorator.formatted_candidate_name_with_dots(normal_name))
+      .to eq normal_name
+    expect(@decorator.formatted_candidate_name_with_dots(long_name))
+      .to eq "Ei Mahdu vaan on liian pitkä a"
   end
 
   it 'formats election status character' do
     not_effective = not_elected = false
     effective = elected = true
 
-    @decorator.formatted_status_char(elected, not_effective, not_effective, not_effective).should  == "*"
-
-    @decorator.formatted_status_char(elected, not_effective, not_effective, effective).should  == "="
-    @decorator.formatted_status_char(elected, effective, effective, not_effective).should == "~"
-    @decorator.formatted_status_char(elected, effective, not_effective, not_effective).should == "?"
-
-    @decorator.formatted_status_char(elected, effective, effective, effective).should == "="
-
-    @decorator.formatted_status_char(not_elected, not_effective, not_effective, not_effective).should  == "."
-
-    @decorator.formatted_status_char(not_elected, not_effective, not_effective, effective).should  == "="
-    @decorator.formatted_status_char(not_elected, effective, effective, not_effective).should  == "~"
-    @decorator.formatted_status_char(not_elected, effective, not_effective, not_effective).should  == "?"
-
-    @decorator.formatted_status_char(not_elected, effective, effective, effective).should  == "="
+    expect(@decorator.formatted_status_char(elected, not_effective, not_effective, not_effective)).to eq "*"
+    expect(@decorator.formatted_status_char(elected, not_effective, not_effective, effective)).to eq "="
+    expect(@decorator.formatted_status_char(elected, effective, effective, not_effective)).to eq "~"
+    expect(@decorator.formatted_status_char(elected, effective, not_effective, not_effective)).to eq "?"
+    expect(@decorator.formatted_status_char(elected, effective, effective, effective)).to eq "="
+    expect(@decorator.formatted_status_char(not_elected, not_effective, not_effective, not_effective)).to eq "."
+    expect(@decorator.formatted_status_char(not_elected, not_effective, not_effective, effective)).to eq "="
+    expect(@decorator.formatted_status_char(not_elected, effective, effective, not_effective)).to eq "~"
+    expect(@decorator.formatted_status_char(not_elected, effective, not_effective, not_effective)).to eq "?"
+    expect(@decorator.formatted_status_char(not_elected, effective, effective, effective)).to eq "="
   end
 
   def how_many_dots(name, max_count)
@@ -203,5 +200,5 @@ describe 'votable behaviour' do
 
     count
   end
-
 end
+# rubocop:enable Metrics/LineLength
