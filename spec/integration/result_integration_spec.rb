@@ -5,10 +5,13 @@ RSpec.describe Result, type: :integration do
   let(:all_candidates) { Candidate.all.order('candidate_number asc') }
 
   before do
-    Seed::Year2009.import_base_data!
+    Timecop.freeze Time.parse('2009-11-11 00:00:00+00:00').utc
 
-    allow(S3Publisher).to receive(:new).and_return(s3_publisher)
-    # allow(s3_publisher).to receive(:store_to_s3!)
+    Seed::Year2009.import_base_data!
+  end
+
+  after do
+    Timecop.return
   end
 
   context 'when first result is created after all votes are submitted' do
@@ -104,7 +107,7 @@ RSpec.describe Result, type: :integration do
   context 'when final result can be calculated' do
     let!(:result) { Result.freeze_for_draws! } # calculates proportionals
 
-    let(:dir) { File.join __dir__, 'expected_after_draws' }
+    let(:dir) { File.join __dir__, 'expected_final_result' }
     let(:result_html) { File.read File.join(dir, 'result.html') }
     let(:result_json) { File.read File.join(dir, 'result.json') }
     let(:candidates) { File.read File.join(dir, 'candidates.json') }
@@ -114,6 +117,7 @@ RSpec.describe Result, type: :integration do
       result.candidate_draws_ready!
       Seed::Year2009.import_alliance_draw_order!
       result.alliance_draws_ready!
+      Seed::Year2009.import_coalition_draw_order!
     end
 
     it 'calculates equivalent coalition draws than 2009 data' do
@@ -132,15 +136,13 @@ RSpec.describe Result, type: :integration do
       end
     end
 
-    fit 'renders the final result' do
-      puts "Start: #{Time.now}"
+    it 'renders the final result' do
       result.finalize!
-      puts "End: #{Time.now}"
 
       decorator = ResultDecorator.decorate result
 
       expect(decorator.to_html).to eq result_html
-      # expect(decorator.to_json).to include_json JSON.parse(result_json)
+      expect(decorator.to_json).to include_json JSON.parse(result_json)
       # expect(decorator.to_json_candidates).to include_json(JSON.parse(candidates))
     end
   end

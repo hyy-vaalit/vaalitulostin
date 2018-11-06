@@ -43,6 +43,20 @@ module Seed
       end
     end
 
+    def self.import_coalition_draw_order!
+      comparison_data.each do |row|
+        coalition_draw_order = row["coalition_draw_order"].to_i
+
+        next if coalition_draw_order.zero?
+
+        Candidate
+          .find_by!(candidate_number: row["candidate_number"])
+          .candidate_results
+          .first
+          .update! coalition_draw_order: coalition_draw_order
+      end
+    end
+
     private_class_method def self.comparison_data
       csv_read csv_file('final', 'HYY09_vaalit.exe_final_votes')
     end

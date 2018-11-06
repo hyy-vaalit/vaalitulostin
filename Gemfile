@@ -64,6 +64,7 @@ group :test do
   gem 'fuubar'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'rspec-json_expectations'
   gem 'factory_girl_rails'
   gem 'timecop'
   gem 'guard-rspec'
