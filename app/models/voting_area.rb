@@ -26,10 +26,10 @@ class VotingArea < ApplicationRecord
   end
 
   def ready!
-    update! :ready, true
+    update! ready: true
   end
 
   def submitted!
-    update! :submitted, true
+    update! submitted: true
   end
 end
