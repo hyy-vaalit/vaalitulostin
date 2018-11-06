@@ -55,6 +55,7 @@ group :development do
 
   gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
+  gem 'guard-rubocop'
   gem 'terminal-notifier-guard', require: false
 end
 
@@ -64,6 +65,7 @@ group :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'timecop'
   gem 'guard-rspec'
 end
 
