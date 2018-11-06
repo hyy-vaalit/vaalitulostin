@@ -16,7 +16,7 @@ class AllianceResult < ApplicationRecord
       .find_by(result_id: result.id)
 
     if existing.present?
-      existing.update_attributes! vote_sum_cache: vote_sum_cache
+      existing.update! vote_sum_cache: vote_sum_cache
     else
       create!(
         electoral_alliance: electoral_alliance,

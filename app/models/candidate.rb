@@ -12,29 +12,32 @@ class Candidate < ApplicationRecord
   has_many :candidate_results
 
   has_many :candidate_drawings
-  has_many :candidate_draws, :through => :candidate_drawings
+  has_many :candidate_draws, through: :candidate_drawings
 
   belongs_to :electoral_alliance
-  has_one :electoral_coalition, :through => :electoral_alliance
+  has_one :electoral_coalition, through: :electoral_alliance
 
-  ranks :numbering_order, :with_same => :electoral_alliance_id
+  ranks :numbering_order, with_same: :electoral_alliance_id
 
   belongs_to :faculty
 
-  scope :cancelled, -> { where(:cancelled => true) }
-  scope :without_alliance, -> { where(:electoral_alliance_id => nil) }
-  scope :valid, -> { where(:cancelled => false, :marked_invalid => false) }
-  scope :votable, -> {  where(:cancelled => false, :marked_invalid => false) }
-  scope :by_numbering_order, -> {  order("#{table_name}.numbering_order") }
+  scope :cancelled, -> { where(cancelled: true) }
+  scope :without_alliance, -> { where(electoral_alliance_id: nil) }
+  scope :valid, -> { where(cancelled: false, marked_invalid: false) }
+  scope :votable, -> { where(cancelled: false, marked_invalid: false) }
+  scope :by_numbering_order, -> { order("#{table_name}.numbering_order") }
 
-  validates_presence_of :lastname, :electoral_alliance
+  validates :lastname, :electoral_alliance, presence: true
 
-  validates_format_of :candidate_name, :with => /\A(.+), (.+)\Z/, # Lastname, Firstname Whatever Here 'this' or "this"
-                                       :message => "Ehdokasnimen on oltava muotoa Sukunimi, Etunimi, ks. ohje."
+  validates :candidate_name, format: {
+    with: /\A(.+), (.+)\Z/, # Lastname, Firstname Whatever 'nick' or "nick"
+    message: "Ehdokasnimen on oltava muotoa Sukunimi, Etunimi, ks. ohje."
+  }
 
-  validates_format_of :email,
-                      :allow_nil => true,
-                      :with => /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/
+  validates :email, format: {
+    allow_nil: true,
+    with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/
+  }
 
   # Calculates all votes from all 'ready' (calculable) voting areas for each candidate.
   # If there exists a fixed vote amount, it will be used instead of the preliminary amount.
@@ -64,8 +67,8 @@ class Candidate < ApplicationRecord
       '"candidates"').joins(
       'INNER JOIN alliance_proportionals ON candidates.id = alliance_proportionals.candidate_id').joins(
       'INNER JOIN candidate_results      ON candidate_results.candidate_id = candidates.id').joins(
-      'INNER JOIN results                ON results.id = alliance_proportionals.result_id').where([
-      'results.id = ? AND candidate_results.result_id = ?', result.id, result.id]).order(
+      'INNER JOIN results                ON results.id = alliance_proportionals.result_id').where(
+      'results.id = ? AND candidate_results.result_id = ?', result.id, result.id).order(
       '"alliance_proportionals".number desc, candidate_results.alliance_draw_order asc')
   end
 
@@ -83,5 +86,4 @@ class Candidate < ApplicationRecord
       'INNER JOIN "voting_areas" ON "voting_areas"."id" = "votes"."voting_area_id"').where(
       ['voting_areas.id = ?', voting_area_id]).order('candidates.candidate_number asc')
   end
-
 end

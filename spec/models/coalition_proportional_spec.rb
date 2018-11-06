@@ -1,7 +1,7 @@
 describe CoalitionProportional do
   it 'gives /n of the votes of a coalition to the candidate with nth most votes as a coalition proportional' do
     allow(AllianceProportional).to receive(:calculate!)
-    coalition =  FactoryGirl.create(:electoral_coalition_with_alliances_and_candidates)
+    coalition = FactoryGirl.create(:electoral_coalition_with_alliances_and_candidates)
     total_vote_sum = 1235
 
     ElectoralCoalition.should_receive(:all).and_return([coalition])

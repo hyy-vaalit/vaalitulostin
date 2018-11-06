@@ -25,7 +25,7 @@ class S3Publisher
   def test_connection
     AWS::S3::S3Object.store(
       "#{Vaalit::Results::DIRECTORY}/lulz.txt",
-      "Lulz: #{Time.now}",
+      "Lulz: #{Time.now.utc}",
       Vaalit::Results::S3_BUCKET_NAME,
       :content_type => 'text/html; charset=utf-8'
     )

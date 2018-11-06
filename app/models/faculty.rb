@@ -1,5 +1,5 @@
 class Faculty < ApplicationRecord
   has_many :candidates
 
-  validates_presence_of :name, :code
+  validates :name, :code, presence: true
 end

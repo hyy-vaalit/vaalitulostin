@@ -14,7 +14,7 @@ module ProportionCalculations
         .find_by(result_id: result_id)
 
       if existing.present?
-        existing.update_attributes!(number: number)
+        existing.update!(number: number)
       else
         self.create!(
           result_id: result_id,

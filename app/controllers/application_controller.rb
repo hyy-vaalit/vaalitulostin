@@ -27,5 +27,4 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug "[ApplicationController] Rescued CanCan::AccessDenied and redirecting to safety"
     redirect_to root_path, :alert => exception.message
   end
-
 end

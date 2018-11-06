@@ -25,8 +25,8 @@ RSpec.describe ImportedCsvCandidate, type: :model do
     it "creates from csv" do
       coalition = FactoryGirl.create :electoral_coalition
       FactoryGirl.create :electoral_alliance,
-                          electoral_coalition: coalition,
-                          name: "Akateemiset nallekarhut"
+                         electoral_coalition: coalition,
+                         name: "Akateemiset nallekarhut"
 
       candidate = ImportedCsvCandidate.create_from!(@rows.first)
 

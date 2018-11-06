@@ -2,11 +2,11 @@ RSpec.describe ImportedCsvVote, type: :model do
   describe "Creation" do
     before(:all) do
       sep = ","
-      data  = <<-EOCSV
-ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
-32,"Hanski, Anna",59,Akateemiset nallekarhut,2
-4,"Savinen, Mäki",32,Akateemiset nallekarhut,2
-EOCSV
+      data = <<~EOCSV
+        ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
+        32,"Hanski, Anna",59,Akateemiset nallekarhut,2
+        4,"Savinen, Mäki",32,Akateemiset nallekarhut,2
+      EOCSV
       @rows = []
 
       CSV.parse(data, headers: true, col_sep: sep) do |row|

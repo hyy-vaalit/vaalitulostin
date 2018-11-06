@@ -1,5 +1,4 @@
 class Draws::CoalitionsController < DrawsController
-
   def show
     @draw = CoalitionDraw.find(params[:id])
   end

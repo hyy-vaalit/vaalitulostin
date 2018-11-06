@@ -46,7 +46,7 @@ module DrawBehaviour
       else
         draw_orders.each do |candidate_result_id, draw_order|
           candidate_result = self.candidate_results.find(candidate_result_id)
-          candidate_result.update_attributes!(order_attribute => draw_order)
+          candidate_result.update!(order_attribute => draw_order)
         end
       end
     end
@@ -73,7 +73,7 @@ module DrawBehaviour
     def give_order_automatically!(order_attribute)
       random_order = Array(1..self.candidate_results.count).sort_by { rand }
       self.candidate_results.each_with_index do |candidate_result, index|
-        candidate_result.update_attributes!(order_attribute => random_order[index])
+        candidate_result.update!(order_attribute => random_order[index])
       end
     end
   end

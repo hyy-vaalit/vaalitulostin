@@ -6,5 +6,4 @@ class PublicController < ApplicationController
   def authorize_this!
     authorize! :access, :public
   end
-
 end

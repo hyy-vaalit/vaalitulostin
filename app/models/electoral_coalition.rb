@@ -5,7 +5,7 @@ class ElectoralCoalition < ApplicationRecord
   has_many :electoral_alliances, :dependent => :nullify
   has_many :candidates, :through => :electoral_alliances
 
-  validates_presence_of :name, :shorten
+  validates :name, :shorten, presence: true
 
   scope :by_numbering_order, -> { order("#{table_name}.numbering_order") }
 

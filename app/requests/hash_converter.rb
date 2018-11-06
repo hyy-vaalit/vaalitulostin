@@ -6,8 +6,8 @@
 module HashConverter
   def self.encode(value, key = nil, out_hash = {})
     case value
-    when Hash, ActionController::Parameters  then
-      value.each { |k,v| encode(v, append_key(key,k), out_hash) }
+    when Hash, ActionController::Parameters then
+      value.each { |k, v| encode(v, append_key(key, k), out_hash) }
       out_hash
     when Array then
       value.each { |v| encode(v, "#{key}[]", out_hash) }

@@ -5,5 +5,4 @@ class AdminUser < ApplicationRecord
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
-
 end

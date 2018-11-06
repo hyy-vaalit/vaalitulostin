@@ -9,5 +9,4 @@ class Draws::AlliancesController < DrawsController
 
     redirect_to draws_path(:anchor => "draw_#{draw.identifier}")
   end
-
 end

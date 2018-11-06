@@ -1,5 +1,4 @@
 class VotingApiRequest
-
   def initialize(uri)
     @uri = uri
     @request = nil

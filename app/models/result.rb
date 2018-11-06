@@ -21,13 +21,13 @@ class Result < ApplicationRecord
 
   has_many :candidate_results, :dependent => :destroy
   has_many :candidates,
-    lambda {
-      select "candidates.id,
-        candidates.candidate_name,
-        candidates.candidate_number,
-        candidates.electoral_alliance_id"
-    },
-    through: :candidate_results
+           lambda {
+             select "candidates.id,
+               candidates.candidate_name,
+               candidates.candidate_number,
+               candidates.electoral_alliance_id"
+           },
+           through: :candidate_results
 
   has_many :alliance_results, :dependent => :destroy
   has_many :electoral_alliances,
@@ -35,12 +35,12 @@ class Result < ApplicationRecord
 
   has_many :coalition_results, :dependent => :destroy
   has_many :electoral_coalitions,
-    lambda {
-      select "electoral_coalitions.id,
-        electoral_coalitions.name,
-        electoral_coalitions.shorten"
-    },
-    through: :coalition_results
+           lambda {
+             select "electoral_coalitions.id,
+               electoral_coalitions.name,
+               electoral_coalitions.shorten"
+           },
+           through: :coalition_results
 
   has_many :candidate_draws, :dependent => :destroy
   has_many :alliance_draws, :dependent => :destroy
@@ -92,23 +92,23 @@ class Result < ApplicationRecord
   end
 
   def processed!
-    update_attributes!(:in_process => false)
+    update!(:in_process => false)
   end
 
   def in_process!
-    update_attributes!(:in_process => true)
+    update!(:in_process => true)
   end
 
   def published!
-    update_attributes!(:published => true)
+    update!(:published => true)
   end
 
   def published_pending!
-    update_attributes!(:published_pending => true)
+    update!(:published_pending => true)
   end
 
   def pending_candidate_draws?
-    return false if not freezed?
+    return false unless freezed?
 
     not candidate_draws_ready?
   end
@@ -127,10 +127,10 @@ class Result < ApplicationRecord
 
   # Result must be freezed before any draws can be marked ready.
   def candidate_draws_ready!
-    return false if not self.freezed?
+    return false unless self.freezed?
 
     Result.transaction do
-      update_attributes!(:candidate_draws_ready => true)
+      update!(:candidate_draws_ready => true)
       recalculate!
       create_alliance_draws!
       create_coalition_draws!
@@ -142,10 +142,10 @@ class Result < ApplicationRecord
 
   # Candidate draws must be marked ready before alliance draws can be finalized.
   def alliance_draws_ready!
-    return false if not self.candidate_draws_ready?
+    return false unless self.candidate_draws_ready?
 
     Result.transaction do
-      update_attributes!(:alliance_draws_ready => true)
+      update!(:alliance_draws_ready => true)
       recalculate!
       create_coalition_draws!
       processed!
@@ -157,10 +157,10 @@ class Result < ApplicationRecord
   # Result is finalized after all drawings have been made.
   # Alliance draws must be marked ready result can be finalized.
   def finalize!
-    return false if not self.alliance_draws_ready?
+    return false unless self.alliance_draws_ready?
 
     Result.transaction do
-      self.update_attributes!(:final => true, :coalition_draws_ready => true)
+      self.update!(:final => true, :coalition_draws_ready => true)
       recalculate!
       processed!
     end
@@ -262,7 +262,7 @@ class Result < ApplicationRecord
       )
     end
 
-    self.update_attributes!(:vote_sum_cache => Vote.countable_sum)
+    self.update!(:vote_sum_cache => Vote.countable_sum)
   end
 
   def elect_candidates!

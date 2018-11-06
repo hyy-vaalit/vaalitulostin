@@ -7,15 +7,15 @@ class ElectoralAlliance < ApplicationRecord
     end
 
     def countable_sum
-      countable.sum("COALESCE(votes.fixed_amount, votes.amount)").to_i  # result is a string otherwise
+      countable.sum("COALESCE(votes.fixed_amount, votes.amount)").to_i
     end
   end
 
   has_many :candidates, :dependent => :nullify
 
   has_many :candidate_results,
-    -> { select "candidate_results.result_id" },
-    through: :candidates
+           -> { select "candidate_results.result_id" },
+           through: :candidates
 
   has_many :alliance_results
   has_many :results, :through => :alliance_results
@@ -27,11 +27,11 @@ class ElectoralAlliance < ApplicationRecord
   scope :ready, -> { where(:secretarial_freeze => true) }
   scope :by_numbering_order, -> { order("#{table_name}.numbering_order") }
 
-  validates_presence_of :name, :shorten
-  validates_uniqueness_of :shorten, :name
+  validates :name, :shorten, presence: true
+  validates :shorten, :name, uniqueness: true
 
-  validates_length_of :shorten, :in => 2..6
-  validates_presence_of :expected_candidate_count, :allow_nil => true
+  validates :shorten, length: { :in => 2..6 }
+  validates :expected_candidate_count, presence: { :allow_nil => true }
 
   def vote_sum_caches
     candidate_results

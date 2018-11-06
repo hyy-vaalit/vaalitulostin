@@ -2,7 +2,7 @@ class Vote < ApplicationRecord
   belongs_to :voting_area
   belongs_to :candidate
 
-  validates_presence_of :voting_area, :candidate, :amount
+  validates :voting_area, :candidate, :amount, presence: true
   validate :must_have_positive_amount
 
   scope :countable, -> { joins(:voting_area).where('voting_areas.ready = ?', true) }

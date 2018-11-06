@@ -6,8 +6,8 @@ class ImportedCsvVote
     imported = build_from source
 
     Vote.create!(
-      candidate:      Candidate.find_by_candidate_number!(imported.candidate_number),
-      amount:         imported.vote_count,
+      candidate: Candidate.find_by!(candidate_number: imported.candidate_number),
+      amount: imported.vote_count,
       voting_area_id: voting_area_id
     )
   end
@@ -21,6 +21,6 @@ class ImportedCsvVote
   #   0              1          2     3            4
   def convert(data)
     @candidate_number = data[0].strip.to_i
-    @vote_count       = data[2].strip.to_i
+    @vote_count = data[2].strip.to_i
   end
 end

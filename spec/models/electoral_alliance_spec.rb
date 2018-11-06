@@ -23,7 +23,7 @@ describe ElectoralAlliance do
     expect(
       alliance
         .vote_sum_caches
-        .find_by_result_id(result.id)
+        .find_by(result_id: result.id)
         .alliance_vote_sum_cache
         .to_i
     ).to eq 2 * votes
@@ -43,7 +43,7 @@ describe ElectoralAlliance do
     expect(
       alliance
         .vote_sum_caches
-        .find_by_result_id(result.id)
+        .find_by(result_id: result.id)
         .alliance_vote_sum_cache
         .to_i
     ).to eq votes

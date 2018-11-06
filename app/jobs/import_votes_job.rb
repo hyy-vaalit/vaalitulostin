@@ -10,8 +10,8 @@ class ImportVotesJob
                        .get
 
     if !summary_response.is_a?(Net::HTTPSuccess) && summary_response.code.to_i == 401
-     Rails.logger.error 'Vote fetching failed due to HTTP 401 unauthorized. Ignoring retry.'
-     return
+      Rails.logger.error 'Vote fetching failed due to HTTP 401 unauthorized. Ignoring retry.'
+      return
     end
 
     GlobalConfiguration.update_summary!(JSON.parse(summary_response.body))

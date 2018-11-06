@@ -4,7 +4,7 @@ class AllianceProportional < ApplicationRecord
   belongs_to :result
   belongs_to :candidate
 
-  validates_presence_of :result_id, :candidate_id, :number
+  validates :result_id, :candidate_id, :number, presence: true
 
   # For each coalition C,
   # iterate through all its alliances
@@ -17,6 +17,7 @@ class AllianceProportional < ApplicationRecord
   # and S divided by N to the candidate with Nth most votes.
   #
   # The number in question is the alliance proportional.
+  # rubocop:disable Rails/FindEach
   def self.calculate!(result)
     ElectoralCoalition.all.each do |coalition|
       coalition.electoral_alliances.each do |alliance|
@@ -39,6 +40,7 @@ class AllianceProportional < ApplicationRecord
       end
     end
   end
+  # rubocop:enable Rails/FindEach
 
   def self.find_duplicate_numbers(result_id)
     select("electoral_alliances.electoral_coalition_id, alliance_proportionals.number")

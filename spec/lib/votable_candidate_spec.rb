@@ -24,7 +24,7 @@ describe 'votable behaviour' do
 
       ordered_candidates.should_not be_empty
       ordered_candidates.each_with_index do |candidate, index|
-        next_candidate = ordered_candidates[index+1]
+        next_candidate = ordered_candidates[index + 1]
         next if next_candidate.nil?
 
         expect(candidate.alliance_proportionals.last.number)
@@ -39,7 +39,7 @@ describe 'votable behaviour' do
       ordered_candidates.should_not be_empty
 
       ordered_candidates.each_with_index do |candidate, index|
-        next_candidate = ordered_candidates[index+1]
+        next_candidate = ordered_candidates[index + 1]
 
         next unless next_candidate
 
@@ -114,9 +114,14 @@ describe 'votable behaviour' do
       it 'does not add votes from unfinished voting areas to preliminary votes' do
         amount = 10
         [@ready_voting_areas, @unready_voting_areas].each do |area_group|
-          area_group.each { |area| FactoryGirl.create(:vote, :candidate => @candidate,
-                                                             :voting_area => area,
-                                                             :amount => amount) }
+          area_group.each do |area|
+            FactoryGirl.create(
+              :vote,
+              :candidate => @candidate,
+              :voting_area => area,
+              :amount => amount
+            )
+          end
         end
 
         expect(@candidate.votes.preliminary_sum).to eq amount * @ready_voting_areas.count

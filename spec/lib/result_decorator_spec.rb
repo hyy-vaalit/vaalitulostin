@@ -32,7 +32,7 @@ describe ResultDecorator do
     allow(candidate).to receive(:coalition_draw_affects_elected?).and_return(false)
 
     # "124* Testinen, Martti 'Sakke'...... 789 Tumpit   42ax  432.12345    123.45678 a"
-    expected = "#{idx+1}* #{candidate_name}...... #{cno} #{alliance}   #{votes}#{candidate_draw}  #{aprop}#{alliance_draw}  #{cprop}#{coalition_draw}"
+    expected = "#{idx + 1}* #{candidate_name}...... #{cno} #{alliance}   #{votes}#{candidate_draw}  #{aprop}#{alliance_draw}  #{cprop}#{coalition_draw}"
     @decorator.candidate_result_line(candidate, idx).should == expected
   end
 
@@ -44,7 +44,7 @@ describe ResultDecorator do
     idx       = 1
     dot_count = 66 - coalition.name.length - coalition.shorten.length
 
-    expected = "  #{idx+1}. #{coalition.name}#{'.' * dot_count}#{coalition.shorten} #{vote_sum}  #{places}"
+    expected = "  #{idx + 1}. #{coalition.name}#{'.' * dot_count}#{coalition.shorten} #{vote_sum}  #{places}"
 
     @decorator.coalition_result_line(coalition_result, idx).should == expected
   end
@@ -58,7 +58,7 @@ describe ResultDecorator do
     dot_count = 58 - alliance.name.length - alliance.shorten.length
 
     # 1. HYYn Vihreät - De Gröna vid HUS........................HyVi MP     1045  4
-    expected = "  #{idx+1}. #{alliance.name}#{'.' * dot_count}.#{alliance.shorten} #{alliance.electoral_coalition.shorten}   #{vote_sum}  #{places}"
+    expected = "  #{idx + 1}. #{alliance.name}#{'.' * dot_count}.#{alliance.shorten} #{alliance.electoral_coalition.shorten}   #{vote_sum}  #{places}"
 
     @decorator.alliance_result_line(alliance_result, idx).should == expected
   end
@@ -78,7 +78,7 @@ describe ResultDecorator do
     idx      = 1
 
     # 2. Sitoutumaton vasemmisto - Obunden vänster - Independe.SitVas MP       96  5
-    expected = "  #{idx+1}. #{truncated_alliance_name}.#{alliance_shorten} #{coalition}     #{vote_sum}  #{places}"
+    expected = "  #{idx + 1}. #{truncated_alliance_name}.#{alliance_shorten} #{coalition}     #{vote_sum}  #{places}"
 
     @decorator.alliance_result_line(alliance_result, idx).should == expected
   end
@@ -124,7 +124,7 @@ describe ResultDecorator do
     precision = Vaalit::Voting::PROPORTIONAL_PRECISION
     expect(@decorator.formatted_proportional_number(nil)).to eq   "    0." + "0" * precision
     expect(@decorator.formatted_proportional_number(0.0)).to eq   "    0." + "0" * precision
-    expect(@decorator.formatted_proportional_number(1.123)).to eq "    1.123" + "0" * (precision-3)
+    expect(@decorator.formatted_proportional_number(1.123)).to eq "    1.123" + "0" * (precision - 3)
     expect(@decorator.formatted_proportional_number(1)).to eq     "    1." + "0" * precision
     expect(@decorator.formatted_proportional_number(10)).to eq    "   10." + "0" * precision
     expect(@decorator.formatted_proportional_number(100)).to eq   "  100." + "0" * precision
