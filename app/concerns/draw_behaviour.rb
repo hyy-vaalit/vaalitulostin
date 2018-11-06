@@ -2,7 +2,7 @@ module DrawBehaviour
   extend ActiveSupport::Concern
 
   included do
-    has_many :candidate_results, :dependent => :nullify
+    has_many :candidate_results, dependent: :nullify
 
     belongs_to :result
 
@@ -37,7 +37,7 @@ module DrawBehaviour
     def self.affects_elected?(candidate_results)
       status = candidate_results.map(&:elected)
 
-      status.include?(true) and status.include?(false)
+      status.include?(true) && status.include?(false)
     end
 
     def give_order!(order_attribute, draw_orders, automatically = false)

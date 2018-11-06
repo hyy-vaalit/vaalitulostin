@@ -22,7 +22,7 @@ describe 'votable behaviour' do
 
       ordered_candidates = Candidate.with_alliance_proportionals_for(result)
 
-      ordered_candidates.should_not be_empty
+      expect(ordered_candidates).not_to be_empty
       ordered_candidates.each_with_index do |candidate, index|
         next_candidate = ordered_candidates[index + 1]
         next if next_candidate.nil?
@@ -36,7 +36,7 @@ describe 'votable behaviour' do
       result = FactoryGirl.create(:result_with_coalition_proportionals_and_candidates)
 
       ordered_candidates = result.candidate_results_in_election_order
-      ordered_candidates.should_not be_empty
+      expect(ordered_candidates).not_to be_empty
 
       ordered_candidates.each_with_index do |candidate, index|
         next_candidate = ordered_candidates[index + 1]
@@ -54,8 +54,8 @@ describe 'votable behaviour' do
     it 'allows chaining with_votes_sum with other scopes' do
       alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
       other_alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
-      VotableSupport.create_votes_for(alliance.candidates, @ready_voting_areas, :ascending => true)
-      VotableSupport.create_votes_for(other_alliance.candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(alliance.candidates, @ready_voting_areas, ascending: true)
+      VotableSupport.create_votes_for(other_alliance.candidates, @ready_voting_areas, ascending: true)
 
       expect(Candidate.count).to be > alliance.candidates.count
 
@@ -76,7 +76,7 @@ describe 'votable behaviour' do
     it 'gives a list of all candidates ordered by their vote sum' do
       candidates = []
       10.times { candidates << FactoryGirl.create(:candidate) }
-      VotableSupport.create_votes_for(candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(candidates, @ready_voting_areas, ascending: true)
 
       expect(Candidate.with_vote_sums.map(&:id))
         .to eq candidates.reverse.map(&:id)
@@ -85,9 +85,9 @@ describe 'votable behaviour' do
     it 'gives a list of all candidates ordered by their vote sum and excludes unready voting areas' do
       candidates = []
       10.times { candidates << FactoryGirl.create(:candidate) }
-      VotableSupport.create_votes_for(candidates, @ready_voting_areas, :ascending => true)
+      VotableSupport.create_votes_for(candidates, @ready_voting_areas, ascending: true)
       VotableSupport.create_votes_for(
-        candidates, @unready_voting_areas, :ascending => false, :base_vote_count => 10000
+        candidates, @unready_voting_areas, ascending: false, base_vote_count: 10000
       )
 
       expect(Candidate.with_vote_sums.map(&:id)).to eq candidates.reverse.map(&:id)
@@ -102,9 +102,10 @@ describe 'votable behaviour' do
         amount = 10
         @ready_voting_areas.each do |area|
           FactoryGirl.create(
-            :vote, :candidate => @candidate,
-            :voting_area => area,
-            :amount => amount
+            :vote,
+            candidate: @candidate,
+            voting_area: area,
+            amount: amount
           )
         end
 
@@ -117,9 +118,9 @@ describe 'votable behaviour' do
           area_group.each do |area|
             FactoryGirl.create(
               :vote,
-              :candidate => @candidate,
-              :voting_area => area,
-              :amount => amount
+              candidate: @candidate,
+              voting_area: area,
+              amount: amount
             )
           end
         end

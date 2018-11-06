@@ -18,6 +18,6 @@ class Vote < ApplicationRecord
   protected
 
   def must_have_positive_amount
-    errors.add :base, "Must have positive vote amount" if (amount and amount < 0) or (fixed_amount and fixed_amount < 0)
+    errors.add :base, "Must have positive vote amount" if amount&.negative? || fixed_amount&.negative?
   end
 end

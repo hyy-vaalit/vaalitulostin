@@ -7,6 +7,6 @@ class Draws::CoalitionsController < DrawsController
     draw = CoalitionDraw.find(params[:id])
     draw.give_order!(:coalition_draw_order, params[:draw_order], automatically?)
 
-    redirect_to draws_path(:anchor => "draw_#{draw.identifier}")
+    redirect_to draws_path(anchor: "draw_#{draw.identifier}")
   end
 end

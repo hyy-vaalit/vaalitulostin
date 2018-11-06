@@ -28,7 +28,6 @@ RSpec.describe ImportedCsvCoalition, type: :model do
       expect(coalition.name).to eq("Iso Vaalirengas")
       expect(coalition.numbering_order).to eq(1)
       expect(coalition.shorten).to eq("isohko")
-      #TODO: expect(coalition.expected_alliance_count).to eq(16)
     end
   end
 end

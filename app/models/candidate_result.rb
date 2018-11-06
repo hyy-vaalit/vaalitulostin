@@ -1,8 +1,8 @@
 class CandidateResult < ApplicationRecord
   belongs_to :result
   belongs_to :candidate
-  belongs_to :candidate_draw, :dependent => :destroy
-  belongs_to :coalition_draw, :dependent => :destroy
+  belongs_to :candidate_draw, dependent: :destroy
+  belongs_to :coalition_draw, dependent: :destroy
 
   has_one :alliance_proportional,
           -> { where('alliance_proportionals.result_id = result_id') },
@@ -47,7 +47,7 @@ class CandidateResult < ApplicationRecord
   end
 
   def self.elected
-    where(:elected => true)
+    where(elected: true)
   end
 
   def self.elected_in_alliance(alliance_id, result_id)

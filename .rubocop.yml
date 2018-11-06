@@ -38,13 +38,10 @@ Style/StringLiterals:
 Style/NumericLiterals:
   Enabled: false
 
-Style/GuardClause:
-  Enabled: false
-
 Style/IfUnlessModifier:
   Enabled: false
 
-Style/RegexpLiteral:
+Style/AsciiComments:
   Enabled: false
 
 Metrics/LineLength:
@@ -93,62 +90,31 @@ RSpec/MultipleExpectations:
 RSpec/LetSetup:
   Enabled: false
 
-# Stubbing Active Record scopes need receive_method_chain
-RSpec/MessageChain:
-  Enabled: false
-
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-Style/AsciiComments:
-  Enabled: false
-
-#########################################################
-# For legacy support:
 RSpec/InstanceVariable:
-  Enabled: false
-
-Style/HashSyntax:
-  Enabled: false
-
-Lint/Void:
-  Exclude:
-    - 'spec/**/*.rb'
-
-Style/WordArray:
-  Enabled: false
-
-Layout/IndentHash:
   Enabled: false
 
 Style/RedundantSelf:
   Enabled: false
 
 Layout/FirstParameterIndentation:
-  Enabled: false
+  Exclude:
+    - 'app/models/candidate.rb'
+    - 'app/models/result.rb'
+    - 'app/concerns/draw_behaviour.rb'
 
 Layout/MultilineMethodCallBraceLayout:
-  Enabled: false
-
-Style/AndOr:
-  Enabled: false
-
-Style/Not:
-  Enabled: false
-
-Layout/AlignHash:
-  Enabled: false
-
-Style/FormatString:
   Exclude:
-    - 'app/decorators/result_decorator.rb'
+    - 'app/models/candidate.rb'
+    - 'app/models/result.rb'
+    - 'app/concerns/draw_behaviour.rb'
 
-Style/NumericPredicate:
-  Enabled: false
-
-Layout/LeadingCommentSpace:
-  Enabled: false
-
-Layout/SpaceInsideBlockBraces:
+RSpec/BeforeAfterAll:
   Exclude:
-    - 'spec/factories.rb'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'spec/support/**/*.rb'
+    - 'spec/lib/result_decorator_spec.rb'
+    - 'spec/models/imported_csv_alliance_spec.rb'
+    - 'spec/models/imported_csv_candidate_spec.rb'
+    - 'spec/models/imported_csv_coalition_spec.rb'
+    - 'spec/models/imported_csv_vote_spec.rb'

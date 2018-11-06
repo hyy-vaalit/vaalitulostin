@@ -16,10 +16,10 @@
 #
 # rubocop:disable Metrics/ClassLength
 class Result < ApplicationRecord
-  has_many :coalition_proportionals, :dependent => :destroy
-  has_many :alliance_proportionals, :dependent => :destroy
+  has_many :coalition_proportionals, dependent: :destroy
+  has_many :alliance_proportionals, dependent: :destroy
 
-  has_many :candidate_results, :dependent => :destroy
+  has_many :candidate_results, dependent: :destroy
   has_many :candidates,
            lambda {
              select "candidates.id,
@@ -29,11 +29,11 @@ class Result < ApplicationRecord
            },
            through: :candidate_results
 
-  has_many :alliance_results, :dependent => :destroy
+  has_many :alliance_results, dependent: :destroy
   has_many :electoral_alliances,
-           :through => :alliance_results
+           through: :alliance_results
 
-  has_many :coalition_results, :dependent => :destroy
+  has_many :coalition_results, dependent: :destroy
   has_many :electoral_coalitions,
            lambda {
              select "electoral_coalitions.id,
@@ -42,9 +42,9 @@ class Result < ApplicationRecord
            },
            through: :coalition_results
 
-  has_many :candidate_draws, :dependent => :destroy
-  has_many :alliance_draws, :dependent => :destroy
-  has_many :coalition_draws, :dependent => :destroy
+  has_many :candidate_draws, dependent: :destroy
+  has_many :alliance_draws, dependent: :destroy
+  has_many :coalition_draws, dependent: :destroy
 
   after_create :calculate!
 
@@ -53,11 +53,11 @@ class Result < ApplicationRecord
   end
 
   def self.final
-    where(:final => true)
+    where(final: true)
   end
 
   def self.freezed
-    where(:freezed => true)
+    where(freezed: true)
   end
 
   # A frozen result is used for draws.
@@ -73,7 +73,7 @@ class Result < ApplicationRecord
     end
 
     Rails.logger.info "Creating a Frozen Result"
-    self.create! :freezed => true
+    self.create! freezed: true
   end
 
   def self.candidate_draws_ready!
@@ -92,37 +92,37 @@ class Result < ApplicationRecord
   end
 
   def processed!
-    update!(:in_process => false)
+    update!(in_process: false)
   end
 
   def in_process!
-    update!(:in_process => true)
+    update!(in_process: true)
   end
 
   def published!
-    update!(:published => true)
+    update!(published: true)
   end
 
   def published_pending!
-    update!(:published_pending => true)
+    update!(published_pending: true)
   end
 
   def pending_candidate_draws?
     return false unless freezed?
 
-    not candidate_draws_ready?
+    !candidate_draws_ready?
   end
 
   def pending_alliance_draws?
     return false if pending_candidate_draws?
 
-    not alliance_draws_ready?
+    !alliance_draws_ready?
   end
 
   def pending_coalition_draws?
-    return false if pending_alliance_draws? or pending_candidate_draws?
+    return false if pending_alliance_draws? || pending_candidate_draws?
 
-    not coalition_draws_ready?
+    !coalition_draws_ready?
   end
 
   # Result must be freezed before any draws can be marked ready.
@@ -130,7 +130,7 @@ class Result < ApplicationRecord
     return false unless self.freezed?
 
     Result.transaction do
-      update!(:candidate_draws_ready => true)
+      update!(candidate_draws_ready: true)
       recalculate!
       create_alliance_draws!
       create_coalition_draws!
@@ -145,7 +145,7 @@ class Result < ApplicationRecord
     return false unless self.candidate_draws_ready?
 
     Result.transaction do
-      update!(:alliance_draws_ready => true)
+      update!(alliance_draws_ready: true)
       recalculate!
       create_coalition_draws!
       processed!
@@ -160,7 +160,7 @@ class Result < ApplicationRecord
     return false unless self.alliance_draws_ready?
 
     Result.transaction do
-      self.update!(:final => true, :coalition_draws_ready => true)
+      self.update!(final: true, coalition_draws_ready: true)
       recalculate!
       processed!
     end
@@ -262,7 +262,7 @@ class Result < ApplicationRecord
       )
     end
 
-    self.update!(:vote_sum_cache => Vote.countable_sum)
+    self.update!(vote_sum_cache: Vote.countable_sum)
   end
 
   def elect_candidates!
@@ -271,7 +271,7 @@ class Result < ApplicationRecord
   end
 
   def create_candidate_draws!
-    CandidateDraw.where(:result_id => self.id).destroy_all
+    CandidateDraw.where(result_id: self.id).destroy_all
     CandidateResult.find_duplicate_vote_sums(self.id).each_with_index do |draw, index|
       candidate_ids = ElectoralAlliance.find(draw.electoral_alliance_id).candidate_ids
       draw_candidate_results =
@@ -302,7 +302,7 @@ class Result < ApplicationRecord
   private
 
   def create_proportional_draws!(draw_class, proportional_class)
-    draw_class.where(:result_id => self.id).destroy_all
+    draw_class.where(result_id: self.id).destroy_all
 
     proportional_class.find_duplicate_numbers(self.id).each_with_index do |draw_proportional, index|
       draw_candidate_ids = proportional_class.find_draw_candidate_ids_of(draw_proportional, self.id)

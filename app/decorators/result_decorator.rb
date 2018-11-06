@@ -52,7 +52,7 @@ class ResultDecorator < ApplicationDecorator
       .new(Rails.configuration.paths['app/views'])
       .render(
         partial: "manage/results/result.html.erb",
-        locals: { :result_decorator => self }
+        locals: { result_decorator: self }
       )
   end
 
@@ -62,7 +62,7 @@ class ResultDecorator < ApplicationDecorator
       .new(Rails.configuration.paths['app/views'])
       .render(
         template: "manage/results/show.json",
-        locals: { :result => self }
+        locals: { result: self }
       )
   end
 
@@ -72,7 +72,7 @@ class ResultDecorator < ApplicationDecorator
       .new(Rails.configuration.paths['app/views'])
       .render(
         template: "manage/results/candidates.json",
-        locals: { :result => self }
+        locals: { result: self }
       )
   end
 
@@ -106,7 +106,7 @@ class ResultDecorator < ApplicationDecorator
   end
   # rubocop:enable Rails/OutputSafety
 
-  #RENKAAT________________________________________________________________ÄÄNET_PA
+  # RENKAAT________________________________________________________________ÄÄNET_PA
   #  6. Svenska Nationer och Ämnesföreningar (SNÄf)...................SNÄf  555  3
   def coalition_result_line(coalition_result, index)
     formatted_order_number(index + 1) + ". " +
@@ -168,7 +168,7 @@ class ResultDecorator < ApplicationDecorator
   def fill_dots(line_width, *contents)
     content_length = contents.map(&:length).sum
     dot_count = line_width - content_length
-    dot_count = 0 if dot_count < 0
+    dot_count = 0 if dot_count.negative?
 
     '.' * dot_count
   end

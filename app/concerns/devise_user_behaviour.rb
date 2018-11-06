@@ -3,9 +3,9 @@ module DeviseUserBehaviour
 
   included do
     # Generate a password only if it was not set manually (when password_confirmation is present)
-    before_validation :generate_password, :on => :create, :if => "password_confirmation.nil?"
+    before_validation :generate_password, on: :create, if: "password_confirmation.nil?"
 
-    validates_presence_of :password, :on => :create
+    validates_presence_of :password, on: :create
 
     protected
 

@@ -33,12 +33,12 @@ describe ResultDecorator do
 
     # "124* Testinen, Martti 'Sakke'...... 789 Tumpit   42ax  432.12345    123.45678 a"
     expected = "#{idx + 1}* #{candidate_name}...... #{cno} #{alliance}   #{votes}#{candidate_draw}  #{aprop}#{alliance_draw}  #{cprop}#{coalition_draw}"
-    @decorator.candidate_result_line(candidate, idx).should == expected
+    expect(@decorator.candidate_result_line(candidate, idx)).to eq expected
   end
 
   it 'formats the coalition result line' do
     vote_sum = 1234
-    coalition_result = FactoryGirl.build(:coalition_result, :vote_sum_cache => vote_sum)
+    coalition_result = FactoryGirl.build(:coalition_result, vote_sum_cache: vote_sum)
     coalition = coalition_result.electoral_coalition
     places    = 0
     idx       = 1
@@ -46,12 +46,12 @@ describe ResultDecorator do
 
     expected = "  #{idx + 1}. #{coalition.name}#{'.' * dot_count}#{coalition.shorten} #{vote_sum}  #{places}"
 
-    @decorator.coalition_result_line(coalition_result, idx).should == expected
+    expect(@decorator.coalition_result_line(coalition_result, idx)).to eq expected
   end
 
   it 'formats the alliance result line' do
     vote_sum = 1234
-    alliance_result = FactoryGirl.build(:alliance_result, :vote_sum_cache => vote_sum)
+    alliance_result = FactoryGirl.build(:alliance_result, vote_sum_cache: vote_sum)
     alliance = alliance_result.electoral_alliance
     places   = 0
     idx      = 1
@@ -60,12 +60,12 @@ describe ResultDecorator do
     # 1. HYYn Vihreät - De Gröna vid HUS........................HyVi MP     1045  4
     expected = "  #{idx + 1}. #{alliance.name}#{'.' * dot_count}.#{alliance.shorten} #{alliance.electoral_coalition.shorten}   #{vote_sum}  #{places}"
 
-    @decorator.alliance_result_line(alliance_result, idx).should == expected
+    expect(@decorator.alliance_result_line(alliance_result, idx)).to eq expected
   end
 
   it 'formats a long alliance result line' do
     vote_sum = 1234
-    alliance_result = FactoryGirl.build(:alliance_result, :vote_sum_cache => vote_sum)
+    alliance_result = FactoryGirl.build(:alliance_result, vote_sum_cache: vote_sum)
     coalition = "MP"
     alliance_shorten = "SitVas"
     alliance_name           = "Sitoutumaton vasemmisto - Obunden vänster - Independent Left"
@@ -80,15 +80,15 @@ describe ResultDecorator do
     # 2. Sitoutumaton vasemmisto - Obunden vänster - Independe.SitVas MP       96  5
     expected = "  #{idx + 1}. #{truncated_alliance_name}.#{alliance_shorten} #{coalition}     #{vote_sum}  #{places}"
 
-    @decorator.alliance_result_line(alliance_result, idx).should == expected
+    expect(@decorator.alliance_result_line(alliance_result, idx)).to eq expected
   end
 
   it 'generates dot fillings' do
     line_width = 100
-    words = ["eka", "toka"]
+    words = %w[eka toka]
     expected_dot_count = 100 - words.first.length - words.last.length
 
-    @decorator.fill_dots(line_width, words.first, words.last).should == '.' * expected_dot_count
+    expect(@decorator.fill_dots(line_width, words.first, words.last)).to eq '.' * expected_dot_count
   end
 
   it 'formats candidate order number' do
@@ -154,7 +154,7 @@ describe ResultDecorator do
     dot_count = 66 - name.length - shorten.length
 
     expected = name + ('.' * dot_count) + shorten
-    @decorator.formatted_coalition_name_with_dots_and_shorten(name, shorten).should == expected
+    expect(@decorator.formatted_coalition_name_with_dots_and_shorten(name, shorten)).to eq expected
   end
 
   it 'formats dots after the candidate name' do

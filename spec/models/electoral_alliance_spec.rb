@@ -13,12 +13,12 @@ describe ElectoralAlliance do
     votes = 10
     alliance = FactoryGirl.create(:electoral_alliance)
     result = FactoryGirl.create(:result)
-    candidate = FactoryGirl.create(:candidate, :electoral_alliance => alliance)
-    another_candidate = FactoryGirl.create(:candidate, :electoral_alliance => alliance)
-    FactoryGirl.create(:candidate_result, :vote_sum_cache => votes,
-                                          :candidate => candidate, :result => result)
-    FactoryGirl.create(:candidate_result, :vote_sum_cache => votes,
-                                          :candidate => another_candidate, :result => result)
+    candidate = FactoryGirl.create(:candidate, electoral_alliance: alliance)
+    another_candidate = FactoryGirl.create(:candidate, electoral_alliance: alliance)
+    FactoryGirl.create(:candidate_result, vote_sum_cache: votes,
+                                          candidate: candidate, result: result)
+    FactoryGirl.create(:candidate_result, vote_sum_cache: votes,
+                                          candidate: another_candidate, result: result)
 
     expect(
       alliance
@@ -34,11 +34,11 @@ describe ElectoralAlliance do
     alliance = FactoryGirl.create(:electoral_alliance)
     result = FactoryGirl.create(:result)
     another_result = FactoryGirl.create(:result)
-    candidate = FactoryGirl.create(:candidate, :electoral_alliance => alliance)
-    FactoryGirl.create(:candidate_result, :vote_sum_cache => votes,
-                                          :candidate => candidate, :result => result)
-    FactoryGirl.create(:candidate_result, :vote_sum_cache => votes,
-                                          :candidate => candidate, :result => another_result)
+    candidate = FactoryGirl.create(:candidate, electoral_alliance: alliance)
+    FactoryGirl.create(:candidate_result, vote_sum_cache: votes,
+                                          candidate: candidate, result: result)
+    FactoryGirl.create(:candidate_result, vote_sum_cache: votes,
+                                          candidate: candidate, result: another_result)
 
     expect(
       alliance

@@ -27,7 +27,7 @@ class S3Publisher
       "#{Vaalit::Results::DIRECTORY}/lulz.txt",
       "Lulz: #{Time.now.utc}",
       Vaalit::Results::S3_BUCKET_NAME,
-      :content_type => 'text/html; charset=utf-8'
+      content_type: 'text/html; charset=utf-8'
     )
   end
 end

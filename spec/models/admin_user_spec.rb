@@ -3,7 +3,7 @@ describe AdminUser do
 
   it "generates password after creation" do
     expect(user.encrypted_password).to eq ""
-    user.save :validation => false
+    user.save validation: false
 
     expect(user.encrypted_password).not_to eq ""
   end

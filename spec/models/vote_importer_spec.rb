@@ -2,12 +2,10 @@ RSpec.describe VoteImporter, type: :model do
   describe "Creation" do
     let(:votes1) { 59 }
     let(:votes2) { 123 }
-
-    before do
-      alliance_name = "Akateemiset nallekarhut"
-      alliance = FactoryGirl.create(:electoral_alliance, name: alliance_name)
-
-      candidates = [
+    let(:alliance_name) { "Akateemiset nallekarhut" }
+    let(:alliance) { FactoryGirl.create :electoral_alliance, name: alliance_name }
+    let(:candidates) do
+      [
         FactoryGirl.create(
           :candidate,
           electoral_alliance: alliance,
@@ -21,7 +19,9 @@ RSpec.describe VoteImporter, type: :model do
           candidate_number: 345
         )
       ]
+    end
 
+    before do
       @data = <<~EOCSV
         ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
         #{candidates[0].candidate_number},"#{candidates[0].candidate_name}",#{votes1},#{alliance.name},#{alliance.id}
