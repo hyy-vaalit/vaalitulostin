@@ -21,7 +21,7 @@ class VoteImporter
         @voting_area.ready!
       rescue Exception => e
         Rails.logger.error "Failed importing votes: #{e.message}"
-        raise ActiveRecord::Rollback
+        raise e
       end
     end
   end
