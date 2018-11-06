@@ -60,6 +60,7 @@ end
 
 group :test do
   gem 'database_cleaner'
+  gem 'fuubar'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
