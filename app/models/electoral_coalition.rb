@@ -16,14 +16,4 @@ class ElectoralCoalition < ApplicationRecord
   def countable_vote_sum
     electoral_alliances.map(&:votes).map(&:countable_sum).sum # sql trololooo
   end
-
-  def self.are_all_ordered?
-    self.where(:numbering_order => nil).count == 0
-  end
-
-  def self.give_orders coalition_data
-    coalition_data.to_a.each do |array|
-      self.find(array.first).update_attribute :numbering_order, array.last
-    end
-  end
 end

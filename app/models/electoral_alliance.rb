@@ -40,21 +40,4 @@ class ElectoralAlliance < ApplicationRecord
       )
       .group('candidate_results.result_id')
   end
-
-  def freeze!
-    if expected_candidate_count && candidates.count == expected_candidate_count
-      return self.update! secretarial_freeze: true
-    else
-      errors.add :expected_candidate_count, "does not match to actual candidate count"
-      return false
-    end
-  end
-
-  def has_all_candidates?
-    candidates.count == expected_candidate_count
-  end
-
-  def self.are_all_ready?
-    self.count == self.ready.count
-  end
 end
