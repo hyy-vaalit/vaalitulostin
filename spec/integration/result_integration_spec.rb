@@ -8,6 +8,8 @@ RSpec.describe Result, type: :integration do
     Timecop.freeze Time.parse('2009-11-11 00:00:00+00:00').utc
 
     Seed::Year2009.import_base_data!
+
+    @result = Result.freeze_for_draws!
   end
 
   after do
@@ -15,8 +17,6 @@ RSpec.describe Result, type: :integration do
   end
 
   context 'when first result is created after all votes are submitted' do
-    let!(:subject) { Result.freeze_for_draws! } # calculates proportionals
-
     it 'calculates correct candidate proportionals' do
       proportionals = comparer.proportionals
 
@@ -54,14 +54,12 @@ RSpec.describe Result, type: :integration do
   end
 
   context 'when candidate draw order has been determined' do
-    let!(:result) { Result.freeze_for_draws! } # calculates proportionals
-
     before do
       Seed::Year2009.import_candidate_draw_order!
     end
 
     it 'calculates equivalent alliance draws than 2009 data' do
-      expect(result.candidate_draws_ready!).to eq result
+      expect(@result.candidate_draws_ready!).to eq @result
 
       final_votes = comparer.final_votes
       all_candidates.each_with_index do |candidate, index|
@@ -79,16 +77,14 @@ RSpec.describe Result, type: :integration do
   end
 
   context 'when alliance draw order has been determined' do
-    let!(:result) { Result.freeze_for_draws! } # calculates proportionals
-
     before do
       Seed::Year2009.import_candidate_draw_order!
-      result.candidate_draws_ready!
+      @result.candidate_draws_ready!
       Seed::Year2009.import_alliance_draw_order!
     end
 
     it 'calculates equivalent alliance draws than 2009 data' do
-      expect(result.alliance_draws_ready!).to eq result
+      expect(@result.alliance_draws_ready!).to eq @result
 
       all_candidates.each_with_index do |candidate, index|
         csv_row = comparison_votes[index]
@@ -105,8 +101,6 @@ RSpec.describe Result, type: :integration do
   end
 
   context 'when final result can be calculated' do
-    let!(:result) { Result.freeze_for_draws! } # calculates proportionals
-
     let(:dir) { File.join __dir__, 'expected_final_result' }
     let(:result_html) { File.read File.join(dir, 'result.html') }
     let(:result_json) { File.read File.join(dir, 'result.json') }
@@ -114,14 +108,14 @@ RSpec.describe Result, type: :integration do
 
     before do
       Seed::Year2009.import_candidate_draw_order!
-      result.candidate_draws_ready!
+      @result.candidate_draws_ready!
       Seed::Year2009.import_alliance_draw_order!
-      result.alliance_draws_ready!
+      @result.alliance_draws_ready!
       Seed::Year2009.import_coalition_draw_order!
     end
 
-    it 'calculates equivalent coalition draws than 2009 data' do
-      expect(result.finalize!).to eq result
+    it 'calculates equivalent coalition draws than 2009 data and renders identical output' do
+      expect(@result.finalize!).to eq @result
 
       all_candidates.each_with_index do |candidate, index|
         csv_row = comparison_votes[index]
@@ -134,16 +128,12 @@ RSpec.describe Result, type: :integration do
           expect(db_row.coalition_draw_id).to be_present
         end
       end
-    end
 
-    it 'renders the final result' do
-      result.finalize!
-
-      decorator = ResultDecorator.decorate result
+      # Combined into the same test to spare some time in resetting the database
+      decorator = ResultDecorator.decorate @result
 
       expect(decorator.to_html).to eq result_html
       expect(decorator.to_json).to include_json JSON.parse(result_json)
-      # expect(decorator.to_json_candidates).to include_json(JSON.parse(candidates))
     end
   end
 end
