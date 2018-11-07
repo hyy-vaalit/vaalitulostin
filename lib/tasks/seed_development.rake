@@ -270,6 +270,11 @@ namespace :db do
             .votes
             .create!(voting_area: voting_area, amount: vote_count)
         end
+
+        puts 'Calculating initial result'
+        voting_area.submitted!
+        voting_area.ready!
+        Result.create!
       end
 
     end

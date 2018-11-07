@@ -1,3 +1,3 @@
-class AllianceDraw < ActiveRecord::Base
+class AllianceDraw < ApplicationRecord
   include DrawBehaviour
 end

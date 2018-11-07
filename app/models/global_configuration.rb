@@ -1,8 +1,7 @@
 #
 # TODO: Read configuration from environment vars
 #
-class GlobalConfiguration < ActiveRecord::Base
-
+class GlobalConfiguration < ApplicationRecord
   def self.mail_from_address
     Vaalit::Public::EMAIL_FROM_ADDRESS
   end
@@ -37,5 +36,4 @@ class GlobalConfiguration < ActiveRecord::Base
   def self.voting_percentage
     first.voting_percentage
   end
-
 end

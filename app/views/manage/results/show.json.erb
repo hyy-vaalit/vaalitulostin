@@ -31,14 +31,30 @@
               name candidate_result.candidate_name
               value candidate_result.vote_sum.to_i
               seats candidate_result.elected? ? 1 : 0
+
+              co_prop candidate_result.coalition_proportional
+              al_prop candidate_result.alliance_proportional
+
+              if candidate_result.coalition_draw_identifier.present?
+                co_draw_id candidate_result.coalition_draw_identifier
+                co_draw_affects_elected candidate_result.coalition_draw_affects_elected?
+              end
+
+              if candidate_result.alliance_draw_identifier.present?
+                al_draw_id candidate_result.alliance_draw_identifier
+                al_draw_affects_elected candidate_result.alliance_draw_affects_elected?
+              end
+
+              if candidate_result.candidate_draw_identifier.present?
+                ca_draw_id candidate_result.candidate_draw_identifier
+                ca_draw_affects_elected candidate_result.candidate_draw_affects_elected?
+              end
+
               role "candidate"
             end
           end
-
         end
       end
-
     end
   end
-
 end) %>

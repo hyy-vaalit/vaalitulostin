@@ -1,12 +1,10 @@
-require 'spec_helper'
-
 describe AdminUser do
+  subject(:user) { described_class.new }
 
-  it "should have generated password after creation" do
-    user = AdminUser.new
-    user.encrypted_password.should == ""
-    user.save :validation => false
-    user.encrypted_password.should_not == ""
+  it "generates password after creation" do
+    expect(user.encrypted_password).to eq ""
+    user.save validation: false
+
+    expect(user.encrypted_password).not_to eq ""
   end
-
 end

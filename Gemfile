@@ -10,6 +10,10 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 
 gem 'pry-rails' # friendlier rails console
+gem 'pry-highlight'
+gem 'pry-doc'
+gem 'pry-rescue'
+gem 'pry-stack_explorer'
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -18,10 +22,10 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-##TODO: gem 'jbuilder', '~> 2.5'
-gem 'json_builder' #TODO:Voiko käyttää jbuilder
+# gem 'jbuilder'
+gem 'json_builder' # TODO: json_builder is no longer maintained, use jbuilder
 
-#TODO: Migrate to Amazon official gem which now includes S3
+# TODO: Migrate to Amazon official gem which now includes S3
 gem "aws-s3", require: "aws/s3", github: 'pre/aws-s3'
 
 gem 'rollbar'
@@ -38,22 +42,34 @@ gem 'formtastic'
 
 group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
-  gem 'database_cleaner'
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
-  gem 'guard-rspec'
+  gem 'pry-byebug'
   gem 'dotenv-rails'
-  gem 'foreman'
 end
 
 group :development do
-  gem 'web-console' # Access console on exception pages or by using <%= console %>
-  gem 'listen', '~> 3.0.5'
-  gem 'spring' # keep application running in the background. Read more: https://github.com/rails/spring
+  gem 'foreman'
+
+  # keep application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-commands-rspec'
+
   gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
+  gem 'guard-rubocop'
+  gem 'terminal-notifier-guard', require: false
+end
+
+group :test do
+  gem 'database_cleaner'
+  gem 'fuubar'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'rspec-json_expectations'
+  gem 'factory_girl_rails'
+  gem 'timecop'
+  gem 'guard-rspec'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

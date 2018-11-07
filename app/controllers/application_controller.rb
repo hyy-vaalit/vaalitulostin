@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  check_authorization :unless => :devise_controller?
+  check_authorization unless: :devise_controller?
 
-  before_action :authorize_this!, :unless => :devise_controller?
+  before_action :authorize_this!, unless: :devise_controller?
 
   protected
 
@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
     raise "Not implemented"
   end
 
-  def after_sign_in_path_for(resource)
+  def after_sign_in_path_for(_resource)
     dashboard_path
   end
 
@@ -25,7 +25,6 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "[ApplicationController] Rescued CanCan::AccessDenied and redirecting to safety"
-    redirect_to root_path, :alert => exception.message
+    redirect_to root_path, alert: exception.message
   end
-
 end

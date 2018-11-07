@@ -14,32 +14,37 @@
 # N.B. Ruby defines a "frozen" method for Object, so be aware of the
 #      mixup with "freezed".
 #
-class Result < ActiveRecord::Base
-  has_many :coalition_proportionals, :dependent => :destroy
-  has_many :alliance_proportionals, :dependent => :destroy
+# rubocop:disable Metrics/ClassLength
+class Result < ApplicationRecord
+  has_many :coalition_proportionals, dependent: :destroy
+  has_many :alliance_proportionals, dependent: :destroy
 
-  has_many :candidate_results, :dependent => :destroy
+  has_many :candidate_results, dependent: :destroy
   has_many :candidates,
-            -> { select "candidates.id,
-                        candidates.candidate_name,
-                        candidates.candidate_number,
-                        candidates.electoral_alliance_id" },
+           lambda {
+             select "candidates.id,
+               candidates.candidate_name,
+               candidates.candidate_number,
+               candidates.electoral_alliance_id"
+           },
            through: :candidate_results
 
-  has_many :alliance_results, :dependent => :destroy
+  has_many :alliance_results, dependent: :destroy
   has_many :electoral_alliances,
-           :through => :alliance_results
+           through: :alliance_results
 
-  has_many :coalition_results, :dependent => :destroy
+  has_many :coalition_results, dependent: :destroy
   has_many :electoral_coalitions,
-            -> { select "electoral_coalitions.id,
-                         electoral_coalitions.name,
-                         electoral_coalitions.shorten" },
-            through: :coalition_results
+           lambda {
+             select "electoral_coalitions.id,
+               electoral_coalitions.name,
+               electoral_coalitions.shorten"
+           },
+           through: :coalition_results
 
-  has_many :candidate_draws, :dependent => :destroy
-  has_many :alliance_draws, :dependent => :destroy
-  has_many :coalition_draws, :dependent => :destroy
+  has_many :candidate_draws, dependent: :destroy
+  has_many :alliance_draws, dependent: :destroy
+  has_many :coalition_draws, dependent: :destroy
 
   after_create :calculate!
 
@@ -48,11 +53,11 @@ class Result < ActiveRecord::Base
   end
 
   def self.final
-    where(:final => true)
+    where(final: true)
   end
 
   def self.freezed
-    where(:freezed => true)
+    where(freezed: true)
   end
 
   # A frozen result is used for draws.
@@ -63,80 +68,104 @@ class Result < ActiveRecord::Base
   #
   # Only one freezed result may be created at a time.
   def self.freeze_for_draws!
-    raise "Unexpectedly a freezed or final result already exists!" if self.freezed.any? or self.final.any?
+    if self.freezed.any? || self.final.any?
+      raise "Unexpectedly a frozen or final result already exists!"
+    end
 
-    self.create! :freezed => true
+    Rails.logger.info "Creating a Frozen Result"
+    self.create! freezed: true
+  end
+
+  def self.candidate_draws_ready!
+    Rails.logger.info "Marking candidate draws ready and calculating new alliance draws!"
+    Result.freezed.first.candidate_draws_ready!
+  end
+
+  def self.alliance_draws_ready!
+    Rails.logger.info "Marking alliance draws ready and calculating new coalition draws!"
+    Result.freezed.first.alliance_draws_ready!
+  end
+
+  def self.finalize!
+    Rails.logger.info "Creating the Final Result"
+    Result.freezed.first.finalize!
   end
 
   def processed!
-    update_attributes!(:in_process => false)
+    update!(in_process: false)
   end
 
   def in_process!
-    update_attributes!(:in_process => true)
+    update!(in_process: true)
   end
 
   def published!
-    update_attributes!(:published => true)
+    update!(published: true)
   end
 
   def published_pending!
-    update_attributes!(:published_pending => true)
+    update!(published_pending: true)
   end
 
   def pending_candidate_draws?
-    return false if not freezed?
+    return false unless freezed?
 
-    not candidate_draws_ready?
+    !candidate_draws_ready?
   end
 
   def pending_alliance_draws?
     return false if pending_candidate_draws?
 
-    not alliance_draws_ready?
+    !alliance_draws_ready?
   end
 
   def pending_coalition_draws?
-    return false if pending_alliance_draws? or pending_candidate_draws?
+    return false if pending_alliance_draws? || pending_candidate_draws?
 
-    not coalition_draws_ready?
+    !coalition_draws_ready?
   end
 
   # Result must be freezed before any draws can be marked ready.
   def candidate_draws_ready!
-    return false if not self.freezed?
+    return false unless self.freezed?
 
     Result.transaction do
-      update_attributes!(:candidate_draws_ready => true)
+      update!(candidate_draws_ready: true)
       recalculate!
       create_alliance_draws!
       create_coalition_draws!
       processed!
     end
+
+    self
   end
 
   # Candidate draws must be marked ready before alliance draws can be finalized.
   def alliance_draws_ready!
-    return false if not self.candidate_draws_ready?
+    return false unless self.candidate_draws_ready?
 
     Result.transaction do
-      update_attributes!(:alliance_draws_ready => true)
+      update!(alliance_draws_ready: true)
       recalculate!
       create_coalition_draws!
       processed!
     end
+
+    self
   end
 
   # Result is finalized after all drawings have been made.
   # Alliance draws must be marked ready result can be finalized.
   def finalize!
-    return false if not self.alliance_draws_ready?
+    return false unless self.alliance_draws_ready?
 
     Result.transaction do
-      self.update_attributes!(:final => true, :coalition_draws_ready => true)
+      self.update!(final: true, coalition_draws_ready: true)
       recalculate!
       processed!
     end
+
+    self
   end
 
   def filename(suffix = ".html", prefix = "result")
@@ -181,9 +210,9 @@ class Result < ActiveRecord::Base
   end
 
   def candidate_results_of(alliance_result)
-    candidate_results_in_election_order.where(
-      'electoral_alliance_id = ? ', alliance_result.electoral_alliance_id).reorder(
-      'alliance_proportionals.number desc')
+    candidate_results_in_election_order
+      .where('electoral_alliance_id = ? ', alliance_result.electoral_alliance_id)
+      .reorder('alliance_proportionals.number desc')
   end
 
   def elected_candidates_in_alliance(alliance_result)
@@ -193,7 +222,6 @@ class Result < ActiveRecord::Base
   def elected_candidates_in_coalition(coalition_result)
     CandidateResult.elected_in_coalition(coalition_result.electoral_coalition_id, coalition_result.result_id)
   end
-
 
   protected
 
@@ -227,10 +255,14 @@ class Result < ActiveRecord::Base
 
   def calculate_votes!
     Candidate.with_vote_sums.each do |candidate|
-      CandidateResult.create! :result => self, :vote_sum_cache => candidate.vote_sum, :candidate_id => candidate.id
+      CandidateResult.create!(
+        result: self,
+        vote_sum_cache: candidate.vote_sum,
+        candidate_id: candidate.id
+      )
     end
 
-    self.update_attributes!(:vote_sum_cache => Vote.countable_sum)
+    self.update!(vote_sum_cache: Vote.countable_sum)
   end
 
   def elect_candidates!
@@ -239,14 +271,22 @@ class Result < ActiveRecord::Base
   end
 
   def create_candidate_draws!
-    CandidateDraw.where(:result_id => self.id).destroy_all
+    CandidateDraw.where(result_id: self.id).destroy_all
     CandidateResult.find_duplicate_vote_sums(self.id).each_with_index do |draw, index|
       candidate_ids = ElectoralAlliance.find(draw.electoral_alliance_id).candidate_ids
-      draw_candidate_results = self.candidate_results.where(["candidate_id IN (?) AND vote_sum_cache = ?", candidate_ids, draw.vote_sum_cache])
+      draw_candidate_results =
+        candidate_results
+        .where(
+          "candidate_id IN (?) AND vote_sum_cache = ?",
+          candidate_ids,
+          draw.vote_sum_cache
+        )
 
-      candidate_draw = CandidateDraw.create! :result_id => self.id,
-                                           :identifier_number => index,
-                                           :affects_elected_candidates => CandidateDraw.affects_elected?(draw_candidate_results)
+      candidate_draw = CandidateDraw.create!(
+        result_id: self.id,
+        identifier_number: index,
+        affects_elected_candidates: CandidateDraw.affects_elected?(draw_candidate_results)
+      )
       candidate_draw.candidate_results << draw_candidate_results
     end
   end
@@ -259,19 +299,20 @@ class Result < ActiveRecord::Base
     create_proportional_draws!(CoalitionDraw, CoalitionProportional)
   end
 
-
   private
 
   def create_proportional_draws!(draw_class, proportional_class)
-    draw_class.where(:result_id => self.id).destroy_all
+    draw_class.where(result_id: self.id).destroy_all
 
     proportional_class.find_duplicate_numbers(self.id).each_with_index do |draw_proportional, index|
       draw_candidate_ids = proportional_class.find_draw_candidate_ids_of(draw_proportional, self.id)
       draw_candidate_results = find_candidate_results_for(draw_candidate_ids)
 
-      draw = draw_class.create! :result_id => self.id,
-                                :identifier_number => index,
-                                :affects_elected_candidates => draw_class.affects_elected?(draw_candidate_results)
+      draw = draw_class.create!(
+        result_id: self.id,
+        identifier_number: index,
+        affects_elected_candidates: draw_class.affects_elected?(draw_candidate_results)
+      )
       draw.candidate_results << draw_candidate_results
     end
   end
@@ -280,3 +321,4 @@ class Result < ActiveRecord::Base
     candidate_results.where(["candidate_id IN (?)", candidate_ids])
   end
 end
+# rubocop:enable Metrics/ClassLength

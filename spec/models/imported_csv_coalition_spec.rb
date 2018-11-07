@@ -1,9 +1,7 @@
-require 'rails_helper'
 require './lib/support/imported_csv_coalition'
 
 RSpec.describe ImportedCsvCoalition, type: :model do
   describe "Creation" do
-
     before(:all) do
       sep = ","
       data  = 'Iso Vaalirengas,1,isohko,16'
@@ -12,7 +10,6 @@ RSpec.describe ImportedCsvCoalition, type: :model do
       CSV.parse(data, col_sep: sep) do |row|
         @rows << row
       end
-
     end
 
     it "builds from csv" do
@@ -31,7 +28,6 @@ RSpec.describe ImportedCsvCoalition, type: :model do
       expect(coalition.name).to eq("Iso Vaalirengas")
       expect(coalition.numbering_order).to eq(1)
       expect(coalition.shorten).to eq("isohko")
-      #TODO: expect(coalition.expected_alliance_count).to eq(16)
     end
   end
 end

@@ -12,11 +12,10 @@
 #  - vasta äänestysalueen merkitseminen valmiiksi (submitted) estää
 #    uusien äänien syöttämisen kyseiselle alueelle.
 #
-class VotingArea < ActiveRecord::Base
-
+class VotingArea < ApplicationRecord
   has_many :votes
 
-  validates_uniqueness_of :code
+  validates :code, uniqueness: true
 
   scope :countable, -> { where('ready = ?', true) }
   scope :markable_as_ready, -> { where('submitted = ?', true) }
@@ -27,11 +26,10 @@ class VotingArea < ActiveRecord::Base
   end
 
   def ready!
-    update_attribute :ready, true
+    update! ready: true
   end
 
   def submitted!
-    update_attribute :submitted, true
+    update! submitted: true
   end
-
 end

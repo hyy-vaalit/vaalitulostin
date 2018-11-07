@@ -13,8 +13,8 @@ class Manage::ResultsController < ManageController
     @result = ResultDecorator.decorate Result.find(params[:id])
 
     respond_to do |format|
-      format.json { render :locals => {:result => @result} }
-      format.html { render :partial => "result", :locals => { :result_decorator => @result} }
+      format.json { render locals: { result: @result } }
+      format.html { render partial: "result", locals: { result_decorator: @result } }
     end
   end
 
@@ -22,7 +22,7 @@ class Manage::ResultsController < ManageController
     @result = ResultDecorator.decorate Result.find(params[:result_id])
 
     respond_to do |format|
-      format.json { render params[:target], :locals => {:result => @result} }
+      format.json { render params[:target], locals: { result: @result } }
     end
   end
 
@@ -48,10 +48,9 @@ class Manage::ResultsController < ManageController
   def fetch_votes
     raise "Expected exactly one voting area to be present" unless VotingArea.count == 1
 
-    Delayed::Job::enqueue(ImportVotesJob.new(VotingArea.first))
+    Delayed::Job.enqueue(ImportVotesJob.new(VotingArea.first))
     flash[:notice] = "Äänet haetaan taustalla. Odota muutama minuutti ja lataa sivu uudelleen."
 
     redirect_to action: :index
   end
-
 end

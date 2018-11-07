@@ -1,1 +1,120 @@
 inherit_from: .rubocop_todo.yml
+
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'lib/support/**/*'
+    - 'lib/tasks/**/*'
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Rails:
+  Enabled: true
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 115
+  Exclude:
+    - 'app/models/vote.rb'
+    - 'app/concerns/draw_behaviour.rb'
+    - 'app/models/alliance_proportional.rb'
+    - 'app/models/alliance_result.rb'
+    - 'app/models/coalition_proportional.rb'
+    - 'app/models/coalition_result.rb'
+    - 'app/models/candidate_result.rb'
+    - 'app/models/electoral_coalition.rb'
+    - 'app/models/result.rb'
+    - 'app/models/candidate.rb'
+    - 'spec/models/imported_csv_candidate_spec.rb'
+  IgnoredPatterns:
+    - '^\s*Rails\.logger\.'
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Max: 40
+
+Metrics/CyclomaticComplexity:
+  Max: 12
+
+Metrics/PerceivedComplexity:
+  Max: 12
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/BlockLength:
+  CountComments: false
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/InstanceVariable:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Layout/FirstParameterIndentation:
+  Exclude:
+    - 'app/models/candidate.rb'
+    - 'app/models/result.rb'
+    - 'app/concerns/draw_behaviour.rb'
+
+Layout/MultilineMethodCallBraceLayout:
+  Exclude:
+    - 'app/models/candidate.rb'
+    - 'app/models/result.rb'
+    - 'app/concerns/draw_behaviour.rb'
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'spec/support/**/*.rb'
+    - 'spec/lib/result_decorator_spec.rb'
+    - 'spec/models/imported_csv_alliance_spec.rb'
+    - 'spec/models/imported_csv_candidate_spec.rb'
+    - 'spec/models/imported_csv_coalition_spec.rb'
+    - 'spec/models/imported_csv_vote_spec.rb'

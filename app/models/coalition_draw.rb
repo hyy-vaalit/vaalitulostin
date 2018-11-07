@@ -1,3 +1,3 @@
-class CoalitionDraw < ActiveRecord::Base
+class CoalitionDraw < ApplicationRecord
   include DrawBehaviour
 end

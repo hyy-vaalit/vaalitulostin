@@ -5,40 +5,29 @@
 # job calls actual publish method:
 #   - uploads Result#to_html to s3
 #   - uploads Result#to_json to s3
-#   - sets published=true if result is made "public" (ie. index.html or index.json), otherwise uses unique filename
+#   - sets published=true if result is made "public" (ie. index.html or index.json),
+#     otherwise uses unique filename
 class ResultPublisher
-
   def initialize(result)
     @result = result
     @s3_publisher = S3Publisher.new
   end
 
-  def self.create_and_store!
-    Result.transaction do
-      instance = self.new(Result.create!)
-
-      instance.store_to_s3!
-    end
-  end
-
-  def self.finalize_and_store!
-    Result.transaction do
-      result = Result.freezed.first
-      result.finalize!
-
-      instance = self.new(result)
-      instance.store_to_s3!
-    end
+  def self.store_to_s3!(result)
+    Rails.logger.info "Publishing Result (id: #{result.id}) to Amazon S3"
+    self.new(result).store_to_s3!
   end
 
   def publish!
     Result.transaction do
       @result.published_pending!
-      Delayed::Job::enqueue(PublishResultJob.new(@result.id))
+      Delayed::Job.enqueue(PublishResultJob.new(@result.id))
     end
   end
 
   def store_and_make_public!
+    Rails.logger.info "Publishing a previously created result (id: #{@result.id})."
+
     Result.transaction do
       @result.published!
       store_to_s3!
@@ -51,7 +40,10 @@ class ResultPublisher
 
     @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
     @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
-    @s3_publisher.store_s3_object(better_filename('.json', 'candidates'), decorated_result.to_json_candidates)
+    @s3_publisher.store_s3_object(
+      better_filename('.json', 'candidates'),
+      decorated_result.to_json_candidates
+    )
   end
 
   private

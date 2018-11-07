@@ -1,5 +1,4 @@
 class DrawsController < ApplicationController
-
   def index
     @result = Result.freezed.first
   end
@@ -8,7 +7,7 @@ class DrawsController < ApplicationController
     enqueue(CandidateDrawsReadyJob.new)
 
     redirect_to draws_path,
-                :notice => "Äänimäärien arvonnat merkitty valmiiksi.
+                notice: "Äänimäärien arvonnat merkitty valmiiksi.
                             Odota hetki ja lataa arvontasivu uudelleen, seuraavat arvonnat lasketaan taustalla."
   end
 
@@ -16,7 +15,7 @@ class DrawsController < ApplicationController
     enqueue(AllianceDrawsReadyJob.new)
 
     redirect_to draws_path,
-                :notice => "Liittovertailulukujen arvonnat merkitty valmiiksi.
+                notice: "Liittovertailulukujen arvonnat merkitty valmiiksi.
                             Odota hetki ja lataa arvontasivu uudelleen, seuraavat arvonnat lasketaan taustalla."
   end
 
@@ -24,10 +23,9 @@ class DrawsController < ApplicationController
     enqueue(CreateFinalResultJob.new)
 
     redirect_to draws_path,
-                :notice => "Rengasvertailulukujen arvonnat merkitty valmiiksi.
+                notice: "Rengasvertailulukujen arvonnat merkitty valmiiksi.
                             Odota hetki ja lataa arvontasivu uudelleen, lopullinen vaalitulos lasketaan taustalla."
   end
-
 
   protected
 
@@ -37,7 +35,7 @@ class DrawsController < ApplicationController
 
   def enqueue(job)
     Result.freezed.first.in_process!
-    Delayed::Job::enqueue(job)
+    Delayed::Job.enqueue(job)
   end
 
   def automatically?

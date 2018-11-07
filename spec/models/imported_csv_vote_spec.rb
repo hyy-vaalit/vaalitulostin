@@ -1,15 +1,12 @@
-require 'rails_helper'
-
 RSpec.describe ImportedCsvVote, type: :model do
   describe "Creation" do
-
     before(:all) do
       sep = ","
-      data  = <<-EOCSV
-ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
-32,"Hanski, Anna",59,Akateemiset nallekarhut,2
-4,"Savinen, Mäki",32,Akateemiset nallekarhut,2
-EOCSV
+      data = <<~EOCSV
+        ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
+        32,"Hanski, Anna",59,Akateemiset nallekarhut,2
+        4,"Savinen, Mäki",32,Akateemiset nallekarhut,2
+      EOCSV
       @rows = []
 
       CSV.parse(data, headers: true, col_sep: sep) do |row|
@@ -54,7 +51,6 @@ EOCSV
       expect(second.amount).to eq 32
       expect(Vote.countable_sum).to eq 59 + 32
       expect(candidate4.votes.preliminary_sum).to eq 32
-
     end
   end
 end

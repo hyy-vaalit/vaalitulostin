@@ -1,13 +1,20 @@
-require 'spec_helper'
-
 module VotableSupport
-
   def self.create_candidate_draws(alliance, result, draw_votes)
     alliance.candidates.each_with_index do |candidate, index|
-      if index % 2 == 0
-        FactoryGirl.create(:candidate_result, :vote_sum_cache => draw_votes, :result => result, :candidate => candidate)
+      if index.even?
+        FactoryGirl.create(
+          :candidate_result,
+          vote_sum_cache: draw_votes,
+          result: result,
+          candidate: candidate
+        )
       else
-        FactoryGirl.create(:candidate_result, :vote_sum_cache => index, :result => result, :candidate => candidate)
+        FactoryGirl.create(
+          :candidate_result,
+          vote_sum_cache: index,
+          result: result,
+          candidate: candidate
+        )
       end
     end
   end
@@ -18,7 +25,7 @@ module VotableSupport
 
   def self.create_votes_for_candidate(candidate, amount, voting_areas)
     voting_areas.each do |area|
-      FactoryGirl.create(:vote, :candidate => candidate, :voting_area => area, :amount => amount)
+      FactoryGirl.create(:vote, candidate: candidate, voting_area: area, amount: amount)
     end
   end
 
@@ -29,10 +36,9 @@ module VotableSupport
     voting_areas.each do |area|
       vote_amount = opts[:base_vote_count]
       candidates.each do |candidate|
-        FactoryGirl.create(:vote, :candidate => candidate, :voting_area => area, :amount => vote_amount)
+        FactoryGirl.create(:vote, candidate: candidate, voting_area: area, amount: vote_amount)
         opts[:ascending] ? vote_amount += 10 : vote_amount -= 10
       end
     end
   end
-
 end

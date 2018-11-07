@@ -1,9 +1,7 @@
-require 'rails_helper'
 require './lib/support/imported_csv_candidate'
 
 RSpec.describe ImportedCsvCandidate, type: :model do
   describe "Creation" do
-
     before(:all) do
       sep = ","
       data  = '291,Kaakkuri,Lanttu Aappa,"Kaakkuri, Lanttu",123456-1234,"09-1234567",etunimi.sukunimi@example.com,Testiosoite 1,10000 Helsinki,29,Akateemiset nallekarhut,H,"eipä kummempia"'
@@ -12,7 +10,6 @@ RSpec.describe ImportedCsvCandidate, type: :model do
       CSV.parse(data, col_sep: sep) do |row|
         @rows << row
       end
-
     end
 
     it "builds from csv" do
@@ -28,8 +25,8 @@ RSpec.describe ImportedCsvCandidate, type: :model do
     it "creates from csv" do
       coalition = FactoryGirl.create :electoral_coalition
       FactoryGirl.create :electoral_alliance,
-                          electoral_coalition: coalition,
-                          name: "Akateemiset nallekarhut"
+                         electoral_coalition: coalition,
+                         name: "Akateemiset nallekarhut"
 
       candidate = ImportedCsvCandidate.create_from!(@rows.first)
 

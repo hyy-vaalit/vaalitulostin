@@ -1,11 +1,10 @@
 class VoteImporter
-
   def initialize(voting_area)
-    @voting_area = voting_area
-
-    if @voting_area.votes.countable_sum.nonzero?
+    if voting_area.votes.countable_sum.nonzero?
       raise "Expected voting area not to have any votes (has #{@voting_area.votes.countable_sum} votes)"
     end
+
+    @voting_area = voting_area
   end
 
   # Data:
@@ -22,9 +21,8 @@ class VoteImporter
         @voting_area.ready!
       rescue Exception => e
         Rails.logger.error "Failed importing votes: #{e.message}"
-        raise ActiveRecord::Rollback
+        raise e
       end
     end
   end
-
 end

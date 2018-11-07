@@ -1,5 +1,4 @@
 class PublishVotesJob
-
   attr_accessor :csv_data
 
   def initialize(csv_data)
@@ -10,8 +9,7 @@ class PublishVotesJob
     Rails.logger.info "Store CSV Votes to S3"
 
     S3Publisher
-      .new()
+      .new
       .store_s3_object("votes.csv", csv_data, 'text/csv')
   end
-
 end

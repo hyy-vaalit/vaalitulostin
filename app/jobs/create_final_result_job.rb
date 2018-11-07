@@ -1,9 +1,7 @@
 class CreateFinalResultJob
-
   def perform
-    Rails.logger.info "Creating the Final Result!"
-    ResultPublisher.finalize_and_store!
+    result = Result.finalize!
+
+    ResultPublisher.store_to_s3!(result)
   end
-
 end
-
