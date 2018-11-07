@@ -44,10 +44,11 @@ group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
   gem 'pry-byebug'
   gem 'dotenv-rails'
-  gem 'foreman'
 end
 
 group :development do
+  gem 'foreman'
+
   # keep application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
