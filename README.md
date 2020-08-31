@@ -18,6 +18,7 @@ Pääsyoikeustasot on määritetty tiedostossa `app/models/ability.rb`.
 
 ```bash
 rake db:runts
+rspec
 rake db:seed:demo
 ```
 

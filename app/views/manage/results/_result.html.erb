@@ -86,7 +86,7 @@ EHDOKKAAT___________________________NUM_LIITTO__ÄÄNET___LVERT________RVERT____
 -------------------------------------------------------------------------------
 
 EHDOKKAAT___________________________NUM_LIITTO__ÄÄNET___LVERT________RVERT_____
-<% result_decorator.candidate_results_in_election_order.each_with_index do |candidate, index| -%>
+<% result_decorator.candidate_results_by_coalition_proportional_and_coalition_draw_order.each_with_index do |candidate, index| -%>
 <%= result_decorator.candidate_result_line(candidate, index) %>
 <% end -%>
 

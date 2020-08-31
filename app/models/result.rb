@@ -19,7 +19,18 @@ class Result < ApplicationRecord
   has_many :coalition_proportionals, dependent: :destroy
   has_many :alliance_proportionals, dependent: :destroy
 
-  has_many :candidate_results, dependent: :destroy
+  # NOTE: candidate_results MUST NOT be ordered here or it will affect its calling code
+  has_many :candidate_results,
+            dependent: :destroy
+
+  has_many :alliance_results,
+            -> { order('vote_sum_cache DESC') },
+            dependent: :destroy
+
+  has_many :coalition_results,
+            -> { order('vote_sum_cache DESC') },
+            dependent: :destroy
+
   has_many :candidates,
            lambda {
              select "candidates.id,
@@ -29,11 +40,9 @@ class Result < ApplicationRecord
            },
            through: :candidate_results
 
-  has_many :alliance_results, dependent: :destroy
   has_many :electoral_alliances,
            through: :alliance_results
 
-  has_many :coalition_results, dependent: :destroy
   has_many :electoral_coalitions,
            lambda {
              select "electoral_coalitions.id,
@@ -183,6 +192,9 @@ class Result < ApplicationRecord
        'coalition_proportionals.number desc, candidate_results.coalition_draw_order asc')
   end
 
+  # NOTE: Election order means that "candidates_in_election_order" sorts the result set.
+  # Use "candidate_results_by_coalition_proportional_and_coalition_draw_order" to explicitly get
+  # results in deterministic sorted order.
   def candidate_results_in_election_order
     candidates_in_election_order.select(
         'alliance_proportionals.number     AS  alliance_proportional,
@@ -203,6 +215,14 @@ class Result < ApplicationRecord
         'LEFT OUTER JOIN coalition_draws   ON  candidate_results.coalition_draw_id = coalition_draws.id').joins(
         'INNER JOIN alliance_proportionals ON  candidates.id = alliance_proportionals.candidate_id').where(
         ['alliance_proportionals.result_id = ? AND candidate_results.result_id = ?', self.id, self.id])
+  end
+
+  # Ensure deterministic ordering as "candidate_results_in_election_order" does not sort on its own,
+  # instead it trusts implicitly on "candidates_in_election_order" being sorted which is not very
+  # clear to understand.
+  def candidate_results_by_coalition_proportional_and_coalition_draw_order
+    candidate_results_in_election_order
+      .reorder('coalition_proportionals.number desc, candidate_results.coalition_draw_order asc')
   end
 
   def alliance_results_of(coalition_result)
