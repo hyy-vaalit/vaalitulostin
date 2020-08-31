@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-ruby '2.5.1' # For Heroku, see also file .ruby-version
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
+
+ruby '2.6.6' # For Heroku, see also file .ruby-version
 
 gem 'rails', '~> 5.0.7'
 gem 'pg', '~> 0.18'
