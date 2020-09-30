@@ -31,6 +31,10 @@ tail -f log/development.log
 
 Käynnistä voting-apin web ja worker (ks. ohjeet voting-api/README).
 
+Avaa http://127.0.0.1:3001/
+* admin@example.com / pass123
+* "Failed to open TCP connection to localhost:3000" tarkoittaa ettei voting-api ole käynnissä.
+
 Hae äänet Voting API:lta ja laske vaalitulos:
 ```ruby
 Delayed::Job::enqueue(ImportVotesJob.new(VotingArea.first))
