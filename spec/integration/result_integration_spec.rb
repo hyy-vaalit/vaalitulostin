@@ -27,7 +27,12 @@ RSpec.describe Result, type: :integration do
           .to eq csv_row['candidate_number'].to_i
 
         expect(candidate.coalition_proportionals.first.number)
-          .to eq csv_row['coalition_proportional'].to_f
+          .to eq(csv_row['coalition_proportional'].to_f),
+            <<~MSG.squish
+              Expected candidate #{candidate.candidate_number}
+              coalition proportional #{candidate.coalition_proportionals.first.number}
+              to equal #{csv_row['coalition_proportional'].to_f}"
+            MSG
 
         expect(candidate.alliance_proportionals.first.number)
           .to eq csv_row['alliance_proportional'].to_f
