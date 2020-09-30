@@ -30,7 +30,7 @@ gem 'sendgrid' # sendgrid specific methods are used by mailers
 gem 'ranked-model'
 gem 'cancancan'
 gem 'devise'
-gem 'draper', '3.0.0.pre1'
+gem 'draper'
 
 gem 'delayed_job'
 gem 'delayed_job_active_record'

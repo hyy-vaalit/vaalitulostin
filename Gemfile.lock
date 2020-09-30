@@ -79,12 +79,12 @@ GEM
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
-    draper (3.0.0.pre1)
-      actionpack (~> 5.0)
-      activemodel (~> 5.0)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (~> 5.0)
-      request_store (~> 1.0)
+    draper (4.0.1)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
+      activemodel-serializers-xml (>= 1.0)
+      activesupport (>= 5.0)
+      request_store (>= 1.0)
     e2mmap (0.1.0)
     erubi (1.9.0)
     execjs (2.7.0)
@@ -324,7 +324,7 @@ DEPENDENCIES
   delayed_job_active_record
   devise
   dotenv-rails
-  draper (= 3.0.0.pre1)
+  draper
   factory_bot_rails
   foreman
   formtastic
