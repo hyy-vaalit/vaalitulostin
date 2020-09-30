@@ -4,18 +4,14 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 ruby '2.6.6' # For Heroku, see also file .ruby-version
 
-gem 'rails', '~> 5.0.7'
-gem 'pg', '~> 0.18'
-gem 'puma', '~> 3.0'
+gem 'rails', '~> 5.1.7'
+gem 'pg'
+gem 'puma'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
 
 gem 'pry-rails' # friendlier rails console
-gem 'pry-highlight'
-gem 'pry-doc'
-gem 'pry-rescue'
-gem 'pry-stack_explorer'
+gem 'pry-highlight' # pretty print json in console, usage: ">>"
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -23,9 +19,7 @@ gem 'pry-stack_explorer'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder'
-gem 'json_builder' # TODO: json_builder is no longer maintained, use jbuilder
+gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jbuilder
 
 # TODO: Migrate to Amazon official gem which now includes S3
 gem "aws-s3", require: "aws/s3", github: 'pre/aws-s3'
@@ -44,7 +38,6 @@ gem 'formtastic'
 
 group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
-  gem 'pry-byebug'
   gem 'dotenv-rails'
   gem 'solargraph'
 end

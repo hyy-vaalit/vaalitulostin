@@ -15,6 +15,8 @@ class ResultDecorator < ApplicationDecorator
     Vaalit::Voting::ELECTED_CANDIDATE_COUNT
   end
 
+  # vote_sum_cache is the same as
+  # Vote.find_by_sql("select sum(votes.amount) as amount from votes").first.amount
   def votes_counted
     vote_sum_cache
   end

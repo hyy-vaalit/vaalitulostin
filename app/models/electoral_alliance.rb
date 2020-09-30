@@ -1,6 +1,8 @@
 class ElectoralAlliance < ApplicationRecord
   include RankedModel
 
+  has_many :candidates, dependent: :nullify
+
   has_many :votes, through: :candidates do
     def preliminary_sum
       countable.sum("amount")
@@ -10,8 +12,6 @@ class ElectoralAlliance < ApplicationRecord
       countable.sum("COALESCE(votes.fixed_amount, votes.amount)").to_i
     end
   end
-
-  has_many :candidates, dependent: :nullify
 
   has_many :candidate_results,
            -> { select "candidate_results.result_id" },

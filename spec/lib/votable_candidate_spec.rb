@@ -44,9 +44,9 @@ describe 'votable behaviour' do
         next unless next_candidate
 
         if candidate.coalition_proportional.zero?
-          next_candidate.coalition_proportional.should be_zero
+          expect(next_candidate.coalition_proportional).to be_zero
         else
-          candidate.coalition_proportional.to_f.should > next_candidate.coalition_proportional.to_f
+          expect(candidate.coalition_proportional.to_f).to be > next_candidate.coalition_proportional.to_f
         end
       end
     end
