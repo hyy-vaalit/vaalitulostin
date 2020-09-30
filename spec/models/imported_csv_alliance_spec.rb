@@ -23,7 +23,7 @@ RSpec.describe ImportedCsvAlliance, type: :model do
     end
 
     it "creates from csv" do
-      FactoryGirl.create :electoral_coalition,
+      FactoryBot.create :electoral_coalition,
                          name: "Akateemiset nallekarhut"
 
       alliance = ImportedCsvAlliance.create_from!(@rows.first)

@@ -62,7 +62,7 @@ group :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'rspec-json_expectations'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'timecop'
   gem 'guard-rspec'
 end

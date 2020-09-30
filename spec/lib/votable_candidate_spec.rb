@@ -4,8 +4,8 @@ describe 'votable behaviour' do
     stub_result_class!
     @ready_voting_areas = []
     @unready_voting_areas = []
-    3.times { @ready_voting_areas << FactoryGirl.create(:ready_voting_area) }
-    3.times { @unready_voting_areas << FactoryGirl.create(:unready_voting_area) }
+    3.times { @ready_voting_areas << FactoryBot.create(:ready_voting_area) }
+    3.times { @unready_voting_areas << FactoryBot.create(:unready_voting_area) }
   end
 
   def stub_result_class!
@@ -18,7 +18,7 @@ describe 'votable behaviour' do
     it 'gives a list of all candidates ordered by their alliance proportional' do
       allow(AllianceProportional).to receive(:calculate!)
       allow(CoalitionProportional).to receive(:calculate!)
-      result = FactoryGirl.create(:result_with_alliance_proportionals_and_candidates)
+      result = FactoryBot.create(:result_with_alliance_proportionals_and_candidates)
 
       ordered_candidates = Candidate.with_alliance_proportionals_for(result)
 
@@ -33,7 +33,7 @@ describe 'votable behaviour' do
     end
 
     it 'gives a list of all candidates ordered by their coalition proportional' do
-      result = FactoryGirl.create(:result_with_coalition_proportionals_and_candidates)
+      result = FactoryBot.create(:result_with_coalition_proportionals_and_candidates)
 
       ordered_candidates = result.candidate_results_in_election_order
       expect(ordered_candidates).not_to be_empty
@@ -52,8 +52,8 @@ describe 'votable behaviour' do
     end
 
     it 'allows chaining with_votes_sum with other scopes' do
-      alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
-      other_alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
+      alliance = FactoryBot.create(:electoral_alliance_with_candidates)
+      other_alliance = FactoryBot.create(:electoral_alliance_with_candidates)
       VotableSupport.create_votes_for(alliance.candidates, @ready_voting_areas, ascending: true)
       VotableSupport.create_votes_for(other_alliance.candidates, @ready_voting_areas, ascending: true)
 
@@ -64,7 +64,7 @@ describe 'votable behaviour' do
     end
 
     it 'allows chaining with_alliance_proportionals_for with other scopes' do
-      result = FactoryGirl.create(:result_with_alliance_proportionals_and_candidates)
+      result = FactoryBot.create(:result_with_alliance_proportionals_and_candidates)
       alliance = result.alliance_proportionals.first.candidate.electoral_alliance
 
       expect(Candidate.count).to be > alliance.candidates.count
@@ -75,7 +75,7 @@ describe 'votable behaviour' do
 
     it 'gives a list of all candidates ordered by their vote sum' do
       candidates = []
-      10.times { candidates << FactoryGirl.create(:candidate) }
+      10.times { candidates << FactoryBot.create(:candidate) }
       VotableSupport.create_votes_for(candidates, @ready_voting_areas, ascending: true)
 
       expect(Candidate.with_vote_sums.map(&:id))
@@ -84,7 +84,7 @@ describe 'votable behaviour' do
 
     it 'gives a list of all candidates ordered by their vote sum and excludes unready voting areas' do
       candidates = []
-      10.times { candidates << FactoryGirl.create(:candidate) }
+      10.times { candidates << FactoryBot.create(:candidate) }
       VotableSupport.create_votes_for(candidates, @ready_voting_areas, ascending: true)
       VotableSupport.create_votes_for(
         candidates, @unready_voting_areas, ascending: false, base_vote_count: 10000
@@ -95,13 +95,13 @@ describe 'votable behaviour' do
 
     describe 'preliminary votes' do
       before do
-        @candidate = FactoryGirl.create(:candidate)
+        @candidate = FactoryBot.create(:candidate)
       end
 
       it 'has preliminary votes from voting areas which have been fully counted' do
         amount = 10
         @ready_voting_areas.each do |area|
-          FactoryGirl.create(
+          FactoryBot.create(
             :vote,
             candidate: @candidate,
             voting_area: area,
@@ -116,7 +116,7 @@ describe 'votable behaviour' do
         amount = 10
         [@ready_voting_areas, @unready_voting_areas].each do |area_group|
           area_group.each do |area|
-            FactoryGirl.create(
+            FactoryBot.create(
               :vote,
               candidate: @candidate,
               voting_area: area,
@@ -133,7 +133,7 @@ describe 'votable behaviour' do
   describe 'votable alliance behaviour' do
     describe 'preliminary votes' do
       before do
-        @alliance = FactoryGirl.create(:electoral_alliance_with_candidates)
+        @alliance = FactoryBot.create(:electoral_alliance_with_candidates)
       end
 
       it 'has preliminary votes from voting areas which have been fully counted' do
@@ -162,7 +162,7 @@ describe 'votable behaviour' do
   describe 'votable coalition behaviour' do
     describe 'preliminary votes' do
       before do
-        @coalition = FactoryGirl.create(:electoral_coalition_with_alliances_and_candidates)
+        @coalition = FactoryBot.create(:electoral_coalition_with_alliances_and_candidates)
       end
 
       it 'has preliminary votes as a sum of alliance votes' do

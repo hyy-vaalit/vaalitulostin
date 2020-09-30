@@ -3,16 +3,16 @@ RSpec.describe VoteImporter, type: :model do
     let(:votes1) { 59 }
     let(:votes2) { 123 }
     let(:alliance_name) { "Akateemiset nallekarhut" }
-    let(:alliance) { FactoryGirl.create :electoral_alliance, name: alliance_name }
+    let(:alliance) { FactoryBot.create :electoral_alliance, name: alliance_name }
     let(:candidates) do
       [
-        FactoryGirl.create(
+        FactoryBot.create(
           :candidate,
           electoral_alliance: alliance,
           candidate_name: "Hanski, Anna",
           candidate_number: 12
         ),
-        FactoryGirl.create(
+        FactoryBot.create(
           :candidate,
           electoral_alliance: alliance,
           candidate_name: "Savinen, Mäki",
@@ -28,7 +28,7 @@ RSpec.describe VoteImporter, type: :model do
         #{candidates[1].candidate_number},"#{candidates[1].candidate_name}",#{votes2},#{alliance.name},#{alliance.id}
       EOCSV
 
-      @voting_area = FactoryGirl.create :voting_area
+      @voting_area = FactoryBot.create :voting_area
       @vote_impoter = VoteImporter.new @voting_area
     end
 

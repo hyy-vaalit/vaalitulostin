@@ -25,16 +25,16 @@ RSpec.describe ImportedCsvVote, type: :model do
     end
 
     it "creates from csv" do
-      coalition = FactoryGirl.create :electoral_coalition
-      alliance = FactoryGirl.create :electoral_alliance,
+      coalition = FactoryBot.create :electoral_coalition
+      alliance = FactoryBot.create :electoral_alliance,
                                     electoral_coalition: coalition,
                                     name: "Akateemiset nallekarhut"
 
-      voting_area = FactoryGirl.create :voting_area
-      candidate32 = FactoryGirl.create :candidate,
+      voting_area = FactoryBot.create :voting_area
+      candidate32 = FactoryBot.create :candidate,
                                        electoral_alliance: alliance,
                                        candidate_number: 32
-      candidate4 = FactoryGirl.create :candidate,
+      candidate4 = FactoryBot.create :candidate,
                                       electoral_alliance: alliance,
                                       candidate_number: 4
 
