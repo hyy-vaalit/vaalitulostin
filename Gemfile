@@ -46,6 +46,7 @@ group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
   gem 'pry-byebug'
   gem 'dotenv-rails'
+  gem 'solargraph'
 end
 
 group :development do
