@@ -13,12 +13,13 @@ HELSINGIN YLIOPISTON YLIOPPILASKUNNAN <%= "ALUSTAVA " if not result_decorator.fi
 
 <% if result_decorator.final? -%>
 Keskusvaalilautakunnan vahvistama <%= result_decorator.formatted_timestamp(:updated_at, :time => false) %>
+
+Edustajiston jäsenet on merkitty tähdellä (*).
+Vaaliliitoista valitaan kaksi varajäsentä jokaista varsinaista jäsentä kohden.
 <% else -%>
 Laskettu: <%= result_decorator.formatted_timestamp(:updated_at) %>
 
 Lopullinen vaalitulos vahvistetaan tarkastuslaskennan jälkeen.
-<% end -%>
-
 
 Perusteet merkinnöille:
 - Edustajiston jäsenet (läpipääsevät ehdokkaat) on merkitty tähdellä (*). Vaali-
@@ -33,6 +34,7 @@ Perusteet merkinnöille:
   vaaliliittojen kesken.
 - Saman kirjainyhdistelmän äänimääränsä tai vertailulukunsa viereen saaneiden
   ehdokkaiden keskinäinen järjestys ratkeaa arvonnassa.
+<% end -%>
 
 <%# Vaalirenkaita yhteensä:   <%#= sprintf "%2d", coalition_count %>
 <%# Vaaliliittoja yhteensä:   <%#= sprintf "%2d", alliance_count %>
