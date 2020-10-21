@@ -25,7 +25,6 @@ gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jb
 gem "aws-s3", require: "aws/s3", github: 'pre/aws-s3'
 
 gem 'rollbar'
-gem 'sendgrid' # sendgrid specific methods are used by mailers
 
 gem 'ranked-model'
 gem 'cancancan'
