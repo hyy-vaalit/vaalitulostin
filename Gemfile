@@ -21,8 +21,10 @@ gem 'jquery-ui-rails'
 
 gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jbuilder
 
-# TODO: Migrate to Amazon official gem which now includes S3
-gem "aws-s3", require: "aws/s3", github: 'pre/aws-s3'
+# Provides aws-sdk-ses and aws-sdk-s3
+# Newer version >=3.x requires Rails >=5.2
+gem "aws-sdk-rails", '~> 2.1.0'
+gem 'aws-sdk-s3', '~> 1'
 
 gem 'rollbar'
 

@@ -13,8 +13,8 @@ module Vaalit
   end
 
   module Results
-    S3_BUCKET_NAME  = ENV.fetch 'S3_BUCKET_NAME'
-    S3_BASE_URL     = ENV.fetch 'S3_BASE_URL'
+    AWS_S3_BUCKET_NAME  = ENV.fetch 'AWS_S3_BUCKET_NAME'
+    AWS_S3_BASE_URL     = ENV.fetch 'AWS_S3_BASE_URL'
 
     RESULT_ADDRESS  = ENV.fetch 'RESULT_ADDRESS'
     DIRECTORY       = Time.now.year
@@ -32,17 +32,24 @@ module Vaalit
     SESSION_LINK_URI   = URI(BASE_URL + ENV.fetch('VOTING_API_SESSION_LINK_ENDPOINT'))
   end
 
-  module AWS
-    def self.connect?
-      Rails.env.production?
-    end
+  module Aws
+    # https://docs.aws.amazon.com/sdk-for-ruby/v2/api/index.html
+    module S3
+      REGION = ENV.fetch('AWS_S3_REGION', "us-east-1")
+      ACCESS_KEY_ID = ENV.fetch('AWS_S3_ACCESS_KEY_ID')
+      ACCESS_KEY_SECRET = ENV.fetch('AWS_SECRET_ACCESS_KEY')
 
-    if connect?
-      ::AWS::S3::Base.establish_connection!(
-        access_key_id:     ENV.fetch('S3_ACCESS_KEY_ID'),
-        secret_access_key: ENV.fetch('S3_ACCESS_KEY_SECRET')
-      )
+      def self.connect?
+        Rails.env.production?
+      end
+
+      def self.client
+        ::Aws::S3::Client.new(
+          access_key_id: ACCESS_KEY_ID,
+          secret_access_key: ACCESS_KEY_SECRET,
+          region: REGION
+        )
+      end
     end
   end
-
 end
