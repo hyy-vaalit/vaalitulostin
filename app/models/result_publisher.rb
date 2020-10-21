@@ -57,7 +57,7 @@ class ResultPublisher
   end
 
   def bucket_name
-    Vaalit::Results::S3_BUCKET_NAME
+    Vaalit::Results::AWS_S3_BUCKET_NAME
   end
 
   def public_filename(suffix, name)
