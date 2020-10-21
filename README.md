@@ -78,15 +78,36 @@ Merkitse tulos valmiiksi arvontoja varten:
 Result.freeze_for_draws!
 ```
 
-## Seed-data Ehdokasjärjestelmän tiedoilla
+# Heroku-ympäristön pystyttäminen
 
-See also README of voting-api.
+Pystytä ensin voting-api.
 
-- `rake db:seed:production`
-- `rake db:seed:edari`
+Nollaa aiempi tietokanta poistamalla Heroku Postgres addon ja lisäämällä se uudelleen.
+* Testailussa voi käyttää ilmaista Postgres addonia, mutta se menee lukkoon jos tietokantaan syöttää
+  yli 10 000 riviä (kokonaisen testiajon kaikki äänet).
+* Tuotantoa varten valitse maksullinen Postgres Hobby $9/kk.
+
+Alusta tietokanta:
+* `rake db:schema:load`
+
+Luo äänestysalue ja tiedekunnat:
+* `rake db:seed:production`
+
+Lataa Seed-data Ehdokasjärjestelmän tiedoilla:
+* Valitse Ehdokasjärjestelmän admin-käyttöliittymästä csv-export kullekin resurssille.
+* Kun sinulla on candidates.csv, alliances.csv ja coalitions.csv, suorita:
+  - `rake db:seed:edari`
 
 * Luo admin-käyttäjä vaalityöntekijälle:
 AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
+
+Admin-käyttäjiä voi lisätä järjestelmään äänioikeutettuja, kun äänestys on käynnissä.
+* Äänestyksen aikana lisätty äänioikeutettu voi kirjautua yliopiston käyttäjätunnuksella.
+* Jos äänioikeutetulla ei vielä ole yliopiston käyttäjätunnusta, Admin-käyttöliittymästä voi
+  lähettää hänelle sähköpostitse sisäänkirjautumislinkin.
+* Linkin käyttäjää ei vahvisteta muuten kuin tarkistamalla, että linkki on yhä voimassa.
+* Linkin voimassaolo määritetään voting-api:n `EMAIL_LINK_JWT_EXPIRY_MINUTES` asetuksessa.
+
 
 ## AWS S3
 
