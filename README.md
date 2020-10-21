@@ -85,10 +85,25 @@ See also README of voting-api.
 - `rake db:seed:production`
 - `rake db:seed:edari`
 
-* Testaa S3-kirjoitusoikeus:
-`S3Publisher.new.test_connection`
-  * Jos S3-kirjoitus onnistuu, aikaleima päivittyy tiedostoon (esim qa-bucketissa)
-  https://s3.amazonaws.com/vaalitulostin-qa/VUOSILUKU/lulz.txt
-
 * Luo admin-käyttäjä vaalityöntekijälle:
 AdminUser.create!(:email => 'admin@example.com', :password => 'pass123', :password_confirmation => 'pass123')
+
+## AWS S3
+
+Vaalitulostin kirjoittaa lasketun vaalituloksen AWS S3:een.
+
+AWS IAM -käyttöoikeudet antavat kirjoitusoikeuden vuosiluvun mukaiseen hakemistoon:
+  * `vaalitulostin-YMPÄRISTÖ/vuosiluku`
+  * esimerkiksi `vaalitulostin-qa/2020`
+
+Päivitä jokaisen ympäristön (prod, qa, test) IAM-rooliin oikean vuosiluvun hakemisto.
+  * Avaa IAM > Users > Permissions
+
+Luo jokaisen ympäristön S3 Buckettiin vuosiluvun mukainen hakemisto AWS web-käyttöliittymästä.
+  * IAM-käyttäjällä ei ole oikeutta luoda uusia hakemistoja.
+
+Testaa S3-kirjoitusoikeus:
+  * `S3Publisher.new.test_list_objects`
+  * `S3Publisher.new.test_write`
+  * Jos S3-kirjoitus onnistuu, aikaleima päivittyy tiedostoon (esim qa-bucketissa)
+  https://s3.amazonaws.com/vaalitulostin-qa/VUOSILUKU/lulz.txt
