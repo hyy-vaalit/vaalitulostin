@@ -22,7 +22,7 @@ namespace :db do
         Faculty.create! code: "H50", name: 'Matemaattis-luonnontieteellinen'
         Faculty.create! code: "H55", name: 'Farmasia'
         Faculty.create! code: "H57", name: 'Bio- ja ympäristötieteellinen'
-        Faculty.create! code: "H60", name: 'Käyttäytymistieteellinen'
+        Faculty.create! code: "H60", name: 'Kasvatustieteellinen'
         Faculty.create! code: "H70", name: 'Valtiotieteellinen'
         Faculty.create! code: "H80", name: 'Maatalous-metsätieteellinen'
         Faculty.create! code: "H90", name: 'Eläinlääketieteellinen'
