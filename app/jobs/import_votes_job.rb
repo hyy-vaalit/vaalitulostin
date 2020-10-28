@@ -27,7 +27,7 @@ class ImportVotesJob
       .new(@voting_area)
       .create_votes!(csv_votes)
 
-    Delayed::Job.enqueue(PublishVotesJob.new(csv_votes))
+    Delayed::Job.enqueue(PublishVotesJob.new(csv_votes, private_filename: true))
 
     Delayed::Job.enqueue(CreateResultJob.new)
   end
