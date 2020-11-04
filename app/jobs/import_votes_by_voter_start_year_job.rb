@@ -7,7 +7,7 @@ class ImportVotesByVoterStartYearJob
 
     if !response.is_a?(Net::HTTPSuccess)
       if response.code.to_i == 401
-        Rails.logger.error 'Vote fetching failed due to HTTP 401 unauthorized. Ignoring retry.'
+        Rails.logger.error 'Voting-api request failed due to HTTP 401 unauthorized. Ignoring retry.'
         return
       else
         Rails.logger.error "Something went wrong while talking to voting-api, status: #{response.code}"

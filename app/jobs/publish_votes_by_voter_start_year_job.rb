@@ -13,6 +13,6 @@ class PublishVotesByVoterStartYearJob
       .store_s3_object('votes_by_voter_start_year.json', json_data, 'application/json')
 
     Rails.logger.info 'Reschedule next import of votes by voter start year'
-    Delayed::Job.enqueue(ImportVotesByVoterStartYearJob.new, run_at: 30.minutes.from_now)
+    Delayed::Job.enqueue(ImportVotesByVoterStartYearJob.new, run_at: 5.minutes.from_now)
   end
 end
