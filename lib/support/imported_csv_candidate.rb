@@ -24,14 +24,14 @@ class ImportedCsvCandidate
   end
 
   # Data is:
-  # Ehdokasnumero,Sukunimi,Etunimi,Ehdokasnimi,Hetu,Puhelin,Email,Postiosoite,Postitoimipaikka,Vaaliliiton ID,Vaaliliitto,Tiedekuntakoodi,Huomioita
-  #         0       1        2        3         4     5      6     7           8                       9        10         11                12
+  # Ehdokasnumero,Sukunimi,Etunimi,Ehdokasnimi,Hetu,Puhelin,Email,Postiosoite,Postitoimipaikka,Kaupunki,Vaaliliiton ID,Vaaliliitto,Tiedekuntakoodi,Huomioita
+  #         0       1        2        3         4     5      6     7           8                   9        10          11                12          13
   def convert(data)
     @candidate_number = data[0]
     @lastname         = data[1]
     @firstname        = data[2]
     @candidate_name   = data[3]
-    @alliance_name    = data[10]
+    @alliance_name    = data[11]
   end
 
 end
