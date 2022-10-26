@@ -116,6 +116,7 @@ Admin-käyttäjiä voi lisätä järjestelmään äänioikeutettuja, kun äänes
   * Delayed::Job.enqueue(ImportVotesByVoterStartYearJob.new)
   * Delayed::Job.enqueue(ImportVotesByHourJob.new)
   * Delayed::Job.enqueue(ImportVotesByFacultyJob.new)
+  * Delayed::Job.all
 
 ## AWS S3
 
