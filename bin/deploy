@@ -5,9 +5,9 @@
 # from the git history.
 #
 
-set -e
+set -euo pipefail
 
-HEROKU_ENV="$1"
+HEROKU_ENV="${1:-}"
 DEPLOY_SOURCE="master"
 GITHUB_REMOTE="origin"
 
@@ -32,7 +32,7 @@ read okay
 echo "Pushing to Heroku"
 git push "${HEROKU_ENV}" "${DEPLOY_SOURCE}"
 
-NEW_HEROKU_VERSION=`heroku releases -n 1 --json -r "${HEROKU_ENV}" | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0]["version"]'`
+NEW_HEROKU_VERSION="$(heroku releases -n 1 --json -r "${HEROKU_ENV}" | jq -r '.[0].version')"
 DEPLOY_TAG="${HEROKU_ENV}-${NEW_HEROKU_VERSION}"
 
 echo ""
