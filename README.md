@@ -108,6 +108,14 @@ Admin-käyttäjiä voi lisätä järjestelmään äänioikeutettuja, kun äänes
 * Linkin käyttäjää ei vahvisteta muuten kuin tarkistamalla, että linkki on yhä voimassa.
 * Linkin voimassaolo määritetään voting-api:n `EMAIL_LINK_JWT_EXPIRY_MINUTES` asetuksessa.
 
+* Luo voting-api service user jwt api token
+  * voting-api: `heroku run -r prod rake jwt:service_user:generate expiry_hours=1000`
+  * Aseta JWT Herokussa vaalitulostimen `VOTING_API_JWT_APIKEY` -ympäristömuuttujaan
+
+* Scheduloi taustajobit statsien päivittämistä varten
+  * Delayed::Job.enqueue(ImportVotesByVoterStartYearJob.new)
+  * Delayed::Job.enqueue(ImportVotesByHourJob.new)
+  * Delayed::Job.enqueue(ImportVotesByFacultyJob.new)
 
 ## AWS S3
 
