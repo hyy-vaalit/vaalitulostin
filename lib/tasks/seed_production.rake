@@ -13,7 +13,7 @@ namespace :db do
       desc 'Seed data for faculties'
       task :faculties => :environment do
         puts 'Seeding faculties ...'
-        Faculty.create! code: "1", name: 'Tuntematon'
+        # Faculty.create! code: "1", name: 'Tuntematon'
 
         Faculty.create! code: "H10", name: 'Teologinen'
         Faculty.create! code: "H20", name: 'Oikeustieteellinen'
@@ -28,7 +28,6 @@ namespace :db do
         Faculty.create! code: "H90", name: 'Eläinlääketieteellinen'
 
         Faculty.create! code: "H74", name: 'Svenska social- och kommunalhögskolan'
-        Faculty.create! code: "Y01", name: 'Viikin laaja-alaiset koulutukset'
       end
 
       desc 'Create internet voting area'
