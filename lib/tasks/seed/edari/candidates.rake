@@ -22,7 +22,7 @@ namespace :db do
             puts "==================== CANDIDATES ======================="
             puts "Paste Candidates in CSV format, finally press ^D"
             puts "Expected format is (without header):"
-            puts "name,numbering_order,short_name,candidate_count"
+            puts "Ehdokasnumero,Sukunimi,Etunimi,Ehdokasnimi,Opiskelijanumero,Puhelin,Email,Katuosoite,Postinumero,Kaupunki,Vaaliliiton ID,Vaaliliitto,Tiedekuntakoodi,Huomioita"
             puts ""
 
             lines = $stdin.readlines
