@@ -18,10 +18,8 @@ gem 'jquery-ui-rails'
 
 gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jbuilder
 
-# Provides aws-sdk-ses and aws-sdk-s3
-# Newer version >=3.x requires Rails >=5.2
-gem "aws-sdk-rails", '~> 2.1.0'
-gem 'aws-sdk-s3', '~> 1'
+gem 'aws-sdk-rails'
+gem 'aws-sdk-s3'
 
 gem 'rollbar'
 
