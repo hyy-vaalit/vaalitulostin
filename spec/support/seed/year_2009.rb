@@ -11,7 +11,7 @@ module Seed
         voting_areas
         votes
       ].each do |name|
-        import! csv('base_data', name)
+        import!(table_name: name, filename: csv_file('base_data', name))
       end
     end
 
@@ -63,17 +63,10 @@ module Seed
 
     private_class_method def self.import!(filename:, table_name:)
       Support::Psql.import_csv!(
-        db_name: ActiveRecord::Base.configurations["test"]["database"],
+        db_name: ActiveRecord::Base.connection_db_config.database,
         filename: filename,
         table_name: table_name
       )
-    end
-
-    private_class_method def self.csv(dir, name)
-      {
-        table_name: name,
-        filename: csv_file(dir, name)
-      }
     end
 
     private_class_method def self.csv_file(dir, name)

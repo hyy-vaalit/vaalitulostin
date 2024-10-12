@@ -2,9 +2,9 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-ruby '2.6.6' # For Heroku, see also file .ruby-version
+ruby '3.3.5' # For Heroku, see also file .ruby-version
 
-gem 'rails', '~> 5.2'
+gem 'rails', '~> 6.1.7.8'
 gem 'pg'
 gem 'puma'
 gem 'sass-rails', '~> 5.0'
@@ -33,6 +33,9 @@ gem 'draper'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'formtastic'
+
+gem 'csv'
+gem 'logger'
 
 group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code

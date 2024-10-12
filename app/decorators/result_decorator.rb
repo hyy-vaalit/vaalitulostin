@@ -49,33 +49,45 @@ class ResultDecorator < ApplicationDecorator
   end
 
   def to_html
-    ApplicationController
-      .view_context_class
-      .new(Rails.configuration.paths['app/views'])
-      .render(
+    lookup_context = ActionView::LookupContext.new(ActionController::Base.view_paths)
+    context = ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
+    renderer = ActionView::Renderer.new(lookup_context)
+
+    renderer.render(
+      context,
+      {
         partial: "manage/results/result.html.erb",
         locals: { result_decorator: self }
-      )
+      }
+    )
   end
 
   def to_json
-    ApplicationController
-      .view_context_class
-      .new(Rails.configuration.paths['app/views'])
-      .render(
+    lookup_context = ActionView::LookupContext.new(ActionController::Base.view_paths)
+    context = ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
+    renderer = ActionView::Renderer.new(lookup_context)
+
+    renderer.render(
+      context,
+      {
         template: "manage/results/show.json",
         locals: { result: self }
-      )
+      }
+    )
   end
 
   def to_json_candidates
-    ApplicationController
-      .view_context_class
-      .new(Rails.configuration.paths['app/views'])
-      .render(
+    lookup_context = ActionView::LookupContext.new(ActionController::Base.view_paths)
+    context = ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
+    renderer = ActionView::Renderer.new(lookup_context)
+
+    renderer.render(
+      context,
+      {
         template: "manage/results/candidates.json",
         locals: { result: self }
-      )
+      }
+    )
   end
 
   # EHDOKKAAT___________________________NUM_LIITTO__ÄÄNET___LVERT________RVERT_____
