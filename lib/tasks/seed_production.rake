@@ -28,6 +28,7 @@ namespace :db do
         Faculty.create! code: "H90", name: 'Eläinlääketieteellinen'
 
         Faculty.create! code: "H74", name: 'Svenska social- och kommunalhögskolan'
+        Faculty.create! code: "H906", name: 'Kielikeskus'
       end
 
       desc 'Create internet voting area'
