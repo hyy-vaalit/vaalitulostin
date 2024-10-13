@@ -15,6 +15,7 @@ namespace :db do
 
       puts "Votes have not been seeded, to get years 2009's votes, run:"
       puts "   rake db:seed:development:internet_votes_2009"
+      puts "or check README for how to test retrieving demo votes from Voting API."
     end
 
     desc "Seed a ballot voting voting data set with year 2009's votes"
