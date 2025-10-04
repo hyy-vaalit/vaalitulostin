@@ -4,7 +4,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 ruby '3.3.5' # For Heroku, see also file .ruby-version
 
-gem 'rails', '~> 6.1.7.8'
+gem 'rails', '~> 6.1.7.10'
 gem 'pg'
 gem 'puma'
 gem 'sass-rails'
