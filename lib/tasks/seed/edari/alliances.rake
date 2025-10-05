@@ -31,7 +31,7 @@ namespace :db do
               count = count + 1
 
               CSV.parse(csv_row, col_sep: separator, encoding: encoding) do |csv_alliance|
-                ImportedCsvAlliance.create_from! csv_alliance
+                Support::ImportedCsvAlliance.create_from! csv_alliance
               end
             end
 
