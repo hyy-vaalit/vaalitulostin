@@ -3,12 +3,10 @@ require './lib/support/imported_csv_alliance'
 namespace :db do
   namespace :seed do
     namespace :edari do
-
       desc 'seed alliances from stdin in csv format'
       task :alliances => :environment do
         ActiveRecord::Base.transaction do
           begin
-
             if ElectoralAlliance.count != 0
               raise "Expected Alliance table to be empty (has #{ElectoralAlliance.count} alliances)."
             end
@@ -17,7 +15,7 @@ namespace :db do
             encoding = "UTF-8"
             count = 0
 
-            Rails.logger.info "SEEDING ALLIANCES"
+            puts "SEEDING ALLIANCES"
             puts ""
             puts "==================== ALLIANCES ======================="
             puts "Paste Alliances in CSV format, finally press ^D"
@@ -35,12 +33,10 @@ namespace :db do
               end
             end
 
-            Rails.logger.info "Imported #{count} alliances from STDIN."
-            Rails.logger.info "Database has now #{ElectoralAlliance.count} alliances."
-
+            puts "Imported #{count} alliances from STDIN."
+            puts "Database has now #{ElectoralAlliance.count} alliances."
           end
         end
-
       end
     end
   end
