@@ -180,7 +180,7 @@ class Result < ApplicationRecord
   def filename(suffix = ".html", prefix = "result")
     final_text = self.final? ? "lopullinen" : "alustava"
 
-    "#{prefix}-#{final_text}-#{created_at.localtime.to_s(:number)}#{suffix}"
+    "#{prefix}-#{final_text}-#{created_at.localtime.to_fs(:number)}#{suffix}"
   end
 
   def candidates_in_election_order
