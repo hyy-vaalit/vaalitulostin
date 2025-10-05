@@ -30,7 +30,6 @@ gem 'delayed_job_active_record'
 gem 'formtastic'
 
 gem 'csv'
-gem 'logger'
 
 group :development, :test do
   gem 'byebug', platform: :mri # usage: write "debugger" somewhere in code
