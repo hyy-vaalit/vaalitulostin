@@ -65,16 +65,10 @@ class ResultDecorator < ApplicationDecorator
   end
 
   def to_json_candidates
-    lookup_context = ActionView::LookupContext.new(ActionController::Base.view_paths)
-    context = ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
-    renderer = ActionView::Renderer.new(lookup_context)
-
-    renderer.render(
-      context,
-      {
-        template: "manage/results/candidates.json",
-        locals: { result: self }
-      }
+    ApplicationController.renderer.render(
+      template: "manage/results/candidates",
+      formats:  [:json],
+      locals:   { result: self }
     )
   end
 
