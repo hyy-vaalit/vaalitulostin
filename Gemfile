@@ -15,8 +15,9 @@ gem 'jquery-ui-rails'
 
 gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jbuilder
 
-gem 'aws-sdk-rails'
-gem 'aws-sdk-s3'
+gem 'aws-sdk-rails', '~> 5'
+gem 'aws-actionmailer-ses', '~> 1'
+gem 'aws-sdk-s3', '~> 1'
 
 gem 'rollbar'
 
