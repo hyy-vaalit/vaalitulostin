@@ -9,12 +9,10 @@ namespace :db do
         area = VotingArea.create! :code => code, :name => name
       end
 
-      #TODO: move these into csv
       desc 'Seed data for faculties'
       task :faculties => :environment do
         puts 'Seeding faculties ...'
         # Faculty.create! code: "1", name: 'Tuntematon'
-
         Faculty.create! code: "H10", name: 'Teologinen'
         Faculty.create! code: "H20", name: 'Oikeustieteellinen'
         Faculty.create! code: "H30", name: 'Lääketieteellinen'
@@ -26,9 +24,8 @@ namespace :db do
         Faculty.create! code: "H70", name: 'Valtiotieteellinen'
         Faculty.create! code: "H80", name: 'Maatalous-metsätieteellinen'
         Faculty.create! code: "H90", name: 'Eläinlääketieteellinen'
-
         Faculty.create! code: "H74", name: 'Svenska social- och kommunalhögskolan'
-        Faculty.create! code: "H906", name: 'Kielikeskus'
+        # Faculty.create! code: "H906", name: 'Kielikeskus'
       end
 
       desc 'Create internet voting area'

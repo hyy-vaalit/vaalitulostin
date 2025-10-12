@@ -119,27 +119,38 @@ Result.freeze_for_draws!
 
 Pystytä ensin voting-api.
 
-Nollaa aiempi tietokanta poistamalla Heroku Postgres addon ja lisäämällä se uudelleen.
-* Testailussa voi käyttää ilmaista Postgres addonia, mutta se menee lukkoon jos tietokantaan syöttää
-  yli 10 000 riviä (kokonaisen testiajon kaikki äänet).
-* Tuotantoa varten valitse maksullinen Postgres Hobby $9/kk.
+Provisioi Heroku-prosessit "web" ja "worker".
 
-Alusta tietokanta:
+### Alusta tietokanta:
 
-* `rake db:schema:load`
+Nollaa aiempi tietokanta poistamalla Heroku Postgres addon ja provisioimalla se uudelleen (Essentials-1).
 
-Luo äänestysalue ja tiedekunnat:
+Testailussa riittää tietokannan tyhjennys:
+* `heroku pg:reset DATABASE -r prod`
 
-* `rake db:seed:production`
+Luo tietokantaskeema tyhjään tietokantaan:
+* `heroku run -r prod rake db:schema:load`
 
-Lataa Seed-data Ehdokasjärjestelmän tiedoilla:
+### Luo uudet ympäristömuuttujat:
 
-* Valitse Ehdokasjärjestelmän admin-käyttöliittymästä csv-export kullekin resurssille.
+* VOTING_API_JWT_APIKEY (ohjeet alla)
+* SECRET_KEY_BASE (rails secret)
+
+### Luo äänestysalue ja tiedekunnat:
+
+* `heroku run -r prod rake db:seed:production`
+
+### Syötedata tietokantaan Ehdokasjärjestelmän CSV-tiedostostoista:
+
+* Lataa Ehdokasjärjestelmän admin-käyttöliittymästä csv-export kullekin resurssille.
 * Kun sinulla on candidates.csv, alliances.csv ja coalitions.csv, suorita:
-  - `rake db:seed:edari`
+  * `heroku run -r prod rake db:seed:edari`
+
+### Admin-käyttäjä
 
 * Luo admin-käyttäjä vaalityöntekijälle:
-  * AdminUser.create!(:email => 'petrus@petafox.com', :password => 'buggy-GLAMOR-posit-santiago', :password_confirmation => 'buggy-GLAMOR-posit-santiago')
+  * `heroku console -r prod`
+  * `AdminUser.create!(:email => 'vaali.tyontekija@hyy.fi', :password => 'example', :password_confirmation => 'example')`
 
 Admin-käyttäjiä voi lisätä järjestelmään äänioikeutettuja, kun äänestys on käynnissä.
 
@@ -148,6 +159,8 @@ Admin-käyttäjiä voi lisätä järjestelmään äänioikeutettuja, kun äänes
   lähettää hänelle sähköpostitse sisäänkirjautumislinkin.
 * Linkin käyttäjää ei vahvisteta muuten kuin tarkistamalla, että linkki on yhä voimassa.
 * Linkin voimassaolo määritetään voting-api:n `EMAIL_LINK_JWT_EXPIRY_MINUTES` asetuksessa.
+
+### Yhteys Voting API -palveluun
 
 * Luo voting-api service user jwt api token
   * voting-api: `heroku run -r prod rake jwt:service_user:generate expiry_hours=1000`
@@ -180,5 +193,10 @@ Testaa S3-kirjoitusoikeus:
 
 * `S3Publisher.new.test_list_objects`
 * `S3Publisher.new.test_write`
-* Jos S3-kirjoitus onnistuu, aikaleima päivittyy tiedostoon (esim qa-bucketissa)
-https://s3.amazonaws.com/vaalitulostin-qa/VUOSILUKU/lulz.txt
+* Jos S3-kirjoitus onnistuu, aikaleima päivittyy tiedostoon
+  - QA: https://s3.amazonaws.com/vaalitulostin-qa/VUOSILUKU/lulz.txt
+  - Prod: http://vaalitulos.hyy.fi/2025/lulz.txt
+
+## Vaalitulos
+
+Päivitä päivämäärät, lisää maininta vaalivalvojaisista ja luo uuden vuosiluvun mukainen hakemisto.
