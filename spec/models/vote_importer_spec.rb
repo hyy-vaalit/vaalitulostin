@@ -39,5 +39,23 @@ RSpec.describe VoteImporter, type: :model do
       expect(Vote.second.amount).to eq votes2
       expect(Vote.second.candidate_id).to eq candidates[1].id
     end
+
+    it "raises on a CSV without data rows and does not mark the area ready" do
+      area = FactoryBot.create :voting_area, ready: false, submitted: false
+      header_only = "ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id\n"
+
+      expect { VoteImporter.new(area).create_votes!(header_only) }
+        .to raise_error(/data rows/)
+      expect(area.reload.submitted).to eq false
+      expect(area.reload.ready).to eq false
+    end
+
+    it "raises on a non-CSV error body and does not mark the area ready" do
+      area = FactoryBot.create :voting_area, ready: false, submitted: false
+
+      expect { VoteImporter.new(area).create_votes!("<html>503 Service Unavailable</html>") }
+        .to raise_error(StandardError)
+      expect(area.reload.ready).to eq false
+    end
   end
 end

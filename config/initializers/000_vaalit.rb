@@ -26,6 +26,12 @@ module Vaalit
     JWT_APIKEY         = ENV.fetch 'VOTING_API_JWT_APIKEY'
 
     BASE_URL           = ENV.fetch 'VOTING_API_BASE_URL'
+
+    if Rails.env.production? && !BASE_URL.start_with?('https://')
+      raise "VOTING_API_BASE_URL must use https in production (got: #{BASE_URL.inspect}); " \
+            "the bearer token and voter data would otherwise be sent in cleartext"
+    end
+
     VOTES_URI          = URI(BASE_URL + ENV.fetch('VOTING_API_VOTES_ENDPOINT'))
     VOTERS_URI         = URI(BASE_URL + ENV.fetch('VOTING_API_VOTERS_ENDPOINT'))
     SUMMARY_URI        = URI(BASE_URL + ENV.fetch('VOTING_API_SUMMARY_ENDPOINT'))
