@@ -51,7 +51,7 @@ class Candidate < ApplicationRecord
          AND (candidate_results.result_id = ?        OR candidate_results.result_id IS NULL)
          AND (votes.voting_area_id = voting_areas.id OR votes.voting_area_id IS NULL)', true, result.id).group(
       'candidates.id, candidate_results.candidate_draw_order').order(
-      'vote_sum desc, candidate_results.candidate_draw_order asc')
+      'vote_sum desc, candidate_results.candidate_draw_order asc, candidates.id asc')
   end
 
   def self.with_vote_sums
@@ -69,7 +69,7 @@ class Candidate < ApplicationRecord
       'INNER JOIN candidate_results      ON candidate_results.candidate_id = candidates.id').joins(
       'INNER JOIN results                ON results.id = alliance_proportionals.result_id').where(
       'results.id = ? AND candidate_results.result_id = ?', result.id, result.id).order(
-      'alliance_proportionals.number desc, candidate_results.alliance_draw_order asc')
+      'alliance_proportionals.number desc, candidate_results.alliance_draw_order asc, candidates.id asc')
   end
 
   def self.by_cached_vote_sum

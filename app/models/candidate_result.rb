@@ -13,7 +13,7 @@ class CandidateResult < ApplicationRecord
 
   scope :by_candidate_draw_order, -> { order("candidate_draw_order asc") }
   scope :by_coalition_draw_order, -> { order("coalition_draw_order asc") }
-  scope :by_vote_sum, -> { order("vote_sum_cache desc") }
+  scope :by_vote_sum, -> { order("vote_sum_cache desc, candidate_id asc") }
 
   def self.most_voted(number = 10)
     by_vote_sum.limit(number)
@@ -43,7 +43,7 @@ class CandidateResult < ApplicationRecord
       .joins('inner join candidates on candidate_results.candidate_id = candidates.id')
       .where('candidate_results.result_id = ?', result_id)
       .group('candidates.electoral_alliance_id, candidate_results.vote_sum_cache having count(*) > 1')
-      .order('electoral_alliance_id')
+      .order('electoral_alliance_id, vote_sum_cache asc')
   end
 
   def self.elected
