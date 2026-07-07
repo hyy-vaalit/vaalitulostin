@@ -11,8 +11,5 @@ class PublishVotesByHourJob
     S3Publisher
       .new
       .store_s3_object('votes_by_hour.json', json_data, 'application/json')
-
-    Rails.logger.info 'Reschedule next import of votes by hour'
-    Delayed::Job.enqueue(ImportVotesByHourJob.new, run_at: 5.minutes.from_now)
   end
 end
