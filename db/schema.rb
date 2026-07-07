@@ -10,23 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_07_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.integer "resource_id", null: false
-    t.string "resource_type", null: false
-    t.integer "author_id"
-    t.string "author_type"
-    t.text "body"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.string "namespace"
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
-    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_admin_notes_on_resource_type_and_resource_id"
-  end
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -61,12 +47,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.float "number", null: false
+    t.integer "numerator"
+    t.integer "denominator"
     t.index ["candidate_id", "result_id"], name: "index_unique_alliance_prop_per_candidate_and_result", unique: true
   end
 
   create_table "alliance_results", force: :cascade do |t|
-    t.integer "result_id"
-    t.integer "electoral_alliance_id"
+    t.integer "result_id", null: false
+    t.integer "electoral_alliance_id", null: false
     t.integer "vote_sum_cache"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
@@ -82,8 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
   end
 
   create_table "candidate_results", force: :cascade do |t|
-    t.integer "result_id"
-    t.integer "candidate_id"
+    t.integer "result_id", null: false
+    t.integer "candidate_id", null: false
     t.integer "vote_sum_cache"
     t.boolean "elected", default: false, null: false
     t.datetime "created_at", precision: nil
@@ -115,6 +103,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
     t.boolean "cancelled", default: false
     t.boolean "marked_invalid", default: false
     t.string "phone_number"
+    t.index ["candidate_number"], name: "index_candidates_on_candidate_number", unique: true
+    t.index ["electoral_alliance_id"], name: "index_candidates_on_electoral_alliance_id"
+    t.index ["faculty_id"], name: "index_candidates_on_faculty_id"
   end
 
   create_table "coalition_draws", force: :cascade do |t|
@@ -131,12 +122,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.float "number", null: false
+    t.integer "numerator"
+    t.integer "denominator"
     t.index ["candidate_id", "result_id"], name: "index_unique_coalition_prop_per_candidate_and_result", unique: true
   end
 
   create_table "coalition_results", force: :cascade do |t|
-    t.integer "result_id"
-    t.integer "electoral_coalition_id"
+    t.integer "result_id", null: false
+    t.integer "electoral_coalition_id", null: false
     t.integer "vote_sum_cache"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
