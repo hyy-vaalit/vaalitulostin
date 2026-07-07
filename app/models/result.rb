@@ -85,21 +85,6 @@ class Result < ApplicationRecord
     self.create! freezed: true
   end
 
-  def self.candidate_draws_ready!
-    Rails.logger.info "Marking candidate draws ready and calculating new alliance draws!"
-    Result.freezed.first.candidate_draws_ready!
-  end
-
-  def self.alliance_draws_ready!
-    Rails.logger.info "Marking alliance draws ready and calculating new coalition draws!"
-    Result.freezed.first.alliance_draws_ready!
-  end
-
-  def self.finalize!
-    Rails.logger.info "Creating the Final Result"
-    Result.freezed.first.finalize!
-  end
-
   def processed!
     update!(in_process: false)
   end
@@ -294,7 +279,10 @@ class Result < ApplicationRecord
       )
     end
 
-    self.update!(vote_sum_cache: Vote.countable_sum)
+    # Sum over the rows just created, not a second query against votes:
+    # under READ COMMITTED an area flipping ready mid-calculation could
+    # otherwise make the published total disagree with the candidate rows.
+    self.update!(vote_sum_cache: candidate_results.sum(:vote_sum_cache))
   end
 
   def elect_candidates!
