@@ -45,7 +45,7 @@ class ResultDecorator < ApplicationDecorator
   end
 
   def result_file_url
-    "#{Vaalit::Results::PUBLIC_RESULT_URL}/#{filename}"
+    "#{Vaalit::Results.public_result_url}/#{filename}"
   end
 
   def to_html
