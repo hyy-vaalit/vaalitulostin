@@ -13,16 +13,8 @@ class Manage::ResultsController < ManageController
     @result = ResultDecorator.decorate Result.find(params[:id])
 
     respond_to do |format|
-      format.json { render locals: { result: @result } }
+      format.json { render json: @result.to_json }
       format.html { render partial: "result", locals: { result_decorator: @result } }
-    end
-  end
-
-  def json
-    @result = ResultDecorator.decorate Result.find(params[:result_id])
-
-    respond_to do |format|
-      format.json { render params[:target], locals: { result: @result } }
     end
   end
 
