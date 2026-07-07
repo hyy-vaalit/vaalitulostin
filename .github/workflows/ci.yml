@@ -23,6 +23,11 @@ jobs:
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/vaalitulostin_test
+      # The integration specs shell out to the psql CLI (\COPY seed import),
+      # which connects via these instead of DATABASE_URL.
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
       SECRET_KEY_BASE: ci-only-not-a-secret
       SITE_ADDRESS: https://vaalitulostin.test
       EMAIL_FROM_ADDRESS: vaalit@hyy.fi
