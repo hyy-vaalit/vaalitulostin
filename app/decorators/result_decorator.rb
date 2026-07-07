@@ -72,12 +72,14 @@ class ResultDecorator < ApplicationDecorator
     )
   end
 
+  # The line is rendered as text content inside <pre>, where escaping
+  # &, < and > is sufficient. Apostrophes are deliberately not escaped:
+  # legitimate nicknames contain them and the published result must stay
+  # byte-identical with the certified output.
+  XSS_ESCAPE = { '&' => '&amp;', '<' => '&lt;', '>' => '&gt;' }.freeze
+
   # EHDOKKAAT___________________________NUM_LIITTO__ÄÄNET___LVERT________RVERT_____
   # 1* Sukunimi, Etunimi 'Lempinimi.... 788 Humani   55    696.00000   2901.00000
-  #
-  # TODO: Ensure that these are actually sanitized:
-  #  - candidate.candidate_name,
-  #  - electoral_alliance.shorten
   #
   # rubocop:disable Rails/OutputSafety
   def candidate_result_line(candidate, index)
@@ -98,7 +100,7 @@ class ResultDecorator < ApplicationDecorator
       formatted_draw_char(candidate.alliance_draw_identifier) +
       formatted_proportional_number(candidate.coalition_proportional) +
       formatted_draw_char(candidate.coalition_draw_identifier)
-    ).html_safe # Otherwise double quotes will mess output
+    ).gsub(/[&<>]/, XSS_ESCAPE).html_safe # html_safe keeps the pre-formatted spacing intact
   end
   # rubocop:enable Rails/OutputSafety
 

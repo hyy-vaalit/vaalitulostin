@@ -36,6 +36,30 @@ describe ResultDecorator do
     expect(@decorator.candidate_result_line(candidate, idx)).to eq expected
   end
 
+  it 'escapes markup in candidate data so it cannot execute on the result page' do
+    candidate = CandidateResult.new
+    allow(candidate).to receive(:electoral_alliance_shorten).and_return("<b>x")
+    allow(candidate).to receive(:candidate_name).and_return("Evil, <script>alert(1)</script>")
+    allow(candidate).to receive(:candidate_number).and_return(1)
+    allow(candidate).to receive(:vote_sum).and_return(1)
+    allow(candidate).to receive(:elected?).and_return(false)
+    allow(candidate).to receive(:candidate_draw_identifier).and_return(nil)
+    allow(candidate).to receive(:alliance_draw_identifier).and_return(nil)
+    allow(candidate).to receive(:coalition_draw_identifier).and_return(nil)
+    allow(candidate).to receive(:alliance_proportional).and_return(1.0)
+    allow(candidate).to receive(:coalition_proportional).and_return(1.0)
+    allow(candidate).to receive(:candidate_draw_affects_elected?).and_return(false)
+    allow(candidate).to receive(:alliance_draw_affects_elected?).and_return(false)
+    allow(candidate).to receive(:coalition_draw_affects_elected?).and_return(false)
+
+    line = @decorator.candidate_result_line(candidate, 0)
+
+    expect(line).to be_html_safe
+    expect(line).not_to include "<script>"
+    expect(line).not_to include "<b>"
+    expect(line).to include "&lt;script&gt;"
+  end
+
   it 'formats the coalition result line' do
     vote_sum = 1234
     coalition_result = FactoryBot.build(:coalition_result, vote_sum_cache: vote_sum)
