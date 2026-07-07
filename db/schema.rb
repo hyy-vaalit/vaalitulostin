@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_07_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_07_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -213,6 +213,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_120000) do
     t.integer "vote_sum_cache", default: 0, null: false
     t.boolean "published", default: false, null: false
     t.boolean "published_pending", default: false, null: false
+    t.index "(1)", name: "index_results_only_one_final", unique: true, where: "final"
+    t.index "(1)", name: "index_results_only_one_freezed", unique: true, where: "freezed"
   end
 
   create_table "voters", force: :cascade do |t|
