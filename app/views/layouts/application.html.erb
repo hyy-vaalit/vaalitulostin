@@ -33,7 +33,7 @@
 
       <ul class="main">
         <% if current_admin_user %>
-          <li>&raquo; <%= link_to "Kirjaudu ulos", destroy_admin_user_session_path %></li>
+          <li>&raquo; <%= button_to "Kirjaudu ulos", destroy_admin_user_session_path, method: :delete, class: "btn btn-link" %></li>
         <% else %>
           <li>&raquo; <%= link_to "Kirjaudu", new_admin_user_session_path %></li>
         <% end %>
