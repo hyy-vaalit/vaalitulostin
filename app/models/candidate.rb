@@ -19,7 +19,9 @@ class Candidate < ApplicationRecord
 
   ranks :numbering_order, with_same: :electoral_alliance_id
 
-  belongs_to :faculty
+  # optional: the candidate import (Support::ImportedCsvCandidate) creates
+  # candidates without a faculty and faculty_id is nullable in the schema.
+  belongs_to :faculty, optional: true
 
   scope :cancelled, -> { where(cancelled: true) }
   scope :without_alliance, -> { where(electoral_alliance_id: nil) }
