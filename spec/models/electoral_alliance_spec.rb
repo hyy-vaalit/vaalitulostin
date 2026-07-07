@@ -1,14 +1,4 @@
 describe ElectoralAlliance do
-  before do
-    stub_result_class!
-  end
-
-  def stub_result_class!
-    allow(Result).to receive(:calculate_votes!)
-    allow(Result).to receive(:alliance_proportionals!)
-    allow(Result).to receive(:coalition_proportionals!)
-  end
-
   it 'calculates the cached candidate vote sum' do
     votes = 10
     alliance = FactoryBot.create(:electoral_alliance)

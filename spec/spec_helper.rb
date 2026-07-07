@@ -40,40 +40,14 @@ end
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
 
-  # Capybara tests need records be actually persisted in db
   config.use_transactional_fixtures = false
 
   config.before(:suite) do
-    if config.use_transactional_fixtures?
-      raise(<<-MSG)
-        Delete line `config.use_transactional_fixtures = true` from rails_helper.rb
-        (or set it to false) to prevent uncommitted transactions being used in
-        JavaScript-dependent specs.
-
-        During testing, the app-under-test that the browser driver connects to
-        uses a different database connection to the database connection used by
-        the spec. The app's database connection would not be able to access
-        uncommitted transaction data setup over the spec's database connection.
-      MSG
-    end
     DatabaseCleaner.clean_with(:truncation)
   end
 
   config.before(:each) do
     DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:each, type: :feature) do
-    # :rack_test driver's Rack app under test shares database connection
-    # with the specs, so continue to use transaction strategy for speed.
-    driver_shares_db_connection_with_specs = Capybara.current_driver == :rack_test
-
-    if !driver_shares_db_connection_with_specs
-      # Driver is probably for an external browser with an app
-      # under test that does *not* share a database connection with the
-      # specs, so use truncation strategy.
-      DatabaseCleaner.strategy = :truncation
-    end
   end
 
   config.before(:each) do
@@ -98,16 +72,10 @@ RSpec.configure do |config|
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|
-    # Prevents you from mocking or stubbing a method that does not exist on
-    # a real object. This is generally recommended, and will default to
-    # `true` in RSpec 4.
-    #
-    # However, all objects which have custom SQL queries (eg. ResultDecorator)
-    # need to stub (monkey patch) those methods into the test object.
-    mocks.verify_partial_doubles = false
-
-    # # Allow old syntax for should and stub
-    # mocks.syntax = :should
+    # Stubbing a method that does not exist on the real object is an
+    # error. Query-result rows with SELECT-aliased columns are stubbed
+    # with plain doubles instead of partial doubles.
+    mocks.verify_partial_doubles = true
   end
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will
