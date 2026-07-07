@@ -4,13 +4,13 @@
 
 <h1>Vaalitulokset</h1>
 
-Julkinen vaalitulos: <%= link_to Vaalit::Results::PUBLIC_RESULT_URL, Vaalit::Results::PUBLIC_RESULT_URL %>
+Julkinen vaalitulos: <%= link_to Vaalit::Results.public_result_url, Vaalit::Results.public_result_url %>
 
 <h2>Alustavat vaalitulokset</h2>
 
 <ul>
   <li>Vaalituloksen julkinen osoite pysyy aina samana:
-    <%= link_to Vaalit::Results::PUBLIC_RESULT_URL, Vaalit::Results::PUBLIC_RESULT_URL %></li>
+    <%= link_to Vaalit::Results.public_result_url, Vaalit::Results.public_result_url %></li>
   <li>Tuloksen julkaiseminen päivittää tiedot yllämainittuun osoitteeseen.</li>
   <li>Linkitä HYYn websivuilta ainoastaan julkiseen osoitteeseen.</li>
   <li>Väliaikatulos on tarkoitettu tiedotuksen ja vaalivalvojaisten käyttöön ennen tuloksen julkaisua.</li>

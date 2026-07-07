@@ -1,6 +1,6 @@
 class S3Publisher
   def directory
-    Vaalit::Results::DIRECTORY
+    Vaalit::Results.directory
   end
 
   def bucket_name
@@ -23,7 +23,7 @@ class S3Publisher
 
   def test_write
     put_object(
-      key: "#{Vaalit::Results::DIRECTORY}/lulz.txt",
+      key: "#{Vaalit::Results.directory}/lulz.txt",
       body: "Lulz UTF8 Ääkkönen: #{Time.now.utc}",
       content_type: 'text/html; charset=utf-8'
     )

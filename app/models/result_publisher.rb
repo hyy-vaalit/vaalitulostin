@@ -53,7 +53,7 @@ class ResultPublisher
   end
 
   def directory
-    Vaalit::Results::DIRECTORY
+    Vaalit::Results.directory
   end
 
   def bucket_name
