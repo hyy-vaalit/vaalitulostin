@@ -53,8 +53,15 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
+  # Deliver via AWS SES (aws-actionmailer-ses); raise so a broken admin
+  # password reset is visible instead of silently swallowed.
+  config.action_mailer.delivery_method = :ses_v2
+  config.action_mailer.raise_delivery_errors = true
+
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = {
+    host: URI(ENV.fetch("SITE_ADDRESS")).host
+  }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
