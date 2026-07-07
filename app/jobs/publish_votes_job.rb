@@ -21,10 +21,12 @@ class PublishVotesJob
 
   private
 
-  # Private filename ensures votes.csv is not accessible before the final result is published.
+  # Pre-publication votes go under a private/ prefix on top of the random
+  # filename. NOTE: the bucket policy must deny public reads for
+  # "<year>/private/*" - filename unguessability alone is not privacy.
   def filename
     if private_filename
-      "votes-#{SecureRandom.hex(20)}.csv"
+      "private/votes-#{SecureRandom.hex(20)}.csv"
     else
       "votes.csv"
     end
