@@ -56,20 +56,86 @@ class ResultDecorator < ApplicationDecorator
     )
   end
 
+  # Replaces the abandoned json_builder gem (P3.1). The structure and
+  # values are locked by the golden-master spec; created_at uses
+  # xmlschema to keep the historical format without milliseconds.
   def to_json
-    ApplicationController.renderer.render(
-      template: "manage/results/show",
-      formats:  [:json],
-      locals:   { result: self }
-    )
+    {
+      name: "Vaalitulos",
+      year: Time.now.year,
+      created_at: created_at.localtime.xmlschema,
+      children: coalition_results.by_vote_sum.map { |coalition_result| coalition_json(coalition_result) }
+    }.to_json
   end
 
   def to_json_candidates
-    ApplicationController.renderer.render(
-      template: "manage/results/candidates",
-      formats:  [:json],
-      locals:   { result: self }
-    )
+    {
+      name: "Ehdokkaiden äänimäärät",
+      year: Time.now.year,
+      created_at: created_at.localtime.xmlschema,
+      children: candidate_results.by_vote_sum.map { |candidate_result| candidate_votes_json(candidate_result) }
+    }.to_json
+  end
+
+  def coalition_json(coalition_result)
+    {
+      name: coalition_result.electoral_coalition.shorten,
+      seats: elected_candidates_in_coalition(coalition_result).count,
+      value: coalition_result.vote_sum_cache,
+      role: "coalition",
+      children: alliance_results_of(coalition_result).map { |alliance_result| alliance_json(alliance_result) }
+    }
+  end
+
+  def alliance_json(alliance_result)
+    {
+      name: alliance_result.electoral_alliance.shorten,
+      seats: elected_candidates_in_alliance(alliance_result).count,
+      value: alliance_result.vote_sum_cache,
+      role: "alliance",
+      children: candidate_results_of(alliance_result).map { |candidate_result| candidate_json(candidate_result) }
+    }
+  end
+
+  def candidate_json(candidate_result)
+    json = {
+      name: candidate_result.candidate_name,
+      value: candidate_result.vote_sum.to_i,
+      seats: candidate_result.elected? ? 1 : 0,
+      co_prop: candidate_result.coalition_proportional,
+      al_prop: candidate_result.alliance_proportional
+    }
+
+    if candidate_result.coalition_draw_identifier.present?
+      json[:co_draw_id] = candidate_result.coalition_draw_identifier
+      json[:co_draw_affects_elected] = candidate_result.coalition_draw_affects_elected?
+    end
+
+    if candidate_result.alliance_draw_identifier.present?
+      json[:al_draw_id] = candidate_result.alliance_draw_identifier
+      json[:al_draw_affects_elected] = candidate_result.alliance_draw_affects_elected?
+    end
+
+    if candidate_result.candidate_draw_identifier.present?
+      json[:ca_draw_id] = candidate_result.candidate_draw_identifier
+      json[:ca_draw_affects_elected] = candidate_result.candidate_draw_affects_elected?
+    end
+
+    json[:role] = "candidate"
+    json
+  end
+
+  def candidate_votes_json(candidate_result)
+    candidate = Candidate.find(candidate_result.candidate_id)
+
+    {
+      name: candidate.candidate_name,
+      candidateNumber: candidate.candidate_number,
+      allianceShorten: candidate.electoral_alliance.shorten,
+      votes: candidate_result.vote_sum_cache.to_i,
+      seats: candidate_result.elected? ? 1 : 0,
+      role: "candidate"
+    }
   end
 
   # The line is rendered as text content inside <pre>, where escaping
