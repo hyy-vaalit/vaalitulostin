@@ -23,10 +23,7 @@ class Candidate < ApplicationRecord
   # candidates without a faculty and faculty_id is nullable in the schema.
   belongs_to :faculty, optional: true
 
-  scope :cancelled, -> { where(cancelled: true) }
   scope :without_alliance, -> { where(electoral_alliance_id: nil) }
-  scope :valid, -> { where(cancelled: false, marked_invalid: false) }
-  scope :votable, -> { where(cancelled: false, marked_invalid: false) }
   scope :by_numbering_order, -> { order("#{table_name}.numbering_order") }
 
   validates :lastname, :electoral_alliance, presence: true
@@ -47,7 +44,7 @@ class Candidate < ApplicationRecord
   # are all in a non-ready area must still appear with sum 0, exactly like a candidate
   # with no votes at all (P0.8).
   def self.with_vote_sums_for(result)
-    votable.select('candidates.id, SUM(COALESCE(votes.fixed_amount, votes.amount, 0)) as vote_sum').joins(
+    select('candidates.id, SUM(COALESCE(votes.fixed_amount, votes.amount, 0)) as vote_sum').joins(
      'LEFT JOIN  votes                 ON votes.candidate_id = candidates.id
          AND votes.voting_area_id IN (SELECT id FROM voting_areas WHERE ready = TRUE)').joins(
      'LEFT JOIN  candidate_results     ON candidate_results.candidate_id = candidates.id').where(
@@ -57,7 +54,7 @@ class Candidate < ApplicationRecord
   end
 
   def self.with_vote_sums
-    votable.select('candidates.id, SUM(COALESCE(votes.fixed_amount, votes.amount, 0)) as vote_sum').joins(
+    select('candidates.id, SUM(COALESCE(votes.fixed_amount, votes.amount, 0)) as vote_sum').joins(
       'LEFT JOIN "votes" ON "votes"."candidate_id" = "candidates"."id"
          AND "votes"."voting_area_id" IN (SELECT id FROM voting_areas WHERE ready = TRUE)').group(
       "candidates.id").order(
