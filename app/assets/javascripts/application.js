@@ -11,9 +11,8 @@
 // about supported directives.
 //
 
-//= require jquery2
+//= require jquery3
 //= require jquery-ui
 //= require jquery_ujs
 
-//= require google-jsapi.js
 //= require bootstrap.min.js
