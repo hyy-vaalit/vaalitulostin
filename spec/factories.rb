@@ -89,24 +89,32 @@ FactoryBot.define do
 
   factory :coalition_proportional do
     number { (rand * rand(100)).to_f }
+    numerator { (number * 100_000).round }
+    denominator { 100_000 }
     result
     candidate
   end
 
   factory :alliance_proportional do
     number { (rand * rand(100)).to_f }
+    numerator { (number * 100_000).round }
+    denominator { 100_000 }
     result
     candidate
   end
 
   factory :ordered_alliance_proportional, class: AllianceProportional do
     sequence(:number) { |n| (n * 10).to_f }
+    numerator { (number * 100_000).round }
+    denominator { 100_000 }
     result
     candidate
   end
 
   factory :ordered_coalition_proportional, class: CoalitionProportional do
     sequence(:number) { |n| (n * 10).to_f }
+    numerator { (number * 100_000).round }
+    denominator { 100_000 }
     result
     candidate
   end
