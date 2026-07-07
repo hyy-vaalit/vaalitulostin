@@ -44,7 +44,10 @@ class S3Publisher
         bucket: Vaalit::Results::AWS_S3_BUCKET_NAME,
         key: key,
         body: body,
-        content_type: content_type
+        content_type: content_type,
+        # CDNs/browsers must revalidate: a cached preliminary result must
+        # never be served after the final one has been published.
+        cache_control: 'no-cache'
       )
   end
 end
