@@ -138,6 +138,8 @@ class Result < ApplicationRecord
   def candidate_draws_ready!
     return false unless self.freezed?
 
+    ensure_draws_complete!(candidate_draws, :candidate_draw_order)
+
     Result.transaction do
       update!(candidate_draws_ready: true)
       recalculate!
@@ -153,6 +155,8 @@ class Result < ApplicationRecord
   def alliance_draws_ready!
     return false unless self.candidate_draws_ready?
 
+    ensure_draws_complete!(alliance_draws, :alliance_draw_order)
+
     Result.transaction do
       update!(alliance_draws_ready: true)
       recalculate!
@@ -167,6 +171,8 @@ class Result < ApplicationRecord
   # Alliance draws must be marked ready result can be finalized.
   def finalize!
     return false unless self.alliance_draws_ready?
+
+    ensure_draws_complete!(coalition_draws, :coalition_draw_order)
 
     Result.transaction do
       self.update!(final: true, coalition_draws_ready: true)
@@ -298,6 +304,8 @@ class Result < ApplicationRecord
 
   def create_candidate_draws!
     CandidateDraw.where(result_id: self.id).destroy_all
+    # Stale order values from destroyed draws must not leak into new draws.
+    candidate_results.update_all(candidate_draw_order: nil)
     CandidateResult.find_duplicate_vote_sums(self.id).each_with_index do |draw, index|
       candidate_ids = ElectoralAlliance.find(draw.electoral_alliance_id).candidate_ids
       draw_candidate_results =
@@ -329,6 +337,8 @@ class Result < ApplicationRecord
 
   def create_proportional_draws!(draw_class, proportional_class)
     draw_class.where(result_id: self.id).destroy_all
+    # Stale order values from destroyed draws must not leak into new draws.
+    candidate_results.update_all("#{draw_class.name.underscore}_order" => nil)
 
     proportional_class.find_duplicate_numbers(self.id).each_with_index do |draw_proportional, index|
       draw_candidate_ids = proportional_class.find_draw_candidate_ids_of(draw_proportional, self.id)
@@ -345,6 +355,20 @@ class Result < ApplicationRecord
 
   def find_candidate_results_for(candidate_ids)
     candidate_results.where(["candidate_id IN (?)", candidate_ids])
+  end
+
+  # A stage may only advance when every draw of that stage has a complete
+  # set of order values (a permutation of 1..n). An unfilled draw would be
+  # silently resolved by physical row order: a seat decided by Postgres
+  # instead of by lot.
+  def ensure_draws_complete!(draws, order_attribute)
+    draws.each do |draw|
+      orders = draw.candidate_results.pluck(order_attribute)
+      next if orders.none?(&:nil?) && orders.sort == (1..orders.size).to_a
+
+      raise "#{draw.class.name} #{draw.identifier} has missing or duplicate " \
+            "#{order_attribute} values: #{orders.inspect}"
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

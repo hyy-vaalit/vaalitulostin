@@ -26,6 +26,10 @@ class VotingArea < ApplicationRecord
   end
 
   def ready!
+    if Result.freezed.any? || Result.final.any?
+      raise "Voting areas cannot be marked ready while a frozen or final result exists"
+    end
+
     update! ready: true
   end
 

@@ -1,8 +1,12 @@
 class CandidateResult < ApplicationRecord
   belongs_to :result
   belongs_to :candidate
-  belongs_to :candidate_draw, dependent: :destroy
-  belongs_to :coalition_draw, dependent: :destroy
+  # optional: draws exist only for tied candidates. Explicit so that
+  # enabling belongs_to_required_by_default (Rails 5+ defaults) cannot
+  # break result calculation. No dependent: :destroy — a draw is shared
+  # by its whole tie group and belongs to the Result lifecycle.
+  belongs_to :candidate_draw, optional: true
+  belongs_to :coalition_draw, optional: true
 
   has_one :alliance_proportional,
           -> { where('alliance_proportionals.result_id = result_id') },
