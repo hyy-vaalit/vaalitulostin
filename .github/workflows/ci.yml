@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/vaalitulostin_test
+      # The integration specs shell out to the psql CLI (\COPY seed import),
+      # which connects via these instead of DATABASE_URL.
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      SECRET_KEY_BASE: ci-only-not-a-secret
+      SITE_ADDRESS: https://vaalitulostin.test
+      EMAIL_FROM_ADDRESS: vaalit@hyy.fi
+      EMAIL_FROM_NAME: HYY vaalipalvelut
+      AWS_S3_BASE_URL: s3.amazonaws.com
+      AWS_S3_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_S3_BUCKET_NAME: vaalitulostin-test
+      RESULT_ADDRESS: https://s3.amazonaws.com/vaalitulostin-test
+      TZ: Europe/Helsinki
+      VOTING_API_BASE_URL: http://localhost:3000
+      VOTING_API_SESSION_LINK_ENDPOINT: /api/sessions/link
+      VOTING_API_VOTERS_ENDPOINT: /api/elections/1/voters
+      VOTING_API_VOTES_ENDPOINT: /api/export/elections/1/votes
+      VOTING_API_SUMMARY_ENDPOINT: /api/export/elections/1/summary
+      VOTING_API_JWT_APIKEY: ci-only-not-a-secret
+      ROLLBAR_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rake db:create db:schema:load
+      - run: bundle exec rspec
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: bundler-audit
+        run: |
+          gem install bundler-audit -N
+          bundle-audit check --update
+      - name: brakeman
+        run: |
+          gem install brakeman -N
+          brakeman -q --no-pager
