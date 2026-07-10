@@ -41,12 +41,20 @@ class ResultPublisher
     # Data files first, result.html last: the human-visible artifact must
     # never be newer than the data it links to. No atomicity across
     # uploads exists in S3.
-    @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
+    #
+    # invalidate: only result publishes may invalidate CloudFront — they
+    # are rare and human-triggered, unlike the 5-minute votes_* jobs.
+    @s3_publisher.store_s3_object(
+      better_filename('.json'), decorated_result.to_json, invalidate: true
+    )
     @s3_publisher.store_s3_object(
       better_filename('.json', 'candidates'),
-      decorated_result.to_json_candidates
+      decorated_result.to_json_candidates,
+      invalidate: true
     )
-    @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
+    @s3_publisher.store_s3_object(
+      better_filename('.html'), decorated_result.to_html, invalidate: true
+    )
   end
 
   private

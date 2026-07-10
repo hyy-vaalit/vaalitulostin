@@ -65,5 +65,24 @@ module Vaalit
         )
       end
     end
+
+    # CloudFront distribution in front of the result bucket
+    # (vaalitulos repo, plans/https-cloudfront.md). Blank id = feature off.
+    module CloudFront
+      DISTRIBUTION_ID = ENV.fetch('AWS_CLOUDFRONT_DISTRIBUTION_ID', '')
+
+      # Like S3, AWS is contacted only in production mode.
+      def self.connect?
+        S3.connect? && DISTRIBUTION_ID.present?
+      end
+
+      def self.client
+        ::Aws::CloudFront::Client.new(
+          access_key_id: S3::ACCESS_KEY_ID,
+          secret_access_key: S3::ACCESS_KEY_SECRET,
+          region: S3::REGION
+        )
+      end
+    end
   end
 end

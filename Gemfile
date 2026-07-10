@@ -15,6 +15,7 @@ gem 'jquery-ui-rails'
 gem 'aws-sdk-rails', '~> 5'
 gem 'aws-actionmailer-ses', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
+gem 'aws-sdk-cloudfront', '~> 1'
 
 gem 'rollbar'
 
