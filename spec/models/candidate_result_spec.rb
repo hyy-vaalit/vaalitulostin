@@ -1,14 +1,4 @@
 describe CandidateResult do
-  before do
-    stub_result_class!
-  end
-
-  def stub_result_class!
-    allow(Result).to receive(:calculate_votes!)
-    allow(Result).to receive(:alliance_proportionals!)
-    allow(Result).to receive(:coalition_proportionals!)
-  end
-
   it 'finds duplicate vote sums in the same alliance' do
     alliance = FactoryBot.create(:electoral_alliance_with_candidates)
 

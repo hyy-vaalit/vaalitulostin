@@ -155,7 +155,6 @@ GEM
     drb (2.2.3)
     erb (6.0.4)
     erubi (1.13.1)
-    execjs (2.10.0)
     factory_bot (6.5.5)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -189,9 +188,6 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    guard-rubocop (1.5.0)
-      guard (~> 2.0)
-      rubocop (< 2.0)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
@@ -209,9 +205,6 @@ GEM
     jquery-ui-rails (8.0.0)
       railties (>= 3.2.16)
     json (2.20.0)
-    json_builder (3.1.7)
-      activesupport (>= 2.0.0)
-      json
     kramdown (2.5.1)
       rexml (>= 3.3.9)
     kramdown-parser-gfm (1.1.0)
@@ -431,8 +424,6 @@ GEM
     tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.1)
-      execjs (>= 0.3.0, < 3)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
@@ -472,10 +463,8 @@ DEPENDENCIES
   formtastic
   fuubar
   guard-rspec
-  guard-rubocop
   jquery-rails
   jquery-ui-rails
-  json_builder
   pg
   puma
   rails (~> 8.0.3)
@@ -491,10 +480,9 @@ DEPENDENCIES
   terminal-notifier-guard
   timecop
   tzinfo-data
-  uglifier
 
 RUBY VERSION
-   ruby 3.4.6p54
+  ruby 3.4.6p54
 
 BUNDLED WITH
-   2.5.21
+  2.7.2

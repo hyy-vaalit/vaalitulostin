@@ -1,17 +1,10 @@
 # rubocop:disable RSpec/DescribeClass
 describe 'votable behaviour' do
   before do
-    stub_result_class!
     @ready_voting_areas = []
     @unready_voting_areas = []
     3.times { @ready_voting_areas << FactoryBot.create(:ready_voting_area) }
     3.times { @unready_voting_areas << FactoryBot.create(:unready_voting_area) }
-  end
-
-  def stub_result_class!
-    allow(Result).to receive(:calculate_votes!)
-    allow(Result).to receive(:alliance_proportionals!)
-    allow(Result).to receive(:coalition_proportionals!)
   end
 
   describe 'votable candidates' do

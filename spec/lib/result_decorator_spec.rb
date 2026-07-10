@@ -6,7 +6,9 @@ describe ResultDecorator do
   end
 
   it 'formats the whole candidate line' do
-    candidate = CandidateResult.new
+    # A plain double: the candidate row is a SELECT-aliased query result,
+    # not a CandidateResult attribute set.
+    candidate = double('candidate row')
     alliance = "Tumpit"
     candidate_name = "Testinen, Martti 'Sakke'"
     idx = 123
@@ -37,7 +39,7 @@ describe ResultDecorator do
   end
 
   it 'escapes markup in candidate data so it cannot execute on the result page' do
-    candidate = CandidateResult.new
+    candidate = double('candidate row')
     allow(candidate).to receive(:electoral_alliance_shorten).and_return("<b>x")
     allow(candidate).to receive(:candidate_name).and_return("Evil, <script>alert(1)</script>")
     allow(candidate).to receive(:candidate_number).and_return(1)

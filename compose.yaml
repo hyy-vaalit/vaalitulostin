@@ -1,0 +1,55 @@
+# Run the test suite on Linux, as CI does:
+#
+#   docker compose run --rm test
+#
+# First run installs gems into the bundle volume (a few minutes).
+# One-off commands: docker compose run --rm test bundle exec rspec spec/models
+services:
+  db:
+    # Same major version as .github/workflows/ci.yml
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: pw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  test:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - bundle:/bundle
+    environment:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:pw@db:5432/vaalitulostin_test
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: "true"
+      # The psql CLI (\COPY seed import) connects with these, not DATABASE_URL.
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: pw
+      SECRET_KEY_BASE: local-test-only-not-a-secret
+      SITE_ADDRESS: https://vaalitulostin.test
+      EMAIL_FROM_ADDRESS: vaalit@hyy.fi
+      EMAIL_FROM_NAME: HYY vaalipalvelut
+      AWS_S3_BASE_URL: s3.amazonaws.com
+      AWS_S3_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_S3_BUCKET_NAME: vaalitulostin-test
+      RESULT_ADDRESS: https://s3.amazonaws.com/vaalitulostin-test
+      TZ: Europe/Helsinki
+      VOTING_API_BASE_URL: http://localhost:3000
+      VOTING_API_SESSION_LINK_ENDPOINT: /api/sessions/link
+      VOTING_API_VOTERS_ENDPOINT: /api/elections/1/voters
+      VOTING_API_VOTES_ENDPOINT: /api/export/elections/1/votes
+      VOTING_API_SUMMARY_ENDPOINT: /api/export/elections/1/summary
+      VOTING_API_JWT_APIKEY: local-test-only
+      ROLLBAR_ENV: test
+    command: bash -c "bundle install && bundle exec rake db:prepare && bundle exec rspec"
+
+volumes:
+  bundle:

@@ -28,22 +28,25 @@ class ResultPublisher
   def store_and_make_public!
     Rails.logger.info "Publishing a previously created result (id: #{@result.id})."
 
-    Result.transaction do
-      @result.published!
-      store_to_s3!
-    end
+    # S3 uploads must not run inside a DB transaction: they are slow,
+    # cannot be rolled back, and would hold the transaction open.
+    @result.published!
+    store_to_s3!
   end
 
   def store_to_s3!
     Rails.logger.info "Rendering result output"
     decorated_result = ResultDecorator.decorate(@result)
 
-    @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
+    # Data files first, result.html last: the human-visible artifact must
+    # never be newer than the data it links to. No atomicity across
+    # uploads exists in S3.
     @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
     @s3_publisher.store_s3_object(
       better_filename('.json', 'candidates'),
       decorated_result.to_json_candidates
     )
+    @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
   end
 
   private

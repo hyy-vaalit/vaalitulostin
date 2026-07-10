@@ -8,12 +8,9 @@ gem 'rails', '~> 8.0.3'
 gem 'pg'
 gem 'puma'
 gem 'sass-rails'
-gem 'uglifier'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-
-gem 'json_builder' # NOTE: json_builder is no longer maintained, replace with jbuilder
 
 gem 'aws-sdk-rails', '~> 5'
 gem 'aws-actionmailer-ses', '~> 1'
@@ -52,7 +49,6 @@ group :development do
 
   gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
-  gem 'guard-rubocop'
   gem 'terminal-notifier-guard', require: false
 end
 
