@@ -1,6 +1,10 @@
 module DrawBehaviour
   extend ActiveSupport::Concern
 
+  # Raised when submitted draw orders are not a permutation of 1..n over
+  # exactly the draw's candidates. Shown to the operator by DrawsController.
+  InvalidDrawOrder = Class.new(StandardError)
+
   included do
     has_many :candidate_results, dependent: :nullify
 
@@ -44,11 +48,38 @@ module DrawBehaviour
       if automatically
         give_order_automatically!(order_attribute)
       else
-        draw_orders.each do |candidate_result_id, draw_order|
+        validated_draw_orders!(draw_orders).each do |candidate_result_id, draw_order|
           candidate_result = self.candidate_results.find(candidate_result_id)
           candidate_result.update!(order_attribute => draw_order)
         end
       end
+    end
+
+    # Blanks, garbage, duplicates or missing candidates would otherwise be
+    # written as NULL/0 and the tie silently resolved by physical row order:
+    # a seat decided by Postgres instead of by lot.
+    def validated_draw_orders!(draw_orders)
+      begin
+        given = (draw_orders || {}).map { |id, order|
+          [Integer(id.to_s, 10), Integer(order.to_s.strip, 10)]
+        }.to_h
+      rescue ArgumentError
+        raise InvalidDrawOrder,
+              "Arvontanumeroiden on oltava kokonaislukuja, tyhjiä arvoja ei hyväksytä."
+      end
+
+      member_ids = candidate_results.pluck(:id)
+      unless given.keys.sort == member_ids.sort
+        raise InvalidDrawOrder,
+              "Arvonnasta puuttuu ehdokkaita: jokaiselle arvonnan ehdokkaalle on annettava numero."
+      end
+
+      unless given.values.sort == (1..member_ids.size).to_a
+        raise InvalidDrawOrder,
+              "Arvontanumeroiden on oltava luvut 1..#{member_ids.size}, jokainen tasan kerran."
+      end
+
+      given
     end
 
     def drawable_candidates

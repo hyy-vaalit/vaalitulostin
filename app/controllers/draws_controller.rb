@@ -1,4 +1,8 @@
 class DrawsController < ApplicationController
+  rescue_from DrawBehaviour::InvalidDrawOrder do |error|
+    redirect_to draws_path, alert: error.message
+  end
+
   def index
     @result = Result.freezed.first
   end
