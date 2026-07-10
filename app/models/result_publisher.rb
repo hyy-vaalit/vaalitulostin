@@ -41,38 +41,23 @@ class ResultPublisher
     # Data files first, result.html last: the human-visible artifact must
     # never be newer than the data it links to. No atomicity across
     # uploads exists in S3.
-    @s3_publisher.store_s3_object(better_filename('.json'), decorated_result.to_json)
+    #
+    # invalidate: only result publishes may invalidate CloudFront — they
+    # are rare and human-triggered, unlike the 5-minute votes_* jobs.
+    @s3_publisher.store_s3_object(
+      better_filename('.json'), decorated_result.to_json, invalidate: true
+    )
     @s3_publisher.store_s3_object(
       better_filename('.json', 'candidates'),
-      decorated_result.to_json_candidates
+      decorated_result.to_json_candidates,
+      invalidate: true
     )
-    @s3_publisher.store_s3_object(better_filename('.html'), decorated_result.to_html)
-
-    invalidate_cdn!
+    @s3_publisher.store_s3_object(
+      better_filename('.html'), decorated_result.to_html, invalidate: true
+    )
   end
 
   private
-
-  # Belt-and-suspenders: every published file is uploaded with
-  # Cache-Control: no-cache, so CloudFront revalidates it even without
-  # this. Invalidation only protects against that header being dropped.
-  # No-op unless production AND AWS_CLOUDFRONT_DISTRIBUTION_ID is set.
-  def invalidate_cdn!
-    return unless Vaalit::Aws::CloudFront.connect?
-
-    Rails.logger.info "Invalidating CloudFront path: /#{directory}/*"
-    Vaalit::Aws::CloudFront.client.create_invalidation(
-      distribution_id: Vaalit::Aws::CloudFront::DISTRIBUTION_ID,
-      invalidation_batch: {
-        paths: { quantity: 1, items: ["/#{directory}/*"] },
-        caller_reference: "result-#{@result.id}-#{Time.now.to_i}"
-      }
-    )
-  rescue Aws::Errors::ServiceError => e
-    # Publishing must never fail because of the CDN; no-cache already
-    # guarantees freshness.
-    Rails.logger.error "CloudFront invalidation failed: #{e.message}"
-  end
 
   def better_filename(suffix, name = "result")
     @result.published? ? public_filename(suffix, name) : unique_filename(suffix, name)
