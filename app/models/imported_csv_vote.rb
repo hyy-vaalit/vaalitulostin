@@ -20,7 +20,9 @@ class ImportedCsvVote
   # ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
   #   0              1          2     3            4
   def convert(data)
-    @candidate_number = data[0].strip.to_i
-    @vote_count = data[2].strip.to_i
+    # Integer() raises on malformed input where to_i would silently
+    # truncate ("1O0" -> 1) or zero (""), corrupting the count.
+    @candidate_number = Integer(data[0].strip, 10)
+    @vote_count = Integer(data[2].strip, 10)
   end
 end

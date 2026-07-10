@@ -13,9 +13,15 @@ class VoteImporter
   def create_votes!(csv)
     ActiveRecord::Base.transaction do
       begin
+        row_count = 0
         CSV.parse(csv, headers: true, col_sep: ",") do |row|
           ImportedCsvVote.create_from! row, voting_area_id: @voting_area.id
+          row_count += 1
         end
+
+        # An HTTP error body parses as a header-only CSV. Without this guard
+        # a zero-vote "result" would be calculated and published as real.
+        raise "Expected vote CSV to contain data rows, got none" if row_count.zero?
 
         @voting_area.submitted!
         @voting_area.ready!

@@ -24,6 +24,26 @@ RSpec.describe ImportedCsvVote, type: :model do
       expect(second.vote_count).to eq(32)
     end
 
+    it "raises on malformed numbers instead of truncating" do
+      data = <<~EOCSV
+        ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
+        32,"Hanski, Anna",1O0,Akateemiset nallekarhut,2
+      EOCSV
+      row = CSV.parse(data, headers: true).first
+
+      expect { ImportedCsvVote.build_from(row) }.to raise_error(ArgumentError)
+    end
+
+    it "raises on empty vote amount instead of importing zero" do
+      data = <<~EOCSV
+        ehdokasnumero,ehdokasnimi,ääniä,vaaliliitto,vaaliliiton id
+        32,"Hanski, Anna",,Akateemiset nallekarhut,2
+      EOCSV
+      row = CSV.parse(data, headers: true).first
+
+      expect { ImportedCsvVote.build_from(row) }.to raise_error(StandardError)
+    end
+
     it "creates from csv" do
       coalition = FactoryBot.create :electoral_coalition
       alliance = FactoryBot.create :electoral_alliance,

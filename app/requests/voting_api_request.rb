@@ -4,6 +4,15 @@ class VotingApiRequest
     @request = nil
   end
 
+  # As #get, but raises unless the response is a success. Use this from
+  # jobs so a failing Voting API call can never be mistaken for data.
+  def get!
+    response = get
+    return response if response.is_a?(Net::HTTPSuccess)
+
+    raise "Voting API request to #{@uri.path} failed: HTTP #{response.code}"
+  end
+
   def get
     http = init_http(@uri)
 
@@ -38,6 +47,10 @@ class VotingApiRequest
   def init_http(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
+    # Net::HTTP defaults to 60s timeouts which can block the single
+    # delayed_job worker for minutes on election night.
+    http.open_timeout = 5
+    http.read_timeout = 30
 
     http
   end
