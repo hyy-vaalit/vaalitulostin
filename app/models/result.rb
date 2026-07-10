@@ -24,11 +24,11 @@ class Result < ApplicationRecord
             dependent: :destroy
 
   has_many :alliance_results,
-            -> { order('vote_sum_cache DESC') },
+            -> { order('vote_sum_cache DESC, electoral_alliance_id ASC') },
             dependent: :destroy
 
   has_many :coalition_results,
-            -> { order('vote_sum_cache DESC') },
+            -> { order('vote_sum_cache DESC, electoral_coalition_id ASC') },
             dependent: :destroy
 
   has_many :candidates,
@@ -189,7 +189,7 @@ class Result < ApplicationRecord
        coalition_proportionals.number as coalition_proportional, coalition_proportionals.number').joins(
        'INNER JOIN coalition_proportionals    ON candidates.id = coalition_proportionals.candidate_id').where(
        'coalition_proportionals.result_id = ?', self.id).order(
-       'coalition_proportionals.number desc, candidate_results.coalition_draw_order asc')
+       'coalition_proportionals.number desc, candidate_results.coalition_draw_order asc, candidates.id asc')
   end
 
   # NOTE: Election order means that "candidates_in_election_order" sorts the result set.
@@ -222,17 +222,23 @@ class Result < ApplicationRecord
   # clear to understand.
   def candidate_results_by_coalition_proportional_and_coalition_draw_order
     candidate_results_in_election_order
-      .reorder('coalition_proportionals.number desc, candidate_results.coalition_draw_order asc')
+      .reorder('coalition_proportionals.number desc, candidate_results.coalition_draw_order asc, candidates.id asc')
   end
 
+  # Alliances within a coalition are listed in their official numbering order
+  # (the order of the official candidate numbering), as in the certified 2009
+  # result. Until Aug 2020 this relied on physical row order; the vote_sum
+  # ordering added then (b724b21) broke the rendered output.
   def alliance_results_of(coalition_result)
     alliance_results.for_alliances(coalition_result.electoral_coalition.electoral_alliance_ids)
+                    .joins(:electoral_alliance)
+                    .reorder('electoral_alliances.numbering_order asc, electoral_alliances.id asc')
   end
 
   def candidate_results_of(alliance_result)
     candidate_results_in_election_order
       .where('electoral_alliance_id = ? ', alliance_result.electoral_alliance_id)
-      .reorder('alliance_proportionals.number desc')
+      .reorder('alliance_proportionals.number desc, candidate_results.alliance_draw_order asc, candidates.id asc')
   end
 
   def elected_candidates_in_alliance(alliance_result)

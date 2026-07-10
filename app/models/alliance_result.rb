@@ -4,7 +4,7 @@ class AllianceResult < ApplicationRecord
   belongs_to :result
   belongs_to :electoral_alliance
 
-  scope :by_vote_sum, -> { order("vote_sum_cache desc") }
+  scope :by_vote_sum, -> { order("vote_sum_cache desc, electoral_alliance_id asc") }
 
   def self.for_alliances(alliance_ids)
     where(["electoral_alliance_id IN (?)", alliance_ids])

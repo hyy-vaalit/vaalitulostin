@@ -13,7 +13,7 @@ module DrawBehaviour
             :electoral_alliance
           ]
         ]
-      ).order("created_at asc")
+      ).order("created_at asc, id asc")
     }
 
     validates_presence_of :result_id
@@ -65,7 +65,7 @@ module DrawBehaviour
        'INNER JOIN electoral_alliances     ON candidates.electoral_alliance_id = electoral_alliances.id').joins(
        'INNER JOIN electoral_coalitions    ON electoral_alliances.electoral_coalition_id = electoral_coalitions.id').where(
         "alliance_proportionals.result_id = ? AND coalition_proportionals.result_id = ?", self.result_id, self.result_id).order(
-       'candidate_results.vote_sum_cache desc')
+       'candidate_results.vote_sum_cache desc, candidates.candidate_number asc')
     end
 
     private

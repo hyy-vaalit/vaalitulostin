@@ -48,7 +48,7 @@ class AllianceProportional < ApplicationRecord
       .joins('INNER JOIN electoral_alliances ON  candidates.electoral_alliance_id = electoral_alliances.id')
       .where("alliance_proportionals.result_id = ?", result_id)
       .group("electoral_alliances.electoral_coalition_id, alliance_proportionals.number having count(*) > 1")
-      .order("alliance_proportionals.number desc")
+      .order("alliance_proportionals.number desc, electoral_alliances.electoral_coalition_id asc")
   end
 
   def self.find_draw_candidate_ids_of(draw_proportional, result_id)

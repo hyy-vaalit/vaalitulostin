@@ -5,7 +5,7 @@ class CoalitionResult < ApplicationRecord
   belongs_to :result
   belongs_to :electoral_coalition
 
-  scope :by_vote_sum, -> { order("vote_sum_cache desc") }
+  scope :by_vote_sum, -> { order("vote_sum_cache desc, electoral_coalition_id asc") }
 
   def self.create_or_update!(electoral_coalition:, result:, vote_sum_cache:)
     existing =
