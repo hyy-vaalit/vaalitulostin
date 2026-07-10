@@ -7,7 +7,7 @@
 services:
   db:
     # Same major version as .github/workflows/ci.yml
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: pw
     healthcheck:
