@@ -38,7 +38,10 @@ class DrawsController < ApplicationController
   end
 
   def enqueue(job)
-    Result.freezed.first.in_process!
+    result = Result.freezed.first
+    raise ActiveRecord::RecordNotFound, "No frozen result exists" if result.nil?
+
+    result.in_process!
     Delayed::Job.enqueue(job)
   end
 

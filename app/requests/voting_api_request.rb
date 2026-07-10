@@ -56,7 +56,18 @@ class VotingApiRequest
   end
 
   def log_error(response)
-    Rails.logger.error "ApiRequest Error: #{response.code}, #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+    return if response.is_a?(Net::HTTPSuccess)
+
+    Rails.logger.error "ApiRequest Error: #{response.code}, #{loggable_body(response)}"
+  end
+
+  # Voter endpoint error bodies may echo voter PII; never log them.
+  # Other bodies are truncated to keep multi-kB HTML error pages out of
+  # the logs and Rollbar.
+  def loggable_body(response)
+    return "[body omitted for voters endpoint]" if @uri == Vaalit::VotingApi::VOTERS_URI
+
+    response.body.to_s.truncate(500)
   end
 
   def set_headers

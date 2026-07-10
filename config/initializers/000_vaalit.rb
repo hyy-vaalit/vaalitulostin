@@ -17,9 +17,17 @@ module Vaalit
     AWS_S3_BASE_URL     = ENV.fetch 'AWS_S3_BASE_URL'
 
     RESULT_ADDRESS  = ENV.fetch 'RESULT_ADDRESS'
-    DIRECTORY       = Time.now.year
-    PUBLIC_RESULT_URL = "#{RESULT_ADDRESS}/#{DIRECTORY}"
 
+    # Evaluated per use, not frozen at boot: web and worker restarted
+    # across New Year would otherwise publish to different S3 year
+    # directories. Set RESULTS_YEAR explicitly per election.
+    def self.directory
+      ENV.fetch('RESULTS_YEAR') { Time.now.year.to_s }
+    end
+
+    def self.public_result_url
+      "#{RESULT_ADDRESS}/#{directory}"
+    end
   end
 
   module VotingApi

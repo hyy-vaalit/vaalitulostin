@@ -4,7 +4,7 @@ class CoalitionProportional < ApplicationRecord
   belongs_to :result
   belongs_to :candidate
 
-  validates :result_id, :candidate_id, :number, presence: true
+  validates :result_id, :candidate_id, :number, :numerator, :denominator, presence: true
 
   # Iterate through all candidates of a coalition
   # ordered by their alliance proportional number.
@@ -30,27 +30,35 @@ class CoalitionProportional < ApplicationRecord
         .candidates
         .with_alliance_proportionals_for(result)
         .each_with_index do |candidate, index|
+        fraction = proportional_fraction(coalition_votes, index)
         create_or_update!(
           result_id: result.id,
           candidate_id: candidate.id,
-          number: calculate_proportional(coalition_votes, index)
+          number: calculate_proportional(coalition_votes, index),
+          numerator: fraction.numerator,
+          denominator: fraction.denominator
         )
       end
     end
   end
   # rubocop:enable Rails/FindEach
 
+  # Ties are groups with the same exact fraction (reduced numerator and
+  # denominator), never the rounded display number (P0.7).
   def self.find_duplicate_numbers(result_id)
-    select("coalition_proportionals.number")
+    select("coalition_proportionals.numerator, coalition_proportionals.denominator")
       .from(table_name)
       .where("coalition_proportionals.result_id = ?", result_id)
-      .group("coalition_proportionals.number having count(*) > 1")
-      .order("coalition_proportionals.number desc")
+      .group("coalition_proportionals.numerator, coalition_proportionals.denominator having count(*) > 1")
+      .order(Arel.sql("(coalition_proportionals.numerator::float8 / coalition_proportionals.denominator) desc"))
   end
 
   def self.find_draw_candidate_ids_of(draw_proportional, result_id)
     select('candidate_id')
-      .where(["number = ? AND result_id = ?", draw_proportional.number, result_id])
+      .where([
+        "numerator = ? AND denominator = ? AND result_id = ?",
+        draw_proportional.numerator, draw_proportional.denominator, result_id
+      ])
       .map(&:candidate_id)
   end
 end

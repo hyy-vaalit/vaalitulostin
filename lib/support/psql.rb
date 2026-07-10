@@ -3,7 +3,9 @@ module Support
     def self.import_csv!(db_name:, filename:, table_name:, delimiter: ',')
       system psql(db_name, table_name, filename, delimiter), :out => File::NULL
 
-      raise RuntimeError 'Psql command failed' if $?.exitstatus.nonzero?
+      if $?.exitstatus.nonzero?
+        raise "Psql command failed (exit #{$?.exitstatus}) importing #{filename} into #{table_name}"
+      end
 
       true
     end
