@@ -15,6 +15,10 @@ services:
     image: postgres:18
     environment:
       POSTGRES_PASSWORD: pw
+    ports:
+      # Distinct host port per project: vaalitulostin 54321,
+      # voting-api 54322, ehdokastiedot 54323
+      - "127.0.0.1:54321:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
