@@ -1,9 +1,14 @@
-# Run the test suite on Linux, as CI does:
+# Development server (reads .env via dotenv, http://localhost:3000):
+#
+#   docker compose up dev
+#
+# Test suite on Linux, as CI does:
 #
 #   docker compose run --rm test
 #
 # First run installs gems into the bundle volume (a few minutes).
 # One-off commands: docker compose run --rm test bundle exec rspec spec/models
+# Delayed jobs in dev: docker compose exec dev bundle exec rake jobs:work
 services:
   db:
     # Same major version as .github/workflows/ci.yml
@@ -15,9 +20,36 @@ services:
       interval: 2s
       timeout: 5s
       retries: 15
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  dev:
+    build:
+      context: .
+      target: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - bundle:/bundle
+    ports:
+      - "3000:3000"
+    # App config comes from the bind-mounted .env (dotenv-rails);
+    # these override it for the compose network.
+    environment:
+      RAILS_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgres://postgres:pw@db:5432/vaalitulostin_development
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: pw
+    command: bash -c "bundle install && bundle exec rake db:prepare && bundle exec rails server -b 0.0.0.0"
 
   test:
-    build: .
+    build:
+      context: .
+      target: dev
     depends_on:
       db:
         condition: service_healthy
@@ -53,3 +85,4 @@ services:
 
 volumes:
   bundle:
+  pgdata:
